@@ -5,11 +5,22 @@ using System.Collections;
 public class AttackHitbox : MonoBehaviour {
 	BoxCollider2D hitbox;
 
-	/* Add Layer mask */
+	LayerMask layerToTarget = 0;
+	LayerMask characterLayer = 0;
 
 	void Awake() {
 		hitbox = GetComponent<BoxCollider2D> () as BoxCollider2D;
 		hitbox.isTrigger = true;
+
+		Character character = transform.parent.GetComponent<Character> ();
+		if (character.allegiance == Allegiance.Ally) {
+			characterLayer = LayerMask.NameToLayer ("Ally");
+			layerToTarget = LayerMask.NameToLayer ("Enemy");
+		}
+		else {
+			characterLayer = LayerMask.NameToLayer ("Enemy");
+			layerToTarget = LayerMask.NameToLayer ("Ally");
+		}
 	}
 
 	public void SetSize(Vector2 size, int direction) {
@@ -17,10 +28,12 @@ public class AttackHitbox : MonoBehaviour {
 		hitbox.center = new Vector2 (size.x / 2 * direction, 0);
 	}
 
-	void OnTriggerEnter2D(Collider2D collision) {
-		transform.SendMessageUpwards ("InAttackRange", collision);
+	protected void OnTriggerEnter2D(Collider2D collider) {
+		if (collider.gameObject.layer == layerToTarget)
+			transform.SendMessageUpwards ("InAttackRange", collider.gameObject);
 	}
-	void OnTriggerExit2D(Collider2D collision) {
-		transform.SendMessageUpwards ("LeftAttackRange", collision);
+	protected void OnTriggerExit2D(Collider2D collider) {
+		if (collider.gameObject.layer == layerToTarget)
+			transform.SendMessageUpwards ("LeftAttackRange", collider.gameObject);
 	}
 }

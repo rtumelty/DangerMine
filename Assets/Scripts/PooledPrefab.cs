@@ -7,7 +7,7 @@ public class PooledPrefab : MonoBehaviour {
 	[SerializeField] float recycleDelay = .8f;
 
 	[SerializeField] bool recycleWhenOffScreen;
-	[SerializeField] Renderer rendererForScreenCheck;
+	//[SerializeField] Renderer rendererForScreenCheck;
 
 	[SerializeField] bool recycleOnCollision;
 	[SerializeField] bool recycleOnCollision2D;
@@ -30,7 +30,8 @@ public class PooledPrefab : MonoBehaviour {
 	}
 	
 	void OnBecameInvisible() {
-		StartCoroutine(Recycle(recycleDelay));
+		if (gameObject.activeSelf && recycleWhenOffScreen)
+			StartCoroutine(Recycle(recycleDelay));
 	}
 	
 	void OnCollisionEnter(Collision c) {
@@ -43,7 +44,6 @@ public class PooledPrefab : MonoBehaviour {
 
 	void Update() {
 		if (recycleWhenFar && distanceObject != null) {
-//			Debug.Log((transform.position - distanceObject.position).magnitude > distance);
 			if ((transform.position - distanceObject.position).magnitude > distance)
 				Recycle(recycleDelay);
 		}
