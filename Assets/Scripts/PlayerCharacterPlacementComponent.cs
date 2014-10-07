@@ -22,7 +22,9 @@ public class PlayerCharacterPlacementComponent : MonoBehaviour {
 		{
 			//Snaps character to cursor
 
-			transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 10f);
+			Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 10f);
+			transform.position = new Vector3(Mathf.RoundToInt(newPosition.x), Mathf.RoundToInt(newPosition.y), Mathf.RoundToInt(newPosition.z));
+
 			theHighLight.transform.position = new Vector3(transform.position.x, transform.position.y, theHighLight.transform.position.z);
 			myWorldPos = transform.TransformPoint(transform.position);
 
