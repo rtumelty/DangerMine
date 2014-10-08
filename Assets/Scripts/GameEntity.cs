@@ -17,4 +17,13 @@ public class GameEntity : MonoBehaviour {
 			return _allegiance;
 		}
 	}
+	
+	protected void OnEnable() {
+		GridManager.Instance.RegisterEntity(this);
+	}
+	
+	protected void OnDisable() {
+		GridManager.Instance.UnregisterEntity(this);
+	}
+
 }
