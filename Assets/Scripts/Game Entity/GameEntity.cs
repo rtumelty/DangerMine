@@ -11,6 +11,7 @@ public class GameEntity : MonoBehaviour {
 	
 	[SerializeField] protected Allegiance _allegiance;
 	[SerializeField] protected int health = 10;
+	protected float currentHealth;
 	
 	public Allegiance allegiance {
 		get {
@@ -26,4 +27,13 @@ public class GameEntity : MonoBehaviour {
 		GridManager.Instance.UnregisterEntity(this);
 	}
 
+	protected void Hit(int attackStr) {
+		currentHealth = Mathf.Clamp (currentHealth - attackStr, 0, 9999);
+		if (currentHealth == 0)
+			Die ();
+	}
+	
+	protected void Die() {
+		gameObject.SetActive (false);
+	}
 }

@@ -15,14 +15,14 @@ public class GridManager : MonoBehaviour {
 		}
 	}
 
-	Dictionary<GameEntity, Vector2> occupiedPositions;
+	Dictionary<GameEntity, GridCoordinate> occupiedPositions;
 
 	void Awake() {
 		if (instance != null) Destroy(this);
 
+		instance = this;
 		DontDestroyOnLoad(this);
-		occupiedPositions = new Dictionary<GameEntity, Vector2>();
-		Debug.Log("Created entity dictionary");
+		occupiedPositions = new Dictionary<GameEntity, GridCoordinate>();
 	}
 
 	void OnLevelWasLoaded(int level) {
@@ -32,23 +32,20 @@ public class GridManager : MonoBehaviour {
 	void Update() {
 		List<GameEntity> keys = new List<GameEntity>(occupiedPositions.Keys);
 		foreach (GameEntity key in keys) {
-			Vector2 position = new Vector2(Mathf.Round(key.transform.position.x), 
-			                               Mathf.Round(key.transform.position.y));
+			GridCoordinate position = new GridCoordinate(key.transform.position);
 			occupiedPositions[key] = position;
 		}
 	}
 
 	public bool IsOccupied(Vector2 position) {
-		foreach (KeyValuePair<GameEntity, Vector2> pair in occupiedPositions) {
-			if (Vector2.Equals(pair.Value, position)) return true;
+		foreach (KeyValuePair<GameEntity, GridCoordinate> pair in occupiedPositions) {
+			if (pair.Value == position as GridCoordinate) return true;
 		}
 		return false;
 	}
 
 	public void RegisterEntity(GameEntity entity) {
-		Vector2 position = new Vector2(Mathf.Round(entity.transform.position.x), 
-		                               Mathf.Round(entity.transform.position.y));
-		Debug.Log("Dictionary status: " + occupiedPositions);
+		GridCoordinate position = new GridCoordinate(entity.transform.position);
 		occupiedPositions.Add(entity, position);
 	}
 
