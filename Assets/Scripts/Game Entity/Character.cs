@@ -15,7 +15,6 @@ public class Character : GameEntity {
 	bool attacking;
 	GameObject attackTarget = null;
 	AttackHitbox hitbox = null;
-	float currentHealth;
 
 	// Use this for initialization
 	void Start () {
@@ -59,20 +58,10 @@ public class Character : GameEntity {
 		StopCoroutine ("Attack");
 	}
 
-	IEnumerator Attack() {
+	protected IEnumerator Attack() {
 		while (attacking) {
 			attackTarget.SendMessage("Hit", attackStrength);
 			yield return new WaitForSeconds(attackSpeed);
 		}
-	}
-
-	void Hit(int attackStr) {
-		currentHealth = Mathf.Clamp (currentHealth - attackStr, 0, 9999);
-		if (currentHealth == 0)
-						Die ();
-	}
-
-	void Die() {
-		gameObject.SetActive (false);
 	}
 }

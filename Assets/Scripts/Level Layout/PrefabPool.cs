@@ -62,6 +62,8 @@ public class PrefabPool : MonoBehaviour {
 		GameObject go = null;
 
 		for (int i = 0; i < pool.Count && active == true; i++) {
+			if (currentPoolIndex >= pool.Count) currentPoolIndex = 0;
+
 			go = pool[currentPoolIndex++];
 			if (currentPoolIndex >= pool.Count) currentPoolIndex = 0;
 
