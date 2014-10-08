@@ -9,7 +9,7 @@ public class GridManager : MonoBehaviour {
 		get {
 			if (instance == null) {
 				GameObject go = new GameObject("_GridManager");
-				instance = new GridManager();
+				instance = go.AddComponent<GridManager>();
 			}
 			return instance;
 		}
@@ -22,6 +22,7 @@ public class GridManager : MonoBehaviour {
 
 		DontDestroyOnLoad(this);
 		occupiedPositions = new Dictionary<GameEntity, Vector2>();
+		Debug.Log("Created entity dictionary");
 	}
 
 	void OnLevelWasLoaded(int level) {
@@ -47,6 +48,7 @@ public class GridManager : MonoBehaviour {
 	public void RegisterEntity(GameEntity entity) {
 		Vector2 position = new Vector2(Mathf.Round(entity.transform.position.x), 
 		                               Mathf.Round(entity.transform.position.y));
+		Debug.Log("Dictionary status: " + occupiedPositions);
 		occupiedPositions.Add(entity, position);
 	}
 
