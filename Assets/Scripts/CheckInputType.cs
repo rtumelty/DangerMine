@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+ 
+public enum InputType
+{
+	NO_TYPE,
+	TAP_TYPE,
+	DRAG_TYPE,
+	DUALTOUCH_TYPE
+}
 public class CheckInputType : MonoBehaviour
 {
-	public const int NO_TYPE = -1;
-	public const int TAP_TYPE = 0;
-	public const int DRAG_TYPE = 1;
-	public const int DUALTOUCH_TYPE = 2;
-
-	public static int TOUCH_TYPE;
+	public static InputType TOUCH_TYPE;
 
 	static CheckInputType instance;
 	public static CheckInputType Instance 
@@ -43,10 +45,10 @@ public class CheckInputType : MonoBehaviour
 		if(Input.GetMouseButtonUp(0))
 #else
 
-		if(Input.touchCount == 1)
+		if(Input.touches[0].phase == TouchPhase.End)
 #endif
 		{
-			TOUCH_TYPE = TAP_TYPE;
+			TOUCH_TYPE = InputType.TAP_TYPE;
 		}
 
 #if UNITY_STANDALONE || UNITY_EDITOR
@@ -57,7 +59,7 @@ public class CheckInputType : MonoBehaviour
 		else if(Input.touchCount == 2)
 #endif
 		{
-			TOUCH_TYPE = DUALTOUCH_TYPE;
+			TOUCH_TYPE = InputType.DUALTOUCH_TYPE;
 		}
 
 #if UNITY_STANDALONE || UNITY_EDITOR
@@ -68,12 +70,12 @@ public class CheckInputType : MonoBehaviour
 		else if(Input.touches[0] > 0)
 #endif
 		{
-			TOUCH_TYPE = DRAG_TYPE;
+			TOUCH_TYPE = InputType.DRAG_TYPE;
 		}
 
 		else
 		{
-			TOUCH_TYPE = NO_TYPE;
+			TOUCH_TYPE = InputType.NO_TYPE;
 		}
 	}
 }

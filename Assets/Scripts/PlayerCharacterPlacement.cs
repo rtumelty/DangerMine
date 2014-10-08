@@ -38,15 +38,15 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 			}
 
 			//Checks for release of character. Snaps to lane or returns to pool if no valid lane.
-
-			if(Input.GetMouseButtonUp(0) && 
+			print (CheckInputType.TOUCH_TYPE);
+			if(CheckInputType.TOUCH_TYPE == InputType.TAP_TYPE && 
 			   mySnapPoint != Vector3.zero)
 			{
 				released = true;
 				GetComponent<Character>().enabled = true;
 				theHighLight.transform.position = defaultHighlightPosition;
 			}
-			else if(Input.GetMouseButtonUp(0))
+			else if(CheckInputType.TOUCH_TYPE == InputType.TAP_TYPE)
 			{
 				gameObject.SetActive(false);
 				theHighLight.transform.position = defaultHighlightPosition;
