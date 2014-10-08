@@ -32,6 +32,8 @@ public class Character : GameEntity {
 	}
 
 	void OnEnable() {
+		base.OnEnable();
+
 		currentHealth = health;
 	}
 
