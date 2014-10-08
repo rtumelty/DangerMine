@@ -4,7 +4,8 @@ using System.Collections;
 public enum InputType
 {
 	NO_TYPE,
-	TAP_TYPE,
+	TOUCHRELEASE_TYPE,
+	TOUCHBEGAN_TYPE,
 	DRAG_TYPE,
 	DUALTOUCH_TYPE
 }
@@ -48,7 +49,18 @@ public class CheckInputType : MonoBehaviour
 		if(Input.touches[0].phase == TouchPhase.End)
 #endif
 		{
-			TOUCH_TYPE = InputType.TAP_TYPE;
+			TOUCH_TYPE = InputType.TOUCHRELEASE_TYPE;
+		}
+
+#if UNITY_STANDALONE || UNITY_EDITOR
+
+		if(Input.GetMouseButtonDown(0))
+#else
+	
+		if(Input.touches[0].phase == TouchPhase.Began)
+#endif
+		{
+			TOUCH_TYPE = InputType.TOUCHBEGAN_TYPE;
 		}
 
 #if UNITY_STANDALONE || UNITY_EDITOR
