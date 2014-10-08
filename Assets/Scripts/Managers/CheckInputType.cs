@@ -64,18 +64,23 @@ public class CheckInputType : MonoBehaviour
 
 #if UNITY_STANDALONE || UNITY_EDITOR
 		
-		if(Input.GetMouseButton(0))
+		else if(!Input.GetMouseButtonUp(0))
+		{
+			if(Input.GetMouseButton(0))
+		
 #else
 		
 		else if(Input.touches[0] > 0)
+		{
 #endif
-		{
-			TOUCH_TYPE = InputType.DRAG_TYPE;
-		}
+			{
+				TOUCH_TYPE = InputType.DRAG_TYPE;
+			}
 
-		else
-		{
-			TOUCH_TYPE = InputType.NO_TYPE;
+			else
+			{
+				TOUCH_TYPE = InputType.NO_TYPE;
+			}
 		}
 	}
 }
