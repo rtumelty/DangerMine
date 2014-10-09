@@ -76,6 +76,7 @@ public class Character : GameEntity {
 	public void Unblocked() {
 		blocked = false; 
 		attackTarget = null;
+		mySpineMultiSkeleton.SetAnimation ("miner_01_walk_side", 1);
 		StopCoroutine ("Attack");
 	}
 
@@ -83,10 +84,9 @@ public class Character : GameEntity {
 
 		mySpineMultiSkeleton.SetAnimation ("miner_01_drilling_jump_front", 1);
 		while (blocked) {
+			yield return new WaitForSeconds(attackSpeed);
 			attackTarget.SendMessage("Hit", this);
 			Debug.Log("Attacking " + attackTarget);
-			yield return new WaitForSeconds(attackSpeed);
 		}
-		mySpineMultiSkeleton.SetAnimation ("miner_01_walk_side", 1);
 	}
 }

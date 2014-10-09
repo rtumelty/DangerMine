@@ -55,6 +55,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		
 		if(transform.position.y < 3 && transform.position.y > -3)
 		{
+			gameObject.renderer.sortingLayerName = "Lane" + (-transform.position.y).ToString();
 			theHighLight.transform.position = new Vector3(transform.position.x, transform.position.y, theHighLight.transform.position.z);
 			mySnapPoint = transform.position;
 		}
@@ -70,7 +71,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		//Checks for release of character. Snaps to lane or returns to pool if no valid lane.
 		
 		if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE && 
-		   mySnapPoint != Vector3.zero)
+		   mySnapPoint != Vector3.zero && !GridManager.Instance.IsOccupied(Camera.main.ScreenToWorldPoint(Input.mousePosition) as GridCoordinate))
 		{
 			GetComponent<Character>().enabled = true;
 			theHighLight.transform.position = defaultHighlightPosition;

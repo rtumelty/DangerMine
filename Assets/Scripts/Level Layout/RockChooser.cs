@@ -12,7 +12,7 @@ public class RockChooser : MonoBehaviour {
 	[SerializeField] float goldRockProbability = .15f;
 
 	void OnEnable () {
-		float seed = Random.Range (0, 1);
+		float seed = Random.Range (0, 1f);
 
 		string poolId;
 
@@ -23,12 +23,11 @@ public class RockChooser : MonoBehaviour {
 		else
 			poolId = goldRockPoolId;
 		
-		Debug.Log (poolId);
-		Debug.Log (PrefabPool.GetPool (poolId));
+		Debug.Log (seed);
 
 		GameObject newRock = PrefabPool.GetPool (poolId).Spawn (transform.position);
 		foreach (Renderer rend in newRock.GetComponentsInChildren<Renderer>())
-			rend.sortingLayerID = renderer.sortingLayerID;
+			rend.sortingLayerName = "Lane_" + (-transform.position.y).ToString();
 
 		gameObject.SetActive (false);
 	}
