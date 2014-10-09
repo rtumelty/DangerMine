@@ -19,7 +19,15 @@ public class GridCoordinate {
 		x = Mathf.RoundToInt (coords.x);
 		y = Mathf.RoundToInt (coords.y);
 	}
-
+	
+	public static GridCoordinate operator +(GridCoordinate a, GridCoordinate b) {
+		return new GridCoordinate (a.x + b.x, a.y + b.y);
+	}
+	
+	public static GridCoordinate operator -(GridCoordinate a, GridCoordinate b) {
+		return new GridCoordinate (a.x - b.x, a.y - b.y);
+	}
+	
 	public static bool operator ==(GridCoordinate a, GridCoordinate b) {
 		
 		// If both are null, or both are same instance, return true.

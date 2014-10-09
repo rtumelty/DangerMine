@@ -36,12 +36,27 @@ public class GridManager : MonoBehaviour {
 			occupiedPositions[key] = position;
 		}
 	}
-
+	
 	public bool IsOccupied(Vector2 position) {
+		return IsOccupied (position as GridCoordinate);
+	}
+
+	public bool IsOccupied(GridCoordinate position) {
 		foreach (KeyValuePair<GameEntity, GridCoordinate> pair in occupiedPositions) {
-			if (pair.Value == position as GridCoordinate) return true;
+			if (pair.Value == position) return true;
 		}
 		return false;
+	}
+	
+	public GameEntity EntityAt(Vector2 position) {
+		return EntityAt (position as GridCoordinate);
+	}
+
+	public GameEntity EntityAt(GridCoordinate position) {
+		foreach (KeyValuePair<GameEntity, GridCoordinate> pair in occupiedPositions) {
+			if (pair.Value == position) return pair.Key;
+		}
+		return null;
 	}
 
 	public void RegisterEntity(GameEntity entity) {
