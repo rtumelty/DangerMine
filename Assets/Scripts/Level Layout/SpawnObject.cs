@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 using System.Collections;
 
 public class SpawnObject : MonoBehaviour 
@@ -38,13 +38,20 @@ public class SpawnObject : MonoBehaviour
 			if( ruleSets[i].myNextSpawnPoint <= spawnPoint0.transform.position.x )
 			{
 				int myRandomSpawnLane = Random.Range(-2, 3);
-				GameObject spawnedObject = ruleSets[i].prefabPool.Spawn( new Vector3(spawnPoint0.transform.position.x, myRandomSpawnLane, spawnPoint0.transform.position.z), spawnPoint0.transform.rotation ); 
-				ruleSets[i].myNextSpawnPoint = (int)spawnPoint0.transform.position.x + Random.Range( ruleSets[i].minSpawnDistance, ruleSets[i].maxSpawnDistance + 1 );
-				ruleSets[i].myLastSpawnPosition = (int)spawnedObject.transform.position.x;
+				if(!GridManager.Instance.IsOccupied(new Vector3(spawnPoint0.transform.position.x, myRandomSpawnLane, spawnPoint0.transform.position.z) as GridCoordinate))
+				{
+					GameObject spawnedObject = ruleSets[i].prefabPool.Spawn( new Vector3(spawnPoint0.transform.position.x, myRandomSpawnLane, spawnPoint0.transform.position.z), spawnPoint0.transform.rotation ); 
+					ruleSets[i].myNextSpawnPoint = (int)spawnPoint0.transform.position.x + Random.Range( ruleSets[i].minSpawnDistance, ruleSets[i].maxSpawnDistance + 1 );
+					ruleSets[i].myLastSpawnPosition = (int)spawnedObject.transform.position.x;
 
-				foreach (Renderer rend in (spawnedObject.GetComponentsInChildren<Renderer>()))
-	         	{
-					rend.sortingLayerName = "Lane_" + myRandomSpawnLane.ToString(); 
+					foreach (Renderer rend in (spawnedObject.GetComponentsInChildren<Renderer>()))
+		         	{
+						rend.sortingLayerName = "Lane_" + (-myRandomSpawnLane).ToString(); 
+					}
+				}
+				else
+				{
+					ruleSets[i].myNextSpawnPoint++;
 				}
 			}
 		}
