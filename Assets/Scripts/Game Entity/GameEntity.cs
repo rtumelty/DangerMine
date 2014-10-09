@@ -14,6 +14,7 @@ public class GameEntity : MonoBehaviour {
 	[SerializeField] protected Allegiance _allegiance;
 	[SerializeField] protected int health = 10;
 	protected float currentHealth;
+	protected GridCoordinate gridCoords;
 	
 	public Allegiance allegiance {
 		get {
@@ -27,6 +28,7 @@ public class GameEntity : MonoBehaviour {
 	}
 
 	protected virtual void OnEnable() {
+		gridCoords = transform.position as GridCoordinate;
 		GridManager.Instance.RegisterEntity(this);
 		
 		currentHealth = health;
