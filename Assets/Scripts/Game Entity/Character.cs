@@ -21,9 +21,8 @@ public class Character : GameEntity {
 		}
 	}
 
-	bool attacking;
-	GameObject attackTarget = null;
-	AttackHitbox hitbox = null;
+	bool blocked;
+	GameEntity attackTarget = null;
 
 	// Use this for initialization
 	protected override void Awake () {
@@ -33,10 +32,6 @@ public class Character : GameEntity {
 			moveDirection = 1;
 		else
 			moveDirection = -1;
-
-		hitbox = GetComponentInChildren<AttackHitbox> () as AttackHitbox;
-		if (hitbox != null)
-			hitbox.SetSize(new Vector2(attackRange, 1), moveDirection);
 
 		/*mySpineMultiSkeleton = transform.GetComponentInChildren <SpineMultiSkeleton>() as SpineMultiSkeleton;
 		if(mySpineMultiSkeleton == null)
@@ -52,23 +47,34 @@ public class Character : GameEntity {
 	}
 
 	void FixedUpdate () {
-		if (attacking) {		// Fix layer checking
+		if (blocked) {		
+			Vector3 coordsInV3 = gridCoords.ToVector3(transform.position.z);
+			if (transform.position.x != coordsInV3.x) {
+				Vector3 position = transform.position;
+				position += new Vector3((coordsInV3.x - transform.position.x) * moveSpeed * Time.fixedDeltaTime, 0, 0);
+				transform.position = position;
+			}
+			if (!GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0)))
+				Unblocked();
 		} else {
 			Vector3 position = transform.position;
 			position += new Vector3(moveSpeed * moveDirection * Time.fixedDeltaTime, 0, 0);
 			transform.position = position;
+			gridCoords = position as GridCoordinate;
+			if (GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0)))
+			    Blocked(GridManager.Instance.EntityAt(gridCoords + new GridCoordinate(moveDirection, 0)));
 		}
 	}
 	
-	public void InAttackRange(Object target) { 
-		if (!attacking) {
-			attacking = true;
-			attackTarget = target as GameObject;
+	public void Blocked(GameEntity target) { 
+		if (!blocked) {
+			blocked = true;
+			attackTarget = target;
 			StartCoroutine ("Attack");
 		}
 	}
-	public void LeftAttackRange(Object target) {
-		attacking = false; 
+	public void Unblocked() {
+		blocked = false; 
 		attackTarget = null;
 		StopCoroutine ("Attack");
 	}
@@ -76,7 +82,7 @@ public class Character : GameEntity {
 	protected virtual IEnumerator Attack() {
 
 		mySpineMultiSkeleton.SetAnimation ("miner_01_drilling_jump_front", 1);
-		while (attacking) {
+		while (blocked) {
 			attackTarget.SendMessage("Hit", this);
 			Debug.Log("Attacking " + attackTarget);
 			yield return new WaitForSeconds(attackSpeed);

@@ -18,7 +18,9 @@ public class Rock : GameEntity {
 	}
 
 	protected override void Hit(Character character) {
+		Debug.Log ("Being hit");
 		if (character is Miner) {
+			Debug.Log("Being hit by Miner!");
 			currentHealth = Mathf.Clamp (currentHealth - character.AttackStrength, 0, 9999);
 
 			if (dropsGold) {
