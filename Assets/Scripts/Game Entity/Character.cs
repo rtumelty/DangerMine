@@ -3,6 +3,7 @@ using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CircleCollider2D))]
+
 public class Character : GameEntity {
 
 	private int moveDirection = 1;
@@ -11,6 +12,8 @@ public class Character : GameEntity {
 	[SerializeField] protected int attackStrength = 10;
 	[SerializeField] protected float attackSpeed = 0.5f;
 	[SerializeField] protected float attackRange = 1f;
+	
+	public SpineMultiSkeleton mySpineMultiSkeleton;
 
 	public int AttackStrength {
 		get {
@@ -34,10 +37,18 @@ public class Character : GameEntity {
 		hitbox = GetComponentInChildren<AttackHitbox> () as AttackHitbox;
 		if (hitbox != null)
 			hitbox.SetSize(new Vector2(attackRange, 1), moveDirection);
+
+		/*mySpineMultiSkeleton = transform.GetComponentInChildren <SpineMultiSkeleton>() as SpineMultiSkeleton;
+		if(mySpineMultiSkeleton == null)
+		{
+			Debug.LogError("Missing <SpineMultiSkeleton> from characters child 'Skeleton'");
+		}*/
+
 	}
 
 	protected override void OnEnable() {
 		base.OnEnable();
+		mySpineMultiSkeleton.SetAnimation ("miner_01_walk_side", 1);
 	}
 
 	void FixedUpdate () {
@@ -63,10 +74,13 @@ public class Character : GameEntity {
 	}
 
 	protected virtual IEnumerator Attack() {
+
+		mySpineMultiSkeleton.SetAnimation ("miner_01_drilling_jump_front", 1);
 		while (attacking) {
 			attackTarget.SendMessage("Hit", this);
 			Debug.Log("Attacking " + attackTarget);
 			yield return new WaitForSeconds(attackSpeed);
 		}
+		mySpineMultiSkeleton.SetAnimation ("miner_01_walk_side", 1);
 	}
 }

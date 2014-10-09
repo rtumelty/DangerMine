@@ -1,0 +1,13 @@
+
+TechnoBeetle_Side_Mandible.png
+size: 256,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+side/beetle_mandible
+  rotate: false
+  xy: 2, 2
+  size: 147, 44
+  orig: 147, 44
+  offset: 0, 0
+  index: -1

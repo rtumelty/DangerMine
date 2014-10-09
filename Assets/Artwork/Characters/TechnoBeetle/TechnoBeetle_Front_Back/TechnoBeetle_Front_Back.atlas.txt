@@ -1,0 +1,83 @@
+
+TechnoBeetle_Front&Back.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+front/arm_3
+  rotate: true
+  xy: 269, 18
+  size: 18, 38
+  orig: 18, 38
+  offset: 0, 0
+  index: -1
+front/beetle_back_body_01
+  rotate: false
+  xy: 269, 38
+  size: 128, 108
+  orig: 128, 108
+  offset: 0, 0
+  index: -1
+front/beetle_back_face_01
+  rotate: false
+  xy: 692, 187
+  size: 102, 66
+  orig: 102, 66
+  offset: 0, 0
+  index: -1
+front/beetle_eye_07
+  rotate: false
+  xy: 796, 194
+  size: 105, 59
+  orig: 105, 59
+  offset: 0, 0
+  index: -1
+front/beetle_eye_08
+  rotate: true
+  xy: 399, 39
+  size: 107, 59
+  orig: 107, 59
+  offset: 0, 0
+  index: -1
+front/beetle_front_body_01
+  rotate: false
+  xy: 464, 156
+  size: 119, 97
+  orig: 119, 97
+  offset: 0, 0
+  index: -1
+front/beetle_front_head_01
+  rotate: false
+  xy: 585, 153
+  size: 105, 100
+  orig: 105, 100
+  offset: 0, 0
+  index: -1
+front/beetle_front_mouth_01
+  rotate: true
+  xy: 692, 118
+  size: 67, 70
+  orig: 67, 70
+  offset: 0, 0
+  index: -1
+front/beetle_mandible
+  rotate: true
+  xy: 903, 202
+  size: 51, 111
+  orig: 51, 111
+  offset: 0, 0
+  index: -1
+front/beetle_shadow
+  rotate: false
+  xy: 269, 148
+  size: 193, 105
+  orig: 193, 105
+  offset: 0, 0
+  index: -1
+front/electrocution
+  rotate: false
+  xy: 2, 2
+  size: 265, 251
+  orig: 265, 251
+  offset: 0, 0
+  index: -1

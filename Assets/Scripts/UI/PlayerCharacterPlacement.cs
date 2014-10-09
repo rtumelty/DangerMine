@@ -48,7 +48,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	{
 		//Snaps character to cursor
 		
-		Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 10f);
+		Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 8f);
 		transform.position = new Vector3(Mathf.RoundToInt(newPosition.x), Mathf.RoundToInt(newPosition.y), Mathf.RoundToInt(newPosition.z));
 		
 		//Clamps highlight over last valid lane position

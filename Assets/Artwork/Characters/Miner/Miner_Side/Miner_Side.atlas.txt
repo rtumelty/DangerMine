@@ -1,0 +1,167 @@
+
+Miner_Side.png
+size: 1024,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+hat
+  rotate: false
+  xy: 382, 24
+  size: 58, 47
+  orig: 58, 47
+  offset: 0, 0
+  index: -1
+miner_arm_01
+  rotate: true
+  xy: 146, 2
+  size: 84, 33
+  orig: 84, 33
+  offset: 0, 0
+  index: -1
+miner_arm_02
+  rotate: false
+  xy: 282, 71
+  size: 98, 52
+  orig: 98, 52
+  offset: 0, 0
+  index: -1
+miner_body_01
+  rotate: true
+  xy: 92, 5
+  size: 81, 52
+  orig: 81, 52
+  offset: 0, 0
+  index: -1
+miner_body_02
+  rotate: false
+  xy: 2, 2
+  size: 88, 84
+  orig: 88, 84
+  offset: 0, 0
+  index: -1
+miner_head_01
+  rotate: false
+  xy: 669, 67
+  size: 77, 56
+  orig: 77, 56
+  offset: 0, 0
+  index: -1
+miner_head_02
+  rotate: false
+  xy: 827, 67
+  size: 74, 56
+  orig: 74, 56
+  offset: 0, 0
+  index: -1
+miner_head_03
+  rotate: false
+  xy: 748, 67
+  size: 77, 56
+  orig: 77, 56
+  offset: 0, 0
+  index: -1
+miner_head_04
+  rotate: false
+  xy: 382, 73
+  size: 94, 50
+  orig: 94, 50
+  offset: 0, 0
+  index: -1
+miner_head_05
+  rotate: false
+  xy: 478, 73
+  size: 94, 50
+  orig: 94, 50
+  offset: 0, 0
+  index: -1
+miner_head_06
+  rotate: false
+  xy: 574, 74
+  size: 93, 49
+  orig: 93, 49
+  offset: 0, 0
+  index: -1
+miner_leg_01
+  rotate: false
+  xy: 181, 50
+  size: 76, 37
+  orig: 76, 37
+  offset: 0, 0
+  index: -1
+miner_leg_02
+  rotate: false
+  xy: 903, 75
+  size: 78, 48
+  orig: 78, 48
+  offset: 0, 0
+  index: -1
+miner_leg_straight_01
+  rotate: false
+  xy: 181, 3
+  size: 67, 45
+  orig: 67, 45
+  offset: 0, 0
+  index: -1
+miner_leg_straight_02
+  rotate: false
+  xy: 903, 38
+  size: 68, 35
+  orig: 68, 35
+  offset: 0, 0
+  index: -1
+miner_shadow_01
+  rotate: false
+  xy: 2, 88
+  size: 164, 35
+  orig: 164, 35
+  offset: 0, 0
+  index: -1
+shadow_side
+  rotate: false
+  xy: 168, 89
+  size: 112, 34
+  orig: 112, 34
+  offset: 0, 0
+  index: -1
+side_face_01
+  rotate: false
+  xy: 593, 32
+  size: 45, 40
+  orig: 45, 40
+  offset: 0, 0
+  index: -1
+side_face_02
+  rotate: true
+  xy: 983, 78
+  size: 45, 39
+  orig: 45, 39
+  offset: 0, 0
+  index: -1
+side_face_03
+  rotate: true
+  xy: 983, 31
+  size: 45, 39
+  orig: 45, 39
+  offset: 0, 0
+  index: -1
+side_face_04
+  rotate: true
+  xy: 442, 24
+  size: 47, 51
+  orig: 47, 51
+  offset: 0, 0
+  index: -1
+side_face_05
+  rotate: false
+  xy: 548, 21
+  size: 43, 50
+  orig: 43, 50
+  offset: 0, 0
+  index: -1
+side_face_06
+  rotate: true
+  xy: 495, 25
+  size: 46, 51
+  orig: 46, 51
+  offset: 0, 0
+  index: -1

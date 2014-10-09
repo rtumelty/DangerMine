@@ -6,8 +6,8 @@ using System.Collections.Generic;
 [RequireComponent(typeof(CircleCollider2D))]
 public class Rock : GameEntity {
 	[SerializeField] bool dropsGold = false;
-	[SerializeField] int minGoldDropped = 10;
-	[SerializeField] int maxGoldDropped = 15;
+	//[SerializeField] int minGoldDropped = 10;
+	//[SerializeField] int maxGoldDropped = 15;
 
 	[SerializeField] string goldPrefabPoolId = "gold";
 

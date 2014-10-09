@@ -1,0 +1,97 @@
+
+TechnoBeetle_Side.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+side/arm_3
+  rotate: false
+  xy: 269, 2
+  size: 17, 28
+  orig: 17, 28
+  offset: 0, 0
+  index: -1
+side/beetle_mandible
+  rotate: false
+  xy: 566, 209
+  size: 147, 44
+  orig: 147, 44
+  offset: 0, 0
+  index: -1
+side/beetle_shadow
+  rotate: false
+  xy: 269, 148
+  size: 193, 105
+  orig: 193, 105
+  offset: 0, 0
+  index: -1
+side/beetle_side_body_01
+  rotate: false
+  xy: 269, 32
+  size: 95, 114
+  orig: 95, 114
+  offset: 0, 0
+  index: -1
+side/beetle_side_eye_01
+  rotate: false
+  xy: 875, 204
+  size: 43, 49
+  orig: 43, 49
+  offset: 0, 0
+  index: -1
+side/beetle_side_eye_02
+  rotate: true
+  xy: 566, 155
+  size: 52, 62
+  orig: 52, 62
+  offset: 0, 0
+  index: -1
+side/beetle_side_eye_03
+  rotate: true
+  xy: 630, 155
+  size: 52, 62
+  orig: 52, 62
+  offset: 0, 0
+  index: -1
+side/beetle_side_eye_04
+  rotate: false
+  xy: 826, 203
+  size: 47, 50
+  orig: 47, 50
+  offset: 0, 0
+  index: -1
+side/beetle_side_eye_05
+  rotate: false
+  xy: 772, 203
+  size: 52, 50
+  orig: 52, 50
+  offset: 0, 0
+  index: -1
+side/beetle_side_eye_06
+  rotate: false
+  xy: 715, 203
+  size: 55, 50
+  orig: 55, 50
+  offset: 0, 0
+  index: -1
+side/beetle_side_head_01
+  rotate: false
+  xy: 464, 151
+  size: 100, 102
+  orig: 100, 102
+  offset: 0, 0
+  index: -1
+side/beetle_side_mandible
+  rotate: true
+  xy: 366, 38
+  size: 108, 66
+  orig: 108, 66
+  offset: 0, 0
+  index: -1
+side/electrocution
+  rotate: false
+  xy: 2, 2
+  size: 265, 251
+  orig: 265, 251
+  offset: 0, 0
+  index: -1
