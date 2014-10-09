@@ -28,11 +28,11 @@ public class AttackHitbox : MonoBehaviour {
 		hitbox.center = new Vector2 (size.x / 2 * direction, 0);
 	}
 
-	protected void OnTriggerEnter2D(Collider2D collider) {
+	protected virtual void OnTriggerEnter2D(Collider2D collider) {
 		if (collider.gameObject.layer == layerToTarget)
 			transform.SendMessageUpwards ("InAttackRange", collider.gameObject);
 	}
-	protected void OnTriggerExit2D(Collider2D collider) {
+	protected virtual void OnTriggerExit2D(Collider2D collider) {
 		if (collider.gameObject.layer == layerToTarget)
 			transform.SendMessageUpwards ("LeftAttackRange", collider.gameObject);
 	}

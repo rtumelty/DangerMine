@@ -7,6 +7,8 @@ public enum Allegiance {
 	Neutral
 }
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CircleCollider2D))]
 public class GameEntity : MonoBehaviour {
 	
 	[SerializeField] protected Allegiance _allegiance;
@@ -18,22 +20,30 @@ public class GameEntity : MonoBehaviour {
 			return _allegiance;
 		}
 	}
-	
-	protected void OnEnable() {
+
+	protected virtual void Awake() {
+		rigidbody2D.gravityScale = 0;
+		rigidbody2D.isKinematic = true;
+	}
+
+	protected virtual void OnEnable() {
 		GridManager.Instance.RegisterEntity(this);
+		
+		currentHealth = health;
 	}
 	
-	protected void OnDisable() {
+	protected virtual void OnDisable() {
 		GridManager.Instance.UnregisterEntity(this);
 	}
 
-	protected void Hit(int attackStr) {
-		currentHealth = Mathf.Clamp (currentHealth - attackStr, 0, 9999);
+	protected virtual void Hit(Character character) {
+		Debug.Log ("Attacked, taking " + character.AttackStrength + " damage");
+		currentHealth = Mathf.Clamp (currentHealth - character.AttackStrength, 0, 9999);
 		if (currentHealth == 0)
 			Die ();
 	}
 	
-	protected void Die() {
+	protected virtual void Die() {
 		gameObject.SetActive (false);
 	}
 }

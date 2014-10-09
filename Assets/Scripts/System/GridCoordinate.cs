@@ -37,9 +37,25 @@ public class GridCoordinate {
 		// Return true if the fields match:
 		return a.x == b.x && a.y == b.y;
 	}
-
+	
 	public static bool operator !=(GridCoordinate a, GridCoordinate b) {
 		return !(a == b);
+	}
+
+	public override bool Equals(System.Object obj) {
+		if (obj == null)
+			return false;
+
+		GridCoordinate coord = obj as GridCoordinate;
+		if (coord == null)
+			return false;
+
+		return this == coord;
+	}
+	
+	public override int GetHashCode()
+	{
+		return x ^ y;
 	}
 	
 	public static implicit operator GridCoordinate(Vector2 vector)  
@@ -51,7 +67,7 @@ public class GridCoordinate {
 	public static implicit operator GridCoordinate(Vector3 vector)  
 	{return new GridCoordinate(vector);}
 
-	public Vector3 ToVector3(float z) {
+	public Vector3 ToVector3(float z = 0) {
 		return new Vector3(x, y, z);
 	}
 }

@@ -21,7 +21,7 @@ public class CheckInputType : MonoBehaviour
 			if (instance == null) 
 			{
 				GameObject go = new GameObject("_GridManager");
-				instance = new CheckInputType();
+				instance = go.AddComponent<CheckInputType>();
 			}
 			return instance;
 		}
@@ -65,7 +65,7 @@ public class CheckInputType : MonoBehaviour
 
 #if UNITY_STANDALONE || UNITY_EDITOR
 
-		if(false)
+		else if(false)
 #else
 	
 		else if(Input.touchCount == 2)

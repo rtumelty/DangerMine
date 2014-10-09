@@ -26,12 +26,13 @@ public class PooledPrefab : MonoBehaviour {
 		StartCoroutine (InitialDelay ());
 
 		if (recycleAfterTime)
-			StartCoroutine(Recycle(recycleDelay));
+			StartCoroutine(Recycle(recycleTime));
 	}
 	
 	void OnBecameInvisible() {
-		if (gameObject.activeSelf && recycleWhenOffScreen)
-			StartCoroutine(Recycle(recycleDelay));
+		if (recycleWhenOffScreen) {
+			StartCoroutine (Recycle (recycleDelay));
+		}
 	}
 	
 	void OnCollisionEnter(Collision c) {

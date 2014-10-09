@@ -12,28 +12,32 @@ public class Character : GameEntity {
 	[SerializeField] protected float attackSpeed = 0.5f;
 	[SerializeField] protected float attackRange = 1f;
 
+	public int AttackStrength {
+		get {
+			return attackStrength;
+		}
+	}
+
 	bool attacking;
 	GameObject attackTarget = null;
 	AttackHitbox hitbox = null;
 
 	// Use this for initialization
-	void Start () {
+	protected override void Awake () {
+		base.Awake ();
+
 		if (_allegiance == Allegiance.Ally)
 			moveDirection = 1;
 		else
 			moveDirection = -1;
-
-		rigidbody2D.isKinematic = true;
 
 		hitbox = GetComponentInChildren<AttackHitbox> () as AttackHitbox;
 		if (hitbox != null)
 			hitbox.SetSize(new Vector2(attackRange, 1), moveDirection);
 	}
 
-	void OnEnable() {
+	protected override void OnEnable() {
 		base.OnEnable();
-
-		currentHealth = health;
 	}
 
 	void FixedUpdate () {
@@ -58,9 +62,10 @@ public class Character : GameEntity {
 		StopCoroutine ("Attack");
 	}
 
-	protected IEnumerator Attack() {
+	protected virtual IEnumerator Attack() {
 		while (attacking) {
-			attackTarget.SendMessage("Hit", attackStrength);
+			attackTarget.SendMessage("Hit", this);
+			Debug.Log("Attacking " + attackTarget);
 			yield return new WaitForSeconds(attackSpeed);
 		}
 	}

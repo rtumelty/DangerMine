@@ -36,10 +36,6 @@ public class PrefabPool : MonoBehaviour {
 			newInstance.transform.parent = transform;
 
 			newInstance.SetActive(false);
-			foreach(KeyValuePair<string, PrefabPool> entry in pools)
-			{
-//				print (entry.Value);
-			}
 		}
 	}
 
