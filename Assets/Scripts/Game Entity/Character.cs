@@ -27,6 +27,7 @@ public class Character : GameEntity {
 	bool blocked;
 	GameEntity attackTarget = null;
 	float currentMoveSpeed;
+	CameraController cameraController;
 
 	public float CurrentMoveSpeed {
 		get {
@@ -43,11 +44,7 @@ public class Character : GameEntity {
 		else
 			moveDirection = -1;
 
-		/*mySpineMultiSkeleton = transform.GetComponentInChildren <SpineMultiSkeleton>() as SpineMultiSkeleton;
-		if(mySpineMultiSkeleton == null)
-		{
-			Debug.LogError("Missing <SpineMultiSkeleton> from characters child 'Skeleton'");
-		}*/
+		cameraController = Camera.main.gameObject.GetComponent<CameraController> ();
 
 	}
 
@@ -99,9 +96,10 @@ public class Character : GameEntity {
 	}
 
 	protected virtual IEnumerator Attack() {
-
 		mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
+
 		while (blocked) {
+			if (mySpineMultiSkeleton.skeleton.state.GetCurrent(0) == null) mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
 			yield return new WaitForSeconds(Time.deltaTime);
 			attackTarget.SendMessage("Hit", this,SendMessageOptions.DontRequireReceiver);
 			Debug.Log("Attacking " + attackTarget);
@@ -117,13 +115,17 @@ public class Character : GameEntity {
 	}
 	
 	protected override void Die() {
-		Debug.Log ("Dying! " + gameObject.name);
+		StopAllCoroutines ();
+		Debug.Log (gameObject.name + "Dying! play " + deathAnimation);
 		mySpineMultiSkeleton.SetAnimation (deathAnimation, 0, false);
 		StartCoroutine(DisableAfterAnimation(0));
 	}
 
 	protected IEnumerator DisableAfterAnimation(int layer) {
 		while (mySpineMultiSkeleton.skeleton.state.GetCurrent (layer) != null) {
+			if (this is Beetle) {
+				Debug.Log("waiting for animation to end");
+			}
 			yield return new WaitForSeconds (Time.deltaTime);
 		}
 		gameObject.SetActive (false);

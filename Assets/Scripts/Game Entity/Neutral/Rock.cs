@@ -37,5 +37,6 @@ public class Rock : GameEntity {
 		}
 
 		destroyedBy = null;
+		base.OnDisable ();
 	}
 }
