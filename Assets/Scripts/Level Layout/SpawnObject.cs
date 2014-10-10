@@ -16,14 +16,14 @@ public class SpawnObject : MonoBehaviour
 	}
 	
 	[SerializeField] rule[] ruleSets;
-	[SerializeField] int cameraDistanceCovered = 0;
 	[SerializeField] int cameraStartingXPosition = 0;
 	private GameObject spawnPoint0;
 	private int currentObjectsOnScreen = 0;
+	public static int cameraDistanceCovered = 0;
 	
 	void Awake()
 	{
-		cameraStartingXPosition = ( int )Camera.main.transform.position.x;
+		cameraStartingXPosition = Mathf.RoundToInt(Camera.main.transform.position.x);
 		spawnPoint0 = GameObject.FindWithTag ("SP0");
 	}
 	
