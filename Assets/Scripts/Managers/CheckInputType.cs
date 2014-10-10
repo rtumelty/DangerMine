@@ -41,7 +41,6 @@ public class CheckInputType : MonoBehaviour
 
 	void Update()
 	{
-		print (TOUCH_TYPE);
 #if UNITY_STANDALONE || UNITY_EDITOR
 
 		if(Input.GetMouseButtonUp(0))
@@ -55,10 +54,10 @@ public class CheckInputType : MonoBehaviour
 
 #if UNITY_STANDALONE || UNITY_EDITOR
 
-		if(Input.GetMouseButtonDown(0))
+		else if(Input.GetMouseButtonDown(0))
 #else
 	
-		if(Input.touches[0].phase == TouchPhase.Began)
+		else if(Input.touches[0].phase == TouchPhase.Began)
 #endif
 		{
 			TOUCH_TYPE = InputType.TOUCHBEGAN_TYPE;
@@ -77,19 +76,20 @@ public class CheckInputType : MonoBehaviour
 
 #if UNITY_STANDALONE || UNITY_EDITOR
 		
-		else if(!Input.GetMouseButtonUp(0) && (Input.GetMouseButton(0)))
-		{	
-#else
+		else if(!Input.GetMouseButtonUp(0) && Input.GetMouseButton(0))
+		{
 		
-		else if(Input.touches[0] > Input)
+#elif UNITY_ANDROID
+		
+		else if(Input.touches[0].phase == TouchPhase.Moved || Input.touches[0].phase == TouchPhase.Stationary)
 		{
 #endif
-			
-			TOUCH_TYPE = InputType.DRAG_TYPE;
-		}	
+		TOUCH_TYPE = InputType.DRAG_TYPE;
+		}
+
 		else
 		{
-			//TOUCH_TYPE = InputType.NO_TYPE;
+			TOUCH_TYPE = InputType.NO_TYPE;
 		}
 	}
 }

@@ -14,9 +14,9 @@ public class Character : GameEntity {
 	[SerializeField] protected float attackRange = 1f;
 	
 	public SpineMultiSkeleton mySpineMultiSkeleton;
-	[SerializeField] string attackAnimation;
-	[SerializeField] string walkAnimation;
-	[SerializeField] string deathAnimation;
+	[SerializeField] protected string attackAnimation;
+	[SerializeField] protected string walkAnimation;
+	[SerializeField] protected string deathAnimation;
 
 	public int AttackStrength {
 		get {
