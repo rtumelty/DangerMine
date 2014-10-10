@@ -22,8 +22,6 @@ public class RockChooser : MonoBehaviour {
 			poolId = hardRockPoolId;
 		else
 			poolId = goldRockPoolId;
-		
-		Debug.Log (seed);
 
 		GameObject newRock = PrefabPool.GetPool (poolId).Spawn (transform.position);
 		foreach (Renderer rend in newRock.GetComponentsInChildren<Renderer>())

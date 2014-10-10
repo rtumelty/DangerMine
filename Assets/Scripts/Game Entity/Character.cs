@@ -8,12 +8,15 @@ public class Character : GameEntity {
 
 	private int moveDirection = 1;
 
-	[SerializeField] protected float moveSpeed = 1.5f;
+	[SerializeField] protected float defaultMoveSpeed = 1.5f;
 	[SerializeField] protected int attackStrength = 10;
 	[SerializeField] protected float attackSpeed = 0.5f;
 	[SerializeField] protected float attackRange = 1f;
 	
 	public SpineMultiSkeleton mySpineMultiSkeleton;
+	[SerializeField] string attackAnimation;
+	[SerializeField] string walkAnimation;
+	[SerializeField] string deathAnimation;
 
 	public int AttackStrength {
 		get {
@@ -23,6 +26,13 @@ public class Character : GameEntity {
 
 	bool blocked;
 	GameEntity attackTarget = null;
+	float currentMoveSpeed;
+
+	public float CurrentMoveSpeed {
+		get {
+			return currentMoveSpeed;
+		}
+	}
 
 	// Use this for initialization
 	protected override void Awake () {
@@ -43,22 +53,23 @@ public class Character : GameEntity {
 
 	protected override void OnEnable() {
 		base.OnEnable();
-		mySpineMultiSkeleton.SetAnimation ("miner_01_walk_side", 1);
+		currentMoveSpeed = defaultMoveSpeed;
+		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
 	}
 
-	void FixedUpdate () {
+	void Update () {
 		if (blocked) {		
 			Vector3 coordsInV3 = gridCoords.ToVector3(transform.position.z);
 			if (transform.position.x != coordsInV3.x) {
 				Vector3 position = transform.position;
-				position += new Vector3((coordsInV3.x - transform.position.x) * moveSpeed * Time.fixedDeltaTime, 0, 0);
+				position += new Vector3((coordsInV3.x - transform.position.x) * currentMoveSpeed * Time.deltaTime, 0, 0);
 				transform.position = position;
 			}
 			if (!GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0)))
 				Unblocked();
 		} else {
 			Vector3 position = transform.position;
-			position += new Vector3(moveSpeed * moveDirection * Time.fixedDeltaTime, 0, 0);
+			position += new Vector3(defaultMoveSpeed * moveDirection * Time.deltaTime, 0, 0);
 			transform.position = position;
 			gridCoords = position as GridCoordinate;
 			if (GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0)))
@@ -69,24 +80,52 @@ public class Character : GameEntity {
 	public void Blocked(GameEntity target) { 
 		if (!blocked) {
 			blocked = true;
-			attackTarget = target;
-			StartCoroutine ("Attack");
+
+			if (target.allegiance != _allegiance) {
+				attackTarget = target;
+				StartCoroutine ("Attack");
+			} else if (target is Character) {
+				Character character = target as Character;
+				currentMoveSpeed = character.CurrentMoveSpeed;
+			}
 		}
 	}
 	public void Unblocked() {
 		blocked = false; 
 		attackTarget = null;
-		mySpineMultiSkeleton.SetAnimation ("miner_01_walk_side", 1);
+		currentMoveSpeed = defaultMoveSpeed;
+		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
 		StopCoroutine ("Attack");
 	}
 
 	protected virtual IEnumerator Attack() {
 
-		mySpineMultiSkeleton.SetAnimation ("miner_01_drilling_jump_front", 1);
+		mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
 		while (blocked) {
-			yield return new WaitForSeconds(attackSpeed);
-			attackTarget.SendMessage("Hit", this);
+			yield return new WaitForSeconds(Time.deltaTime);
+			attackTarget.SendMessage("Hit", this,SendMessageOptions.DontRequireReceiver);
 			Debug.Log("Attacking " + attackTarget);
 		}
+	}
+
+	protected virtual void Hit(Character character) {
+		if (character.allegiance != allegiance) {
+			currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength * Time.deltaTime), 0, 9999);
+			if (currentHealth == 0)
+				Die ();
+		}
+	}
+	
+	protected override void Die() {
+		Debug.Log ("Dying! " + gameObject.name);
+		mySpineMultiSkeleton.SetAnimation (deathAnimation, 0, false);
+		StartCoroutine(DisableAfterAnimation(0));
+	}
+
+	protected IEnumerator DisableAfterAnimation(int layer) {
+		while (mySpineMultiSkeleton.skeleton.state.GetCurrent (layer) != null) {
+			yield return new WaitForSeconds (Time.deltaTime);
+		}
+		gameObject.SetActive (false);
 	}
 }

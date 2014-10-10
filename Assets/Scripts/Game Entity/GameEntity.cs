@@ -13,7 +13,7 @@ public class GameEntity : MonoBehaviour {
 	
 	[SerializeField] protected Allegiance _allegiance;
 	[SerializeField] protected int health = 10;
-	protected float currentHealth;
+	[SerializeField] protected float currentHealth;
 	protected GridCoordinate gridCoords;
 	
 	public Allegiance allegiance {
@@ -39,8 +39,8 @@ public class GameEntity : MonoBehaviour {
 	}
 
 	protected virtual void Hit(Character character) {
-		Debug.Log ("Attacked, taking " + character.AttackStrength + " damage");
-		currentHealth = Mathf.Clamp (currentHealth - character.AttackStrength, 0, 9999);
+		Debug.Log ("Attacked, taking " + character.AttackStrength + " damage per second");
+		currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength * Time.deltaTime), 0, 9999);
 		if (currentHealth == 0)
 			Die ();
 	}
