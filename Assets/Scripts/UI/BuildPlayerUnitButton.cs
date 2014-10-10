@@ -7,19 +7,18 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 	[SerializeField] int myGoldCost;
 	[SerializeField] string myCharacterType;
 	[SerializeField] float mySpawnCoolDown;
-	[SerializeField] float updateRate;
 
 	private float count = 0;
 	public bool onCoolDown = false;
 	public static bool click = false;
 	public static bool stillOverButton = true;
 	private TextMesh myTextmesh;
-	private string ready = "Ready!";
-	private string building = "Building!";
+	private string ready = "Ready";
+	private string building = "Wait!";
 
 	void Start()
 	{
-		myTextmesh = GetComponent<TextMesh> ();
+		myTextmesh = GetComponentInChildren<TextMesh> ();
 		myTextmesh.text = ready;
 	}
 
@@ -28,13 +27,15 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 	{
 		//Spawns character at cursor position
 
-		if(!onCoolDown &&
+		if(onCoolDown == false &&
 		  (PlayerSpawnManager.PLAYERGOLD - myGoldCost) >= 0)
 		{
 			PlayerSpawnManager.PLAYERGOLD -= myGoldCost;
 			stillOverButton = true;
 			GameObject mySpawnedCharacter = playerChar.Spawn (Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 1f));
 			mySpawnedCharacter.GetComponent <Character>().enabled = false;
+			myTextmesh.text = building;
+			onCoolDown = true;
 			StartCoroutine("CoolDownCount");
 		}
 	}
@@ -54,9 +55,9 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 
 	IEnumerator CoolDownCount()
 	{
-		onCoolDown = true;
-		myTextmesh.text = building;
+
 		yield return new WaitForSeconds (mySpawnCoolDown);
 		onCoolDown = false;
+		myTextmesh.text = ready;
 	}
 }
