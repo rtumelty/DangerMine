@@ -28,9 +28,9 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 		//Spawns character at cursor position
 
 		if(onCoolDown == false &&
-		  (PlayerSpawnManager.PLAYERGOLD - myGoldCost) >= 0)
+		  (GlobalManagement.PLAYERGOLD - myGoldCost) >= 0)
 		{
-			PlayerSpawnManager.PLAYERGOLD -= myGoldCost;
+			GlobalManagement.PLAYERGOLD -= myGoldCost;
 			stillOverButton = true;
 			GameObject mySpawnedCharacter = playerChar.Spawn (Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 1f));
 			mySpawnedCharacter.GetComponent <Character>().enabled = false;
