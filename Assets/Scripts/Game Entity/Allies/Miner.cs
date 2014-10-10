@@ -8,7 +8,7 @@ public class Miner : Character {
 	[SerializeField] protected string deathAnimationSuffix;
 
 	protected override void OnEnable() {
-		int minerNumber = Random.Range (0, 7);
+		int minerNumber = Random.Range (1, 7);
 		
 		walkAnimation = animationNamePrefix + minerNumber.ToString () + walkAnimationSuffix;
 		attackAnimation = animationNamePrefix + minerNumber.ToString () + attackAnimationSuffix;

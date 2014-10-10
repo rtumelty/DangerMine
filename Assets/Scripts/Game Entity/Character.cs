@@ -26,7 +26,7 @@ public class Character : GameEntity {
 
 	bool blocked;
 	GameEntity attackTarget = null;
-	float currentMoveSpeed;
+	[SerializeField] float currentMoveSpeed;
 	CameraController cameraController;
 
 	public float CurrentMoveSpeed {
@@ -65,10 +65,21 @@ public class Character : GameEntity {
 			if (!GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0)))
 				Unblocked();
 		} else {
+			
 			Vector3 position = transform.position;
-			position += new Vector3(defaultMoveSpeed * moveDirection * Time.deltaTime, 0, 0);
+			position += new Vector3(currentMoveSpeed * moveDirection * Time.deltaTime, 0, 0);
 			transform.position = position;
 			gridCoords = position as GridCoordinate;
+
+			if (_allegiance == Allegiance.Ally) {
+				if (gridCoords.x >= (cameraController.GridCoords.x + 3)) {
+					currentMoveSpeed = cameraController.MoveSpeed;
+				}
+				else {
+					currentMoveSpeed = defaultMoveSpeed;
+				}
+			}
+			
 			if (GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0)))
 			    Blocked(GridManager.Instance.EntityAt(gridCoords + new GridCoordinate(moveDirection, 0)));
 		}
@@ -102,7 +113,6 @@ public class Character : GameEntity {
 			if (mySpineMultiSkeleton.skeleton.state.GetCurrent(0) == null) mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
 			yield return new WaitForSeconds(Time.deltaTime);
 			attackTarget.SendMessage("Hit", this,SendMessageOptions.DontRequireReceiver);
-			Debug.Log("Attacking " + attackTarget);
 		}
 	}
 
@@ -116,16 +126,12 @@ public class Character : GameEntity {
 	
 	protected override void Die() {
 		StopAllCoroutines ();
-		Debug.Log (gameObject.name + "Dying! play " + deathAnimation);
 		mySpineMultiSkeleton.SetAnimation (deathAnimation, 0, false);
 		StartCoroutine(DisableAfterAnimation(0));
 	}
 
 	protected IEnumerator DisableAfterAnimation(int layer) {
 		while (mySpineMultiSkeleton.skeleton.state.GetCurrent (layer) != null) {
-			if (this is Beetle) {
-				Debug.Log("waiting for animation to end");
-			}
 			yield return new WaitForSeconds (Time.deltaTime);
 		}
 		gameObject.SetActive (false);

@@ -4,6 +4,18 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 	[SerializeField] float moveSpeed = 1f;
 
+	public float MoveSpeed {
+		get {
+			return moveSpeed;
+		}
+	}
+
+	public GridCoordinate GridCoords {
+		get {
+			return transform.position as GridCoordinate;
+		}
+	}
+
 	
 	// Update is called once per frame
 	void LateUpdate () {

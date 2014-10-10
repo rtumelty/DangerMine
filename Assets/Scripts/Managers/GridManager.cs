@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour {
-
+	static bool destroyed = false;
 	static GridManager instance;
 	public static GridManager Instance {
 		get {
+			if (destroyed) return null;
 			if (instance == null) {
 				GameObject go = new GameObject("_GridManager");
 				instance = go.AddComponent<GridManager>();
@@ -24,6 +25,9 @@ public class GridManager : MonoBehaviour {
 		DontDestroyOnLoad(this);
 		occupiedPositions = new Dictionary<GameEntity, GridCoordinate>();
 	}
+	
+	void OnEnable() { destroyed = false; }
+	void OnDisable() { destroyed = true; }
 
 	void OnLevelWasLoaded(int level) {
 		occupiedPositions.Clear();

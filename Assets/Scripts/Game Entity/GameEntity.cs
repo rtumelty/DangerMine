@@ -35,7 +35,8 @@ public class GameEntity : MonoBehaviour {
 	}
 	
 	protected virtual void OnDisable() {
-		GridManager.Instance.UnregisterEntity(this);
+		if (GridManager.Instance != null)
+			GridManager.Instance.UnregisterEntity(this);
 	}
 
 	protected virtual void Hit(Character character) {
