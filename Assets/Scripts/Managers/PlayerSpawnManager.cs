@@ -7,6 +7,7 @@ public static class PlayerSpawnManager
 
 	public static void AddGold(int gold)
 	{
+		Debug.Log ("Gold " + gold);
 		PLAYERGOLD += gold;
 		Debug.Log ("Gold was added from pickup");
 	}
