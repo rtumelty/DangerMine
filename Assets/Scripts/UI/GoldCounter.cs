@@ -15,7 +15,6 @@ public class GoldCounter : MonoBehaviour {
 
 	void Update ()
 	{
-		print ("Gold");
 		//Fix updates per second.
 		count += Time.deltaTime;
 		if(count > updateRate)
@@ -23,9 +22,8 @@ public class GoldCounter : MonoBehaviour {
 			count = 0;
 			return;
 		}
-		print ("Gold2");
 		//Update Gold & Ui Values.
-		localGoldReference = PlayerSpawnManager.PLAYERGOLD;
-		myTextMesh.text = "Gold:    " + localGoldReference.ToString ();
+		localGoldReference = GlobalManagement.PLAYERGOLD;
+		myTextMesh.text = "Gold:     " + localGoldReference.ToString ();
 	}
 }

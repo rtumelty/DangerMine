@@ -17,7 +17,7 @@ public class GoldPickup : MonoBehaviour
 	{
 		if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE || CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE)
 		{
-			PlayerSpawnManager.AddGold(myGoldDrop);
+			GlobalManagement.AddGold(myGoldDrop);
 			gameObject.SetActive(false);
 		}
 	}

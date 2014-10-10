@@ -84,6 +84,7 @@ public class SpineMultiSkeleton : MonoBehaviour {
 			}
 
 			skeleton.AnimationName = "";
+			skeleton.state.ClearTrack(track);
 			skeleton.state.SetAnimation(track, animationName, loop);
 			/*
 			while (skeleton.state.GetCurrent(track) == null || currentAnimation != animationName) {
