@@ -46,7 +46,7 @@ public class CheckInputType : MonoBehaviour
 		if(Input.GetMouseButtonUp(0))
 #else
 
-		if(Input.touches[0].phase == TouchPhase.End)
+		if(Input.touches[0].phase == TouchPhase.Ended)
 #endif
 		{
 			TOUCH_TYPE = InputType.TOUCHRELEASE_TYPE;
@@ -54,10 +54,10 @@ public class CheckInputType : MonoBehaviour
 
 #if UNITY_STANDALONE || UNITY_EDITOR
 
-		if(Input.GetMouseButtonDown(0))
+		else if(Input.GetMouseButtonDown(0))
 #else
 	
-		if(Input.touches[0].phase == TouchPhase.Began)
+		else if(Input.touches[0].phase == TouchPhase.Began)
 #endif
 		{
 			TOUCH_TYPE = InputType.TOUCHBEGAN_TYPE;
@@ -76,23 +76,20 @@ public class CheckInputType : MonoBehaviour
 
 #if UNITY_STANDALONE || UNITY_EDITOR
 		
-		else if(!Input.GetMouseButtonUp(0))
+		else if(!Input.GetMouseButtonUp(0) && Input.GetMouseButton(0))
 		{
-			if(Input.GetMouseButton(0))
 		
-#else
+#elif UNITY_ANDROID
 		
-		else if(Input.touches[0] > 0)
+		else if(Input.touches[0].phase == TouchPhase.Moved || Input.touches[0].phase == TouchPhase.Stationary)
 		{
 #endif
-			{
-				TOUCH_TYPE = InputType.DRAG_TYPE;
-			}
+		TOUCH_TYPE = InputType.DRAG_TYPE;
+		}
 
-			else
-			{
-				TOUCH_TYPE = InputType.NO_TYPE;
-			}
+		else
+		{
+			TOUCH_TYPE = InputType.NO_TYPE;
 		}
 	}
 }
