@@ -70,6 +70,7 @@ public class SpineMultiSkeleton : MonoBehaviour {
 		if (reserved)
 			yield break;
 
+		if (skeleton.state == null)
 		if (skeleton.state.GetCurrent (track) != null) {
 			if (skeleton.state.GetCurrent (track).Animation.name == animationName)
 				yield break;
@@ -84,7 +85,6 @@ public class SpineMultiSkeleton : MonoBehaviour {
 			}
 
 			skeleton.AnimationName = "";
-			skeleton.state.ClearTrack(track);
 			skeleton.state.SetAnimation(track, animationName, loop);
 			/*
 			while (skeleton.state.GetCurrent(track) == null || currentAnimation != animationName) {

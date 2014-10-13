@@ -25,6 +25,7 @@ public class Character : GameEntity {
 	}
 
 	bool blocked;
+	bool dying = false;
 	GameEntity attackTarget = null;
 	[SerializeField] float currentMoveSpeed;
 	CameraController cameraController;
@@ -47,11 +48,16 @@ public class Character : GameEntity {
 		cameraController = Camera.main.gameObject.GetComponent<CameraController> ();
 
 	}
-
+	
 	protected override void OnEnable() {
 		base.OnEnable();
 		currentMoveSpeed = defaultMoveSpeed;
+		dying = false;
 		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
+	}
+	
+	protected override void OnDisable() {
+		base.OnDisable();
 	}
 
 	void Update () {
@@ -119,18 +125,20 @@ public class Character : GameEntity {
 	protected virtual void Hit(Character character) {
 		if (character.allegiance != allegiance) {
 			currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength * Time.deltaTime), 0, 9999);
-			if (currentHealth == 0)
+			if (currentHealth == 0 && !dying)
 				Die ();
 		}
 	}
 	
 	protected override void Die() {
-		StopAllCoroutines ();
+		StopCoroutine ("Attack");
+		dying = true;
 		mySpineMultiSkeleton.SetAnimation (deathAnimation, 0, false);
 		StartCoroutine(DisableAfterAnimation(0));
 	}
 
 	protected IEnumerator DisableAfterAnimation(int layer) {
+		mySpineMultiSkeleton.skeleton.state.GetCurrent (0).Loop = false;
 		while (mySpineMultiSkeleton.skeleton.state.GetCurrent (layer) != null) {
 			yield return new WaitForSeconds (Time.deltaTime);
 		}
