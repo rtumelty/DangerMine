@@ -7,7 +7,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	private Vector3 myWorldPos;
 	private Vector3 defaultHighlightPosition;
 
-	private bool released = false;
+	[SerializeField] private bool released = false;
 
 	private GameObject theHighLight;
 

@@ -34,8 +34,7 @@ public class CheckInputType : MonoBehaviour
 		{	
 			Destroy(this);
 		}
-		
-		DontDestroyOnLoad(this);
+
 	}
 
 
@@ -76,7 +75,7 @@ public class CheckInputType : MonoBehaviour
 
 #if UNITY_STANDALONE || UNITY_EDITOR
 		
-		else if(!Input.GetMouseButtonUp(0) && Input.GetMouseButton(0))
+		else if(Input.GetMouseButton(0))
 		{
 		
 #elif UNITY_ANDROID

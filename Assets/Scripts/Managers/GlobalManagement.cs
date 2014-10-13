@@ -14,6 +14,7 @@ public static class GlobalManagement
 	{
 		Debug.Log ("Gold " + gold);
 		PLAYERGOLD += gold;
+		GOLD_COLLECTED += gold;
 		Debug.Log ("Gold was added from pickup");
 	}
 }

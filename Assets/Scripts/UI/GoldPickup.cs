@@ -3,21 +3,26 @@ using System.Collections;
 
 public class GoldPickup : MonoBehaviour 
 {
-	[SerializeField] int minGoldValue;
-	[SerializeField] int maxGoldValue;
-	private int myGoldDrop = 0;
+	[SerializeField] int normalGoldValue;
+	[SerializeField] int highGoldValue;
+	[SerializeField] float highGoldDropOdds = .2f;
+	private bool highDrop = false;
+
+	void Awake() {
+		
+		gameObject.renderer.sortingLayerName = "OverLay";
+	}
 
 	void OnEnable ()
 	{
-		gameObject.renderer.sortingLayerName = "OverLay";
-		myGoldDrop = Random.Range (minGoldValue, maxGoldValue + 1);
+		highDrop = Random.Range (0, 1f) < highGoldDropOdds;
 	}
 
 	void OnMouseOver()
 	{
 		if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE || CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE)
 		{
-			GlobalManagement.AddGold(myGoldDrop);
+			GlobalManagement.AddGold(highDrop ? normalGoldValue : highGoldValue);
 			gameObject.SetActive(false);
 		}
 	}

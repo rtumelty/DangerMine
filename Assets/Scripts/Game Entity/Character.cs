@@ -6,7 +6,7 @@ using System.Collections;
 
 public class Character : GameEntity {
 
-	private int moveDirection = 1;
+	protected int moveDirection = 1;
 
 	[SerializeField] protected float defaultMoveSpeed = 1.5f;
 	[SerializeField] protected int attackStrength = 10;
@@ -24,7 +24,8 @@ public class Character : GameEntity {
 		}
 	}
 
-	bool blocked;
+	protected bool ignoreUpdate = false;
+	protected bool blocked;
 	bool dying = false;
 	GameEntity attackTarget = null;
 	[SerializeField] float currentMoveSpeed;
@@ -51,6 +52,7 @@ public class Character : GameEntity {
 	
 	protected override void OnEnable() {
 		base.OnEnable();
+
 		currentMoveSpeed = defaultMoveSpeed;
 		dying = false;
 		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
@@ -61,6 +63,9 @@ public class Character : GameEntity {
 	}
 
 	void Update () {
+		if (ignoreUpdate)
+			return;
+
 		if (blocked) {		
 			Vector3 coordsInV3 = gridCoords.ToVector3(transform.position.z);
 			if (transform.position.x != coordsInV3.x) {

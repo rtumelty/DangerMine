@@ -10,6 +10,11 @@ public class GridCoordinate {
 		y = yCoord;
 	}
 	
+	public GridCoordinate(float x, float y) {
+		x = Mathf.RoundToInt (x);
+		y = Mathf.RoundToInt (y);
+	}
+	
 	public GridCoordinate(Vector2 coords) {
 		x = Mathf.RoundToInt (coords.x);
 		y = Mathf.RoundToInt (coords.y);

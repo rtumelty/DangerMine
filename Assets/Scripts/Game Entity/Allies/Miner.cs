@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Miner : Character {
+public class Miner : Ally {
 	[SerializeField] protected string animationNamePrefix;
 	[SerializeField] protected string walkAnimationSuffix;
 	[SerializeField] protected string attackAnimationSuffix;

@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour {
+	int maxY = 2;
+	int minY = -2;
+
 	static bool destroyed = false;
 	static GridManager instance;
 	public static GridManager Instance {
@@ -22,7 +25,7 @@ public class GridManager : MonoBehaviour {
 		if (instance != null) Destroy(this);
 
 		instance = this;
-		DontDestroyOnLoad(this);
+
 		occupiedPositions = new Dictionary<GameEntity, GridCoordinate>();
 	}
 	
@@ -46,6 +49,9 @@ public class GridManager : MonoBehaviour {
 	}
 
 	public bool IsOccupied(GridCoordinate position) {
+		if (position.y < minY || position.y > maxY)
+			return true;
+
 		foreach (KeyValuePair<GameEntity, GridCoordinate> pair in occupiedPositions) {
 			if (pair.Value == position) return true;
 		}
@@ -57,6 +63,9 @@ public class GridManager : MonoBehaviour {
 	}
 
 	public GameEntity EntityAt(GridCoordinate position) {
+		if (position.y < minY || position.y > maxY)
+			return null;
+
 		foreach (KeyValuePair<GameEntity, GridCoordinate> pair in occupiedPositions) {
 			if (pair.Value == position) return pair.Key;
 		}

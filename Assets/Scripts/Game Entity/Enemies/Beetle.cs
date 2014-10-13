@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Beetle : Character {
+public class Beetle : Enemy {
 
 }
