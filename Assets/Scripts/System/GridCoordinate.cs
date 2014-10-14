@@ -10,9 +10,9 @@ public class GridCoordinate {
 		y = yCoord;
 	}
 	
-	public GridCoordinate(float x, float y) {
-		x = Mathf.RoundToInt (x);
-		y = Mathf.RoundToInt (y);
+	public GridCoordinate(float xCoord, float yCoord) {
+		x = Mathf.RoundToInt (xCoord);
+		y = Mathf.RoundToInt (yCoord);
 	}
 	
 	public GridCoordinate(Vector2 coords) {
@@ -82,5 +82,10 @@ public class GridCoordinate {
 
 	public Vector3 ToVector3(float z = 0) {
 		return new Vector3(x, y, z);
+	}
+
+	public override string ToString ()
+	{
+		return "(" + x + ", " + y + ")";
 	}
 }

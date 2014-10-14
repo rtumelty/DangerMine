@@ -20,7 +20,7 @@ public class CheckInputType : MonoBehaviour
 		{
 			if (instance == null) 
 			{
-				GameObject go = new GameObject("_GridManager");
+				GameObject go = new GameObject("_InputManager");
 				instance = go.AddComponent<CheckInputType>();
 			}
 			return instance;
@@ -30,10 +30,10 @@ public class CheckInputType : MonoBehaviour
 
 	void Awake() 
 	{
-		if (instance != null) 
-		{	
-			Destroy(this);
-		}
+		if (instance != null) {	
+			Destroy (this);
+		} else
+			instance = this;
 
 	}
 

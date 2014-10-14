@@ -12,9 +12,7 @@ public static class GlobalManagement
 
 	public static void AddGold(int gold)
 	{
-		Debug.Log ("Gold " + gold);
 		PLAYERGOLD += gold;
 		GOLD_COLLECTED += gold;
-		Debug.Log ("Gold was added from pickup");
 	}
 }

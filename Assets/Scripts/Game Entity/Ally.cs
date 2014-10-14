@@ -6,6 +6,10 @@ public class Ally : Character {
 	
 	protected static int activeAllies = 0;
 	
+	private float laneSwitchTimeout = 1.5f;
+	private float laneSwitchThreshold = 1.5f;
+	private bool canSwitchLanes = true;
+
 	public static int ActiveAllies {
 		get {
 			return activeAllies;
@@ -35,12 +39,15 @@ public class Ally : Character {
 	}
 
 	protected virtual IEnumerator Drag() {
-		Debug.Log ("Start drag?");
+		if (!canSwitchLanes)
+			yield break;
+
+		yield return new WaitForSeconds (Time.deltaTime);
 
 		float dragLength = 0f;
 		
 		float totalY = 0f;
-
+			
 		List<Vector2> mouseCoords = new List<Vector2>();
 		
 		Debug.Log (CheckInputType.TOUCH_TYPE);
@@ -61,32 +68,45 @@ public class Ally : Character {
 		// Ignore if drag too short
 		if (dragLength < .05f) {
 			Debug.Log("Too short!");
-			return false;
+			yield break;
 		}
 
 		float up = Mathf.Sign (totalY);
 		Debug.Log ("Drag direction: " + up);
 
-		GridCoordinate newCoord = gridCoords + new GridCoordinate (0, up);
+		GridCoordinate newCoord = gridCoords + new GridCoordinate (0f, up);
 
 		// Do nothing if out of level range or coordinates are occupied
 		if (GridManager.Instance.IsOccupied(newCoord)) return false;
 
+		canSwitchLanes = false;
+		StartCoroutine (ResetLaneSwitch ());
 		ignoreUpdate = true;
 
-		float swipeTime = .5f;
+		float swipeTime = .2f;
 		float elapsedTime = 0f;
 
 		Vector3 startPosition = transform.position;
 		
 		while (elapsedTime <= swipeTime) {
 			transform.position = startPosition + (up * new Vector3(0, Mathf.Lerp(0, 1, elapsedTime * (1 / swipeTime))));
+			elapsedTime += Time.deltaTime;
+			yield return new WaitForSeconds(Time.deltaTime);
 		}
 
 		ignoreUpdate = false;
-		transform.position = newCoord.ToVector3 (transform.position.z);
-		gridCoords = newCoord;
+		gridCoords = new GridCoordinate (transform.position);
 	}
 
+	IEnumerator ResetLaneSwitch() {
+		float lastSwitchedLanes = 0f;
+
+		while (lastSwitchedLanes < laneSwitchTimeout) {
+			lastSwitchedLanes += Time.deltaTime;
+			yield return new WaitForSeconds(Time.deltaTime);
+		}
+
+		canSwitchLanes = true;
+	}
 
 }
