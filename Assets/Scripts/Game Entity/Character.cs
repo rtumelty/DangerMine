@@ -65,6 +65,9 @@ public class Character : GameEntity {
 	void Update () {
 		if (ignoreUpdate)
 			return;
+		
+		if (GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0)))
+			Blocked(GridManager.Instance.EntityAt(gridCoords + new GridCoordinate(moveDirection, 0)));
 
 		if (blocked) {		
 			Vector3 coordsInV3 = gridCoords.ToVector3(transform.position.z);
@@ -83,16 +86,13 @@ public class Character : GameEntity {
 			gridCoords = position as GridCoordinate;
 
 			if (_allegiance == Allegiance.Ally) {
-				if (gridCoords.x >= (cameraController.GridCoords.x + 3)) {
+				if (gridCoords.x >= (cameraController.GridCoords.x + 1.5)) {
 					currentMoveSpeed = cameraController.MoveSpeed;
 				}
 				else {
 					currentMoveSpeed = defaultMoveSpeed;
 				}
 			}
-			
-			if (GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0)))
-			    Blocked(GridManager.Instance.EntityAt(gridCoords + new GridCoordinate(moveDirection, 0)));
 		}
 	}
 	

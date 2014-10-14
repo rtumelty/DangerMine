@@ -6,9 +6,16 @@ public class Ally : Character {
 	
 	protected static int activeAllies = 0;
 	
-	private float laneSwitchTimeout = 1.5f;
-	private float laneSwitchThreshold = 1.5f;
-	private bool canSwitchLanes = true;
+	private static float laneSwitchTimeout = 1.5f;
+	private static float laneSwitchThreshold = 10f;
+	//private static float minimumDragTime = 0.005f;
+	private static bool canSwitchLanes = true;
+
+	public static bool CanSwitchLanes {
+		get {
+			return canSwitchLanes;
+		}
+	}
 
 	public static int ActiveAllies {
 		get {
@@ -44,32 +51,35 @@ public class Ally : Character {
 
 		yield return new WaitForSeconds (Time.deltaTime);
 
-		float dragLength = 0f;
+		//float dragLength = 0f;
 		
 		float totalY = 0f;
-			
-		List<Vector2> mouseCoords = new List<Vector2>();
-		
-		Debug.Log (CheckInputType.TOUCH_TYPE);
+		bool insufficientDeltaY = true;
+
 		while (CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE || CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) {
 #if UNITY_EDITOR || UNITY_STANDALONE
-			mouseCoords.Add(new Vector2(0, Input.GetAxis("Mouse Y")));
 			totalY += Input.GetAxis("Mouse Y");
 			#elif UNITY_ANDROID
-			mouseCoords.Add(Input.touches[0].deltaPosition);
 			totalY += Input.touches[0].deltaPosition.y;
 #endif
-			Debug.Log (CheckInputType.TOUCH_TYPE);
-			dragLength += Time.deltaTime;
+			if (Mathf.Abs(totalY) > laneSwitchThreshold) {
+				insufficientDeltaY = false;
+				break;
+			}
+
+			//dragLength += Time.deltaTime;
 			yield return new WaitForSeconds (Time.deltaTime);
 		}
-		Debug.Log (CheckInputType.TOUCH_TYPE);
-		
+
+		if (insufficientDeltaY)
+			yield break;
+
+		/*
 		// Ignore if drag too short
-		if (dragLength < .05f) {
+		if (dragLength < minimumDragTime) {
 			Debug.Log("Too short!");
 			yield break;
-		}
+		}*/
 
 		float up = Mathf.Sign (totalY);
 		Debug.Log ("Drag direction: " + up);
