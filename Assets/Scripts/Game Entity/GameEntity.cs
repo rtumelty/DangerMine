@@ -40,8 +40,13 @@ public class GameEntity : MonoBehaviour {
 	}
 
 	protected virtual void Hit(Character character) {
+		/*
 		Debug.Log ("Attacked, taking " + character.AttackStrength + " damage per second");
 		currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength * Time.deltaTime), 0, 9999);
+		*/
+
+		currentHealth = Mathf.Clamp(currentHealth - character.AttackStrength, 0, 9999);
+
 		if (currentHealth == 0)
 			Die ();
 	}

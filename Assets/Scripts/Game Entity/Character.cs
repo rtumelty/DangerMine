@@ -25,10 +25,20 @@ public class Character : GameEntity {
 	}
 
 	protected bool ignoreUpdate = false;
+
+	public bool IgnoreUpdate {
+		get {
+			return ignoreUpdate;
+		}
+		set {
+			ignoreUpdate = value;
+		}
+	}
+
 	protected bool blocked;
-	bool dying = false;
+	protected bool dying = false;
 	GameEntity attackTarget = null;
-	[SerializeField] float currentMoveSpeed;
+	protected float currentMoveSpeed;
 	CameraController cameraController;
 
 	public float CurrentMoveSpeed {
@@ -62,7 +72,7 @@ public class Character : GameEntity {
 		base.OnDisable();
 	}
 
-	void Update () {
+	protected virtual void Update () {
 		if (ignoreUpdate)
 			return;
 		
@@ -122,16 +132,24 @@ public class Character : GameEntity {
 
 		while (blocked) {
 			if (mySpineMultiSkeleton.skeleton.state.GetCurrent(0) == null) mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
+			/* DPS approach
 			yield return new WaitForSeconds(Time.deltaTime);
+			*/
+			yield return new WaitForSeconds(attackSpeed);
 			attackTarget.SendMessage("Hit", this,SendMessageOptions.DontRequireReceiver);
 		}
 	}
 
 	protected virtual void Hit(Character character) {
 		if (character.allegiance != allegiance) {
-			currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength * Time.deltaTime), 0, 9999);
-			if (currentHealth == 0 && !dying)
+			/* DPS approach
+			currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength / character.AttackSpeed * Time.deltaTime), 0, 9999);
+			 */
+			currentHealth = Mathf.Clamp (currentHealth - character.AttackStrength, 0, 9999);
+
+			if (currentHealth == 0 && !dying) {
 				Die ();
+			}
 		}
 	}
 	

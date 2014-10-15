@@ -5,17 +5,12 @@ using System.Collections.Generic;
 public class Ally : Character {
 	
 	protected static int activeAllies = 0;
-	
-	private static float laneSwitchTimeout = 1.5f;
+#if UNITY_EDITOR || UNITY_STANDALONE
+	private static float laneSwitchThreshold = 1f;
+	#elif UNITY_ANDROID
 	private static float laneSwitchThreshold = 10f;
+#endif
 	//private static float minimumDragTime = 0.005f;
-	private static bool canSwitchLanes = true;
-
-	public static bool CanSwitchLanes {
-		get {
-			return canSwitchLanes;
-		}
-	}
 
 	public static int ActiveAllies {
 		get {
@@ -42,14 +37,18 @@ public class Ally : Character {
 	}
 
 	protected virtual void OnMouseDown () {
+		if (dying) return;
+
 		StartCoroutine (Drag ());
 	}
 
 	protected virtual IEnumerator Drag() {
-		if (!canSwitchLanes)
+		if (!LaneSwitchUI.CanSwitchLanes)
 			yield break;
 
 		yield return new WaitForSeconds (Time.deltaTime);
+
+		Debug.Log("Starting drag");
 
 		//float dragLength = 0f;
 		
@@ -63,7 +62,9 @@ public class Ally : Character {
 			totalY += Input.touches[0].deltaPosition.y;
 #endif
 			if (Mathf.Abs(totalY) > laneSwitchThreshold) {
-				insufficientDeltaY = false;
+				insufficientDeltaY = 	false;
+				
+				Debug.Log("Drag recognised");
 				break;
 			}
 
@@ -71,8 +72,13 @@ public class Ally : Character {
 			yield return new WaitForSeconds (Time.deltaTime);
 		}
 
-		if (insufficientDeltaY)
+		if (dying) yield break;
+
+		if (insufficientDeltaY){
+			
+			Debug.Log("Drag too short");
 			yield break;
+		}
 
 		/*
 		// Ignore if drag too short
@@ -89,34 +95,22 @@ public class Ally : Character {
 		// Do nothing if out of level range or coordinates are occupied
 		if (GridManager.Instance.IsOccupied(newCoord)) return false;
 
-		canSwitchLanes = false;
-		StartCoroutine (ResetLaneSwitch ());
+		LaneSwitchUI.ResetLaneSwitch ();
 		ignoreUpdate = true;
 
-		float swipeTime = .2f;
+		float swipeTime = .06f;
 		float elapsedTime = 0f;
 
 		Vector3 startPosition = transform.position;
 		
 		while (elapsedTime <= swipeTime) {
-			transform.position = startPosition + (up * new Vector3(0, Mathf.Lerp(0, 1, elapsedTime * (1 / swipeTime))));
+			transform.position = Vector3.Lerp(startPosition, newCoord.ToVector3(), elapsedTime * (1 / swipeTime));
 			elapsedTime += Time.deltaTime;
 			yield return new WaitForSeconds(Time.deltaTime);
 		}
+		transform.position = newCoord.ToVector3(transform.position.z);
 
 		ignoreUpdate = false;
 		gridCoords = new GridCoordinate (transform.position);
 	}
-
-	IEnumerator ResetLaneSwitch() {
-		float lastSwitchedLanes = 0f;
-
-		while (lastSwitchedLanes < laneSwitchTimeout) {
-			lastSwitchedLanes += Time.deltaTime;
-			yield return new WaitForSeconds(Time.deltaTime);
-		}
-
-		canSwitchLanes = true;
-	}
-
 }

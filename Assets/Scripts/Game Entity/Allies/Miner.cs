@@ -7,14 +7,18 @@ public class Miner : Ally {
 	[SerializeField] protected string attackAnimationSuffix;
 	[SerializeField] protected string deathAnimationSuffix;
 
-	protected override void OnEnable() {
+	protected override void OnDisable() {
+		
+		base.OnDisable ();
+
 		int minerNumber = Random.Range (1, 7);
 		
 		walkAnimation = animationNamePrefix + minerNumber.ToString () + walkAnimationSuffix;
 		attackAnimation = animationNamePrefix + minerNumber.ToString () + attackAnimationSuffix;
 		deathAnimation = animationNamePrefix + minerNumber.ToString () + deathAnimationSuffix;
 
-		base.OnEnable ();
+		
+		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
 
 	}
 }

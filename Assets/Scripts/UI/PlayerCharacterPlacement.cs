@@ -17,6 +17,10 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		defaultHighlightPosition = theHighLight.transform.position;
 	}
 
+	void OnEnable() {
+		released = false;
+	}
+
 
 	void Update()
 	{
