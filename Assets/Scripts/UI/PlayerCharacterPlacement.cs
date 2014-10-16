@@ -10,9 +10,11 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	[SerializeField] private bool released = false;
 
 	private GameObject theHighLight;
+	private GameEntity entity;
 
 	void Start()
 	{
+		entity = GetComponent<GameEntity>();
 		theHighLight = GameObject.FindGameObjectWithTag ("HL");
 		defaultHighlightPosition = theHighLight.transform.position;
 	}
@@ -59,7 +61,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		
 		if(transform.position.y < 3 && transform.position.y > -3)
 		{
-			gameObject.renderer.sortingLayerName = "Lane" + (-transform.position.y).ToString();
+			entity.UpdateSortingLayer();
 			theHighLight.transform.position = new Vector3(transform.position.x, transform.position.y, theHighLight.transform.position.z);
 			mySnapPoint = transform.position;
 		}

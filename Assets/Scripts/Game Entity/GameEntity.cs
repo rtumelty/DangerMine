@@ -15,6 +15,7 @@ public class GameEntity : MonoBehaviour {
 	[SerializeField] protected int health = 10;
 	[SerializeField] protected float currentHealth;
 	protected GridCoordinate gridCoords;
+	private Renderer[] renderers;
 	
 	public Allegiance allegiance {
 		get {
@@ -23,12 +24,15 @@ public class GameEntity : MonoBehaviour {
 	}
 
 	protected virtual void Awake() {
+		renderers = GetComponentsInChildren<Renderer>();
+
 		rigidbody2D.gravityScale = 0;
 		rigidbody2D.isKinematic = true;
 	}
 
 	protected virtual void OnEnable() {
 		gridCoords = transform.position as GridCoordinate;
+		UpdateSortingLayer();
 		GridManager.Instance.RegisterEntity(this);
 		
 		currentHealth = health;
@@ -53,5 +57,14 @@ public class GameEntity : MonoBehaviour {
 	
 	protected virtual void Die() {
 		gameObject.SetActive (false);
+	}
+
+	public void UpdateSortingLayer() {
+		
+		foreach ( Renderer rend in renderers) {
+			rend.sortingLayerName = "Lane_" + gridCoords.y;
+			Debug.Log(gameObject + " new sorting layer is " + rend.sortingLayerName);
+		}
+
 	}
 }

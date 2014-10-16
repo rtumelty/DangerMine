@@ -112,5 +112,6 @@ public class Ally : Character {
 
 		ignoreUpdate = false;
 		gridCoords = new GridCoordinate (transform.position);
+		UpdateSortingLayer();
 	}
 }

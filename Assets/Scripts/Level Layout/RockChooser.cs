@@ -24,8 +24,6 @@ public class RockChooser : MonoBehaviour {
 			poolId = goldRockPoolId;
 
 		GameObject newRock = PrefabPool.GetPool (poolId).Spawn (transform.position);
-		foreach (Renderer rend in newRock.GetComponentsInChildren<Renderer>())
-			rend.sortingLayerName = "Lane_" + (-transform.position.y).ToString();
 
 		gameObject.SetActive (false);
 	}
