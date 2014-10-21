@@ -7,6 +7,17 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	private Vector3 myWorldPos;
 	private Vector3 defaultHighlightPosition;
 
+	private BuildPlayerUnitButton purchaseButton;
+
+	public BuildPlayerUnitButton PurchaseButton {
+		get {
+			return purchaseButton;
+		}
+		set {
+			purchaseButton = value;
+		}
+	}
+
 	[SerializeField] private bool released = false;
 
 	private GameObject theHighLight;
@@ -31,22 +42,8 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 			return;
 		}
 
-		if(BuildPlayerUnitButton.click == true)
-		{
-			StickToCursor();
-			if(BuildPlayerUnitButton.stillOverButton == false)
-			{
-				CheckForRelease();
-			}
-		}
-		else
-		{
-			StickToCursor();
-			if(BuildPlayerUnitButton.stillOverButton == false)
-			{
-				CheckForRelease();
-			}
-		}
+		StickToCursor();
+		CheckForRelease();
 	}
 
 
@@ -59,7 +56,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		
 		//Clamps highlight over last valid lane position
 		
-		if(transform.position.y < 3 && transform.position.y > -3)
+		if(transform.position.y < 3 && transform.position.y > -3 && transform.position.x > CreepingDarkness.Instance.LeadingEdge)
 		{
 			entity.UpdateSortingLayer();
 			theHighLight.transform.position = new Vector3(transform.position.x, transform.position.y, theHighLight.transform.position.z);
@@ -81,6 +78,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		{
 			GetComponent<Character>().enabled = true;
 			theHighLight.transform.position = defaultHighlightPosition;
+			purchaseButton.SendMessage("StartCooldown");
 			released = true;
 		}
 		else if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE)

@@ -34,6 +34,7 @@ public class GridManager : MonoBehaviour {
 
 	void OnLevelWasLoaded(int level) {
 		occupiedPositions.Clear();
+		foreach (GameEntity entity in FindObjectsOfType<GameEntity>()) RegisterEntity(entity);
 	}
 
 	void Update() {
@@ -73,6 +74,11 @@ public class GridManager : MonoBehaviour {
 	}
 
 	public void RegisterEntity(GameEntity entity) {
+		if (occupiedPositions.ContainsKey(entity)) {
+			Debug.Log(entity + " already registered");
+			return;
+		}
+
 		GridCoordinate position = new GridCoordinate(entity.transform.position);
 		occupiedPositions.Add(entity, position);
 	}

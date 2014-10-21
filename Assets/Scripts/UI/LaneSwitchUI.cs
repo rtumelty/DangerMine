@@ -33,7 +33,7 @@ public class LaneSwitchUI : MonoBehaviour {
 
 		textMesh = GetComponentInChildren<TextMesh>() as TextMesh;
 	}
-
+	/*
 	void OnGUI() {
 		if (CanSwitchLanes) {
 			renderer.materials[0].SetColor("_Color", readyColour);
@@ -42,11 +42,11 @@ public class LaneSwitchUI : MonoBehaviour {
 			renderer.materials[0].SetColor("_Color", waitingColour);
 			textMesh.text = "Wait";
 		}
-	}
+	}*/
 
 	public static void ResetLaneSwitch() {
 		if (canSwitchLanes) {
-			_instance.StartCoroutine(_ResetLaneSwitch());
+			Instance.StartCoroutine(_ResetLaneSwitch());
 		}
 	}
 

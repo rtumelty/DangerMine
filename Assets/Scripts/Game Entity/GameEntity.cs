@@ -63,7 +63,6 @@ public class GameEntity : MonoBehaviour {
 		
 		foreach ( Renderer rend in renderers) {
 			rend.sortingLayerName = "Lane_" + gridCoords.y;
-			Debug.Log(gameObject + " new sorting layer is " + rend.sortingLayerName);
 		}
 
 	}
