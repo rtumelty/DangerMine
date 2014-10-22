@@ -43,8 +43,6 @@ public class Ally : Character {
 	}
 
 	protected virtual IEnumerator Drag() {
-		if (!LaneSwitchUI.CanSwitchLanes)
-			yield break;
 
 		yield return new WaitForSeconds (Time.deltaTime);
 
@@ -94,8 +92,6 @@ public class Ally : Character {
 
 		// Do nothing if out of level range or coordinates are occupied
 		if (GridManager.Instance.IsOccupied(newCoord)) return false;
-
-		LaneSwitchUI.ResetLaneSwitch ();
 		ignoreUpdate = true;
 
 		float swipeTime = .06f;

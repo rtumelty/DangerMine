@@ -6,21 +6,20 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 	[SerializeField] Text unitCostText;
 	[SerializeField] Image unavailableOverlay;
 	[SerializeField] Image cooldownOverlay;
-	[SerializeField] RectTransform cooldownTarget;
+	[SerializeField] Image selectedOverlay;
 
 	[SerializeField] PrefabPool playerChar;
 	[SerializeField] int goldCost;
 	[SerializeField] float spawnCoolDown;
 
 	private Button button;
-	private Vector3 cooldownStartPosition;
 	private bool ready = false;
+	private bool selected = false;
 	private bool cooldownActive = false;
 
 	void Awake() {
 		button = GetComponent<Button>();
 		unitCostText.text = goldCost.ToString();
-		cooldownStartPosition = cooldownOverlay.rectTransform.anchoredPosition;
 	}
 
 	void OnGUI() {
@@ -41,6 +40,13 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 			unavailableOverlay.enabled = false;
 			button.interactable = true;
 		}
+
+		if (selected) selectedOverlay.enabled = true;
+		else selectedOverlay.enabled = false;
+	}
+
+	void OnMouseDown() {
+		Clicked();
 	}
 
 	public void Clicked()
@@ -52,9 +58,16 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 		PlayerCharacterPlacement placement = mySpawnedCharacter.GetComponent<PlayerCharacterPlacement>();
 		if (placement == null) placement = mySpawnedCharacter.AddComponent<PlayerCharacterPlacement>();
 		placement.PurchaseButton = this;
+
+		selected = true;
+	}
+
+	public void Cancelled() {
+		selected = false;
 	}
 
 	void StartCooldown() {
+		selected = false;
 		GlobalManagement.PLAYERGOLD -= goldCost;
 
 		cooldownActive = true;
@@ -66,15 +79,12 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 	IEnumerator CoolDownCount()
 	{
 		float timer = 0f;
-		Debug.Log(timer + ", " + cooldownStartPosition + ", " + cooldownOverlay.rectTransform.anchoredPosition);
 
 		while (timer < spawnCoolDown) {
-			cooldownOverlay.rectTransform.anchoredPosition = Vector3.Lerp(cooldownStartPosition, cooldownTarget.anchoredPosition,
-			                                                      timer / spawnCoolDown);
+			cooldownOverlay.fillAmount = Mathf.Lerp(1, 0, timer / spawnCoolDown);
 			timer += Time.deltaTime;
 			yield return new WaitForSeconds(Time.deltaTime);
 		}
-		Debug.Log(timer + ", " + cooldownTarget.anchoredPosition + ", " + cooldownOverlay.rectTransform.anchoredPosition);
 		cooldownActive = false;
 	}
 }

@@ -20,6 +20,9 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 	[SerializeField] private bool released = false;
 
+	private float initialClick = 0;
+	private float clickThreshold = 0.1f;
+
 	private GameObject theHighLight;
 	private GameEntity entity;
 
@@ -32,6 +35,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 	void OnEnable() {
 		released = false;
+		initialClick = Time.time;
 	}
 
 
@@ -71,6 +75,8 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 	void CheckForRelease()
 	{
+		if (Time.time - initialClick < clickThreshold) return;
+
 		//Checks for release of character. Snaps to lane or returns to pool if no valid lane.
 		
 		if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE && 
@@ -84,6 +90,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		else if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE)
 		{
 			gameObject.SetActive(false);
+			purchaseButton.Cancelled();
 			theHighLight.transform.position = defaultHighlightPosition;
 		}
 	}
