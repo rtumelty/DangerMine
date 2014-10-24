@@ -1,0 +1,300 @@
+
+Faradaydo_Front&Back.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+back/back_head
+  rotate: false
+  xy: 269, 51
+  size: 137, 42
+  orig: 137, 42
+  offset: 0, 0
+  index: -1
+back/back_leg_bent
+  rotate: false
+  xy: 806, 65
+  size: 36, 44
+  orig: 36, 44
+  offset: 0, 0
+  index: -1
+back/back_leg_straight
+  rotate: true
+  xy: 726, 196
+  size: 36, 67
+  orig: 36, 67
+  offset: 0, 0
+  index: -1
+back/back_leg_straightwayback
+  rotate: false
+  xy: 492, 11
+  size: 36, 57
+  orig: 36, 57
+  offset: 0, 0
+  index: -1
+back/back_leg_straightwayback2
+  rotate: true
+  xy: 775, 154
+  size: 36, 61
+  orig: 36, 61
+  offset: 0, 0
+  index: -1
+back/body_back
+  rotate: false
+  xy: 436, 124
+  size: 79, 83
+  orig: 79, 83
+  offset: 0, 0
+  index: -1
+back/f_arm_back
+  rotate: false
+  xy: 437, 17
+  size: 53, 51
+  orig: 53, 51
+  offset: 0, 0
+  index: -1
+back/f_arm_back01
+  rotate: true
+  xy: 712, 96
+  size: 50, 49
+  orig: 50, 49
+  offset: 0, 0
+  index: -1
+back/f_arm_back02
+  rotate: false
+  xy: 568, 70
+  size: 48, 53
+  orig: 48, 53
+  offset: 0, 0
+  index: -1
+back/f_arm_back03
+  rotate: false
+  xy: 347, 2
+  size: 45, 47
+  orig: 45, 47
+  offset: 0, 0
+  index: -1
+back/f_arm_back2
+  rotate: true
+  xy: 717, 150
+  size: 44, 56
+  orig: 44, 56
+  offset: 0, 0
+  index: -1
+back/f_arm_back3
+  rotate: false
+  xy: 640, 151
+  size: 48, 60
+  orig: 48, 60
+  offset: 0, 0
+  index: -1
+back/f_arm_back4
+  rotate: false
+  xy: 530, 10
+  size: 39, 58
+  orig: 39, 58
+  offset: 0, 0
+  index: -1
+back/f_arm_back5
+  rotate: false
+  xy: 618, 82
+  size: 40, 56
+  orig: 40, 56
+  offset: 0, 0
+  index: -1
+front/arm_front_01
+  rotate: true
+  xy: 269, 2
+  size: 47, 76
+  orig: 47, 76
+  offset: 0, 0
+  index: -1
+front/arm_front_02
+  rotate: false
+  xy: 945, 194
+  size: 67, 60
+  orig: 67, 60
+  offset: 0, 0
+  index: -1
+front/body_front_01
+  rotate: false
+  xy: 517, 125
+  size: 79, 82
+  orig: 79, 82
+  offset: 0, 0
+  index: -1
+front/electrocuted0002
+  rotate: false
+  xy: 269, 95
+  size: 165, 159
+  orig: 165, 159
+  offset: 0, 0
+  index: -1
+front/electrocution
+  rotate: false
+  xy: 2, 3
+  size: 265, 251
+  orig: 265, 251
+  offset: 0, 0
+  index: -1
+front/front_face_01
+  rotate: false
+  xy: 764, 27
+  size: 42, 36
+  orig: 42, 36
+  offset: 0, 0
+  index: -1
+front/front_face_02
+  rotate: false
+  xy: 717, 52
+  size: 44, 42
+  orig: 44, 42
+  offset: 0, 0
+  index: -1
+front/front_face_03
+  rotate: false
+  xy: 808, 27
+  size: 42, 36
+  orig: 42, 36
+  offset: 0, 0
+  index: -1
+front/front_leg_out
+  rotate: false
+  xy: 516, 70
+  size: 50, 52
+  orig: 50, 52
+  offset: 0, 0
+  index: -1
+front/front_leg_out2
+  rotate: false
+  xy: 665, 38
+  size: 50, 52
+  orig: 50, 52
+  offset: 0, 0
+  index: -1
+front/front_leg_out2b
+  rotate: false
+  xy: 571, 14
+  size: 49, 54
+  orig: 49, 54
+  offset: 0, 0
+  index: -1
+front/front_leg_out2c
+  rotate: false
+  xy: 660, 92
+  size: 50, 54
+  orig: 50, 54
+  offset: 0, 0
+  index: -1
+front/front_leg_straight
+  rotate: true
+  xy: 795, 192
+  size: 40, 67
+  orig: 40, 67
+  offset: 0, 0
+  index: -1
+front/front_leg_straightback_left
+  rotate: false
+  xy: 763, 65
+  size: 41, 44
+  orig: 41, 44
+  offset: 0, 0
+  index: -1
+front/front_leg_straightback_left2
+  rotate: false
+  xy: 622, 24
+  size: 41, 56
+  orig: 41, 56
+  offset: 0, 0
+  index: -1
+front/front_leg_straightright
+  rotate: false
+  xy: 598, 140
+  size: 40, 67
+  orig: 40, 67
+  offset: 0, 0
+  index: -1
+front/front_leg_straightrightback
+  rotate: false
+  xy: 394, 2
+  size: 41, 45
+  orig: 41, 45
+  offset: 0, 0
+  index: -1
+front/front_leg_straightrightbackc
+  rotate: true
+  xy: 775, 111
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: -1
+front/googles
+  rotate: true
+  xy: 408, 49
+  size: 44, 20
+  orig: 44, 20
+  offset: 0, 0
+  index: -1
+front/googles_2
+  rotate: false
+  xy: 717, 11
+  size: 45, 39
+  orig: 45, 39
+  offset: 0, 0
+  index: -1
+front/googles_3
+  rotate: true
+  xy: 690, 148
+  size: 63, 25
+  orig: 63, 25
+  offset: 0, 0
+  index: -1
+front/googles_4
+  rotate: false
+  xy: 864, 184
+  size: 60, 13
+  orig: 60, 13
+  offset: 0, 0
+  index: -1
+front/googles_5
+  rotate: false
+  xy: 665, 3
+  size: 40, 33
+  orig: 40, 33
+  offset: 0, 0
+  index: -1
+front/moustache
+  rotate: false
+  xy: 726, 234
+  size: 137, 20
+  orig: 137, 20
+  offset: 0, 0
+  index: -1
+front/scared_arm
+  rotate: true
+  xy: 436, 70
+  size: 52, 78
+  orig: 52, 78
+  offset: 0, 0
+  index: -1
+front/scared_arm_2
+  rotate: false
+  xy: 865, 199
+  size: 78, 55
+  orig: 78, 55
+  offset: 0, 0
+  index: -1
+front/scared_moustache
+  rotate: false
+  xy: 605, 213
+  size: 119, 41
+  orig: 119, 41
+  offset: 0, 0
+  index: -1
+front/shadow_front
+  rotate: false
+  xy: 436, 209
+  size: 167, 45
+  orig: 167, 45
+  offset: 0, 0
+  index: -1

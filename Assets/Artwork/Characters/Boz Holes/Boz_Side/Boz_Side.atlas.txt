@@ -1,0 +1,216 @@
+
+Boz_Side.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+front/arm_front_01
+  rotate: false
+  xy: 691, 283
+  size: 67, 53
+  orig: 67, 53
+  offset: 0, 0
+  index: -1
+front/body_front_01
+  rotate: false
+  xy: 559, 404
+  size: 153, 106
+  orig: 153, 106
+  offset: 0, 0
+  index: -1
+front/electrocution
+  rotate: false
+  xy: 292, 259
+  size: 265, 251
+  orig: 265, 251
+  offset: 0, 0
+  index: -1
+front/front_face_01
+  rotate: true
+  xy: 1002, 420
+  size: 34, 20
+  orig: 34, 20
+  offset: 0, 0
+  index: -1
+front/front_leg_out
+  rotate: true
+  xy: 559, 243
+  size: 45, 53
+  orig: 45, 53
+  offset: 0, 0
+  index: -1
+front/front_leg_straight
+  rotate: false
+  xy: 970, 432
+  size: 30, 42
+  orig: 30, 42
+  offset: 0, 0
+  index: -1
+front/front_leg_straightback_left
+  rotate: true
+  xy: 253, 4
+  size: 30, 38
+  orig: 30, 38
+  offset: 0, 0
+  index: -1
+front/front_leg_straightright
+  rotate: false
+  xy: 253, 36
+  size: 30, 42
+  orig: 30, 42
+  offset: 0, 0
+  index: -1
+front/googles
+  rotate: false
+  xy: 607, 202
+  size: 43, 39
+  orig: 43, 39
+  offset: 0, 0
+  index: -1
+front/jackhammer_01
+  rotate: false
+  xy: 2, 65
+  size: 180, 155
+  orig: 180, 155
+  offset: 0, 0
+  index: -1
+front/joint
+  rotate: false
+  xy: 714, 404
+  size: 82, 23
+  orig: 82, 23
+  offset: 0, 0
+  index: -1
+front/moustache
+  rotate: false
+  xy: 184, 158
+  size: 92, 62
+  orig: 92, 62
+  offset: 0, 0
+  index: -1
+front/shadow_front
+  rotate: false
+  xy: 292, 228
+  size: 211, 29
+  orig: 211, 29
+  offset: 0, 0
+  index: -1
+side/arm_side_01
+  rotate: true
+  xy: 890, 431
+  size: 43, 78
+  orig: 43, 78
+  offset: 0, 0
+  index: -1
+side/body_side_01
+  rotate: false
+  xy: 559, 290
+  size: 130, 112
+  orig: 130, 112
+  offset: 0, 0
+  index: -1
+side/crackedrocks
+  rotate: false
+  xy: 2, 222
+  size: 288, 288
+  orig: 288, 288
+  offset: 0, 0
+  index: -1
+side/forearm_r
+  rotate: false
+  xy: 184, 70
+  size: 52, 86
+  orig: 52, 86
+  offset: 0, 0
+  index: -1
+side/hand
+  rotate: false
+  xy: 614, 243
+  size: 49, 45
+  orig: 49, 45
+  offset: 0, 0
+  index: -1
+side/hand_left
+  rotate: false
+  xy: 505, 213
+  size: 49, 44
+  orig: 49, 44
+  offset: 0, 0
+  index: -1
+side/hat
+  rotate: true
+  xy: 762, 344
+  size: 58, 47
+  orig: 58, 47
+  offset: 0, 0
+  index: -1
+side/leg_side_01
+  rotate: true
+  xy: 184, 2
+  size: 66, 67
+  orig: 66, 67
+  offset: 0, 0
+  index: -1
+side/leg_side_02
+  rotate: true
+  xy: 184, 2
+  size: 66, 67
+  orig: 66, 67
+  offset: 0, 0
+  index: -1
+side/leg_side_03
+  rotate: true
+  xy: 238, 80
+  size: 76, 41
+  orig: 76, 41
+  offset: 0, 0
+  index: -1
+side/pelvis
+  rotate: true
+  xy: 1004, 456
+  size: 54, 18
+  orig: 54, 18
+  offset: 0, 0
+  index: -1
+side/shadow_side
+  rotate: false
+  xy: 890, 476
+  size: 112, 34
+  orig: 112, 34
+  offset: 0, 0
+  index: -1
+side/side_face_01
+  rotate: true
+  xy: 278, 180
+  size: 40, 37
+  orig: 40, 37
+  offset: 0, 0
+  index: -1
+side/side_face_02
+  rotate: false
+  xy: 556, 197
+  size: 49, 44
+  orig: 49, 44
+  offset: 0, 0
+  index: -1
+side/side_mustache
+  rotate: false
+  xy: 691, 338
+  size: 69, 64
+  orig: 69, 64
+  offset: 0, 0
+  index: -1
+side/tool
+  rotate: true
+  xy: 2, 12
+  size: 51, 178
+  orig: 51, 178
+  offset: 0, 0
+  index: -1
+side/tool2
+  rotate: true
+  xy: 714, 429
+  size: 81, 174
+  orig: 81, 174
+  offset: 0, 0
+  index: -1

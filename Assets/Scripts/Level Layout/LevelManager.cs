@@ -9,6 +9,7 @@ public class LevelManager : MonoBehaviour {
 	PrefabPool levelBlockPool;
 	GameObject lastBlock;
 	Camera mainCamera;
+	bool gameOver = false;
 
 	// Use this for initialization
 	void Awake () {
@@ -33,8 +34,10 @@ public class LevelManager : MonoBehaviour {
 			PlaceNextBlock ();	
 
 		// End conditions
-		if (Ally.ActiveAllies == 0)
+		if (Ally.ActiveAllies == 0 && !gameOver) {
+			gameOver = true;
 			StartCoroutine (GameOver ());
+		}
 	}
 
 	void PlaceNextBlock() {
@@ -44,11 +47,28 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	IEnumerator GameOver() {
+		Debug.Log("Last miner died!");
 		GlobalManagement.LAST_DISTANCE_COVERED = SpawnObject.cameraDistanceCovered;
 		GlobalManagement.SCORE = SpawnObject.cameraDistanceCovered * 10;
-		
-		Application.LoadLevel ("ResultsScreen");
+		UIMessageReceiver.Instance.SendTrigger("PlayerDied");
 
+		float slowDelay = .05f;
+		float slowedTimeScale = .25f;
+
+		for (float i = 0; i < slowDelay; i += Time.unscaledDeltaTime) {
+			Time.timeScale = Mathf.Lerp(1, slowedTimeScale, i / slowDelay);
+			yield return new WaitForSeconds(Time.unscaledDeltaTime);
+		}
+
+		yield return new WaitForSeconds(1f);
+		
+		for (float i = 0; i < slowDelay; i += Time.unscaledDeltaTime) {
+			Time.timeScale = Mathf.Lerp(slowedTimeScale, 1, i / slowDelay);
+			yield return new WaitForSeconds(Time.unscaledDeltaTime);
+		}
+		Time.timeScale = 1;
+		
+		UIMessageReceiver.Instance.SendTrigger("GameOver");
 		yield return null;
 	}
 }

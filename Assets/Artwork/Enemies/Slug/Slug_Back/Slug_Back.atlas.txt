@@ -1,0 +1,97 @@
+
+Slug_Back.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+back/Slug_body_001
+  rotate: true
+  xy: 545, 129
+  size: 125, 172
+  orig: 125, 172
+  offset: 0, 0
+  index: -1
+back/Slug_body_002
+  rotate: true
+  xy: 719, 151
+  size: 103, 187
+  orig: 103, 187
+  offset: 0, 0
+  index: -1
+back/Slug_body_003
+  rotate: false
+  xy: 269, 88
+  size: 135, 166
+  orig: 135, 166
+  offset: 0, 0
+  index: -1
+back/horn_front_0102
+  rotate: false
+  xy: 600, 79
+  size: 37, 48
+  orig: 37, 48
+  offset: 0, 0
+  index: -1
+back/horn_front_0103
+  rotate: false
+  xy: 459, 22
+  size: 53, 67
+  orig: 53, 67
+  offset: 0, 0
+  index: -1
+back/horn_front_0104
+  rotate: false
+  xy: 545, 78
+  size: 53, 49
+  orig: 53, 49
+  offset: 0, 0
+  index: -1
+front/Lightning0001
+  rotate: true
+  xy: 269, 2
+  size: 84, 93
+  orig: 84, 93
+  offset: 0, 0
+  index: -1
+front/Lightning0002
+  rotate: true
+  xy: 364, 2
+  size: 84, 93
+  orig: 84, 93
+  offset: 0, 0
+  index: -1
+front/Lightning0003
+  rotate: false
+  xy: 908, 161
+  size: 84, 93
+  orig: 84, 93
+  offset: 0, 0
+  index: -1
+front/arm1
+  rotate: false
+  xy: 719, 137
+  size: 25, 12
+  orig: 25, 12
+  offset: 0, 0
+  index: -1
+front/electrocution
+  rotate: false
+  xy: 2, 3
+  size: 265, 251
+  orig: 265, 251
+  offset: 0, 0
+  index: -1
+front/mouth_front_01
+  rotate: false
+  xy: 639, 92
+  size: 34, 35
+  orig: 34, 35
+  offset: 0, 0
+  index: -1
+front/thecno_slime_front_idle0001
+  rotate: false
+  xy: 406, 91
+  size: 137, 163
+  orig: 137, 163
+  offset: 0, 0
+  index: -1

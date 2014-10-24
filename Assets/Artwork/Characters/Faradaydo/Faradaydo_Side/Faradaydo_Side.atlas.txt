@@ -1,0 +1,118 @@
+
+Faradaydo_Side.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+side/Hammer_big
+  rotate: false
+  xy: 269, 146
+  size: 92, 108
+  orig: 92, 108
+  offset: 0, 0
+  index: -1
+side/arm_side_01
+  rotate: false
+  xy: 269, 51
+  size: 81, 93
+  orig: 81, 93
+  offset: 0, 0
+  index: -1
+side/arm_side_02
+  rotate: false
+  xy: 363, 177
+  size: 94, 77
+  orig: 94, 77
+  offset: 0, 0
+  index: -1
+side/arm_side_03
+  rotate: true
+  xy: 653, 191
+  size: 63, 98
+  orig: 63, 98
+  offset: 0, 0
+  index: -1
+side/arm_side_04
+  rotate: false
+  xy: 555, 187
+  size: 96, 67
+  orig: 96, 67
+  offset: 0, 0
+  index: -1
+side/body_side_01
+  rotate: false
+  xy: 459, 179
+  size: 94, 75
+  orig: 94, 75
+  offset: 0, 0
+  index: -1
+side/electrocution
+  rotate: false
+  xy: 2, 3
+  size: 265, 251
+  orig: 265, 251
+  offset: 0, 0
+  index: -1
+side/leg_side_01
+  rotate: false
+  xy: 352, 57
+  size: 46, 83
+  orig: 46, 83
+  offset: 0, 0
+  index: -1
+side/leg_side_02
+  rotate: false
+  xy: 400, 60
+  size: 43, 80
+  orig: 43, 80
+  offset: 0, 0
+  index: -1
+side/pelvis
+  rotate: false
+  xy: 970, 214
+  size: 51, 40
+  orig: 51, 40
+  offset: 0, 0
+  index: -1
+side/shadow_side
+  rotate: false
+  xy: 856, 220
+  size: 112, 34
+  orig: 112, 34
+  offset: 0, 0
+  index: -1
+side/side_face_01
+  rotate: true
+  xy: 269, 2
+  size: 47, 45
+  orig: 47, 45
+  offset: 0, 0
+  index: -1
+side/side_face_02
+  rotate: false
+  xy: 316, 5
+  size: 49, 44
+  orig: 49, 44
+  offset: 0, 0
+  index: -1
+side/side_mustache
+  rotate: false
+  xy: 363, 142
+  size: 85, 33
+  orig: 85, 33
+  offset: 0, 0
+  index: -1
+side/tool
+  rotate: false
+  xy: 856, 186
+  size: 71, 32
+  orig: 71, 32
+  offset: 0, 0
+  index: -1
+side/wrench
+  rotate: false
+  xy: 753, 199
+  size: 101, 55
+  orig: 101, 55
+  offset: 0, 0
+  index: -1

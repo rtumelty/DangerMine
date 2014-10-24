@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Ally : Character {
-	
-	protected static int activeAllies = 0;
 #if UNITY_EDITOR || UNITY_STANDALONE
 	private static float laneSwitchThreshold = 1f;
 	#elif UNITY_ANDROID
@@ -12,13 +10,21 @@ public class Ally : Character {
 #endif
 	//private static float minimumDragTime = 0.005f;
 
+	private static List<Ally> activeAllies;
+
 	public static int ActiveAllies {
 		get {
-			return activeAllies;
+			return activeAllies.Count;
 		}
 	}
 
 	protected override void Awake() {
+		activeAllies = new List<Ally>();
+		foreach (Ally ally in FindObjectsOfType<Ally>()) {
+			if (!activeAllies.Contains(ally))
+				activeAllies.Add(ally);
+		}
+
 		_allegiance = Allegiance.Ally;
 
 		moveDirection = 1;
@@ -28,12 +34,20 @@ public class Ally : Character {
 
 	protected override void OnEnable() {
 		base.OnEnable ();
-		activeAllies++;
+		if (!activeAllies.Contains(this))
+			activeAllies.Add(this);
 	}
 
 	protected override void OnDisable() {
+		if (activeAllies.Contains(this))
+			activeAllies.Remove(this);
 		base.OnDisable ();
-		activeAllies--;
+	}
+
+	protected override void Die() {
+		if (activeAllies.Contains(this))
+			activeAllies.Remove(this);
+		base.Die();
 	}
 
 	protected virtual void OnMouseDown () {
@@ -46,10 +60,6 @@ public class Ally : Character {
 
 		yield return new WaitForSeconds (Time.deltaTime);
 
-		Debug.Log("Starting drag");
-
-		//float dragLength = 0f;
-		
 		float totalY = 0f;
 		bool insufficientDeltaY = true;
 
@@ -62,7 +72,6 @@ public class Ally : Character {
 			if (Mathf.Abs(totalY) > laneSwitchThreshold) {
 				insufficientDeltaY = 	false;
 				
-				Debug.Log("Drag recognised");
 				break;
 			}
 
@@ -86,28 +95,45 @@ public class Ally : Character {
 		}*/
 
 		float up = Mathf.Sign (totalY);
-		Debug.Log ("Drag direction: " + up);
 
 		GridCoordinate newCoord = gridCoords + new GridCoordinate (0f, up);
 
-		// Do nothing if out of level range or coordinates are occupied
-		if (GridManager.Instance.IsOccupied(newCoord)) return false;
 		ignoreUpdate = true;
-
+		
 		float swipeTime = .06f;
 		float elapsedTime = 0f;
-
-		Vector3 startPosition = transform.position;
 		
-		while (elapsedTime <= swipeTime) {
-			transform.position = Vector3.Lerp(startPosition, newCoord.ToVector3(), elapsedTime * (1 / swipeTime));
-			elapsedTime += Time.deltaTime;
-			yield return new WaitForSeconds(Time.deltaTime);
-		}
-		transform.position = newCoord.ToVector3(transform.position.z);
+		Vector3 startPosition = transform.position;
+		Vector3 targetPosition = new Vector3(transform.position.x, newCoord.ToVector3().y, transform.position.z);
 
+		// "Wobble" if out of level range or coordinates are occupied
+		if (GridManager.Instance.IsOccupied(newCoord)) {
+			swipeTime *= 2;
+			while (elapsedTime <= swipeTime / 2) {
+				transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime * (1 / swipeTime));
+				elapsedTime += Time.deltaTime;
+				yield return new WaitForSeconds(Time.deltaTime);
+			}
+			
+			
+			while (elapsedTime <= swipeTime) {
+				transform.position = Vector3.Lerp(startPosition, targetPosition, 1 - (elapsedTime * (1 / swipeTime)));
+				elapsedTime += Time.deltaTime;
+				yield return new WaitForSeconds(Time.deltaTime);
+			}
+			transform.position = startPosition;
+		}
+		else {
+			while (elapsedTime <= swipeTime) {
+				transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime * (1 / swipeTime));
+				elapsedTime += Time.deltaTime;
+				yield return new WaitForSeconds(Time.deltaTime);
+			}
+			transform.position = targetPosition;
+			gridCoords = new GridCoordinate (transform.position);
+			UpdateSortingLayer();
+		}
+		
 		ignoreUpdate = false;
-		gridCoords = new GridCoordinate (transform.position);
-		UpdateSortingLayer();
 	}
 }

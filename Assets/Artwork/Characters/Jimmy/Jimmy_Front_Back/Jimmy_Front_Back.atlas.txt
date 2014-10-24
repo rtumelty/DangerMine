@@ -1,0 +1,251 @@
+
+Jimmy_Front&Back.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Back/jimmy_arm_back_01
+  rotate: false
+  xy: 620, 99
+  size: 57, 55
+  orig: 57, 55
+  offset: 0, 0
+  index: -1
+Back/jimmy_back_head
+  rotate: false
+  xy: 966, 175
+  size: 45, 36
+  orig: 45, 36
+  offset: 0, 0
+  index: -1
+Back/jimmy_back_helmet
+  rotate: false
+  xy: 883, 157
+  size: 48, 31
+  orig: 48, 31
+  offset: 0, 0
+  index: -1
+Back/jimmy_body_back_01
+  rotate: false
+  xy: 517, 57
+  size: 101, 95
+  orig: 101, 95
+  offset: 0, 0
+  index: -1
+Back/jimmy_forearm
+  rotate: true
+  xy: 732, 5
+  size: 33, 39
+  orig: 33, 39
+  offset: 0, 0
+  index: -1
+Back/jimmy_hand_back_01
+  rotate: false
+  xy: 966, 213
+  size: 56, 41
+  orig: 56, 41
+  offset: 0, 0
+  index: -1
+Back/jimmy_leg_back_01
+  rotate: true
+  xy: 760, 120
+  size: 34, 66
+  orig: 34, 66
+  offset: 0, 0
+  index: -1
+Back/jimmy_leg_back_02
+  rotate: true
+  xy: 785, 39
+  size: 34, 43
+  orig: 34, 43
+  offset: 0, 0
+  index: -1
+Back/jimmy_leg_back_03
+  rotate: true
+  xy: 830, 39
+  size: 34, 43
+  orig: 34, 43
+  offset: 0, 0
+  index: -1
+Back/jimmy_leg_back_04
+  rotate: true
+  xy: 826, 157
+  size: 34, 55
+  orig: 34, 55
+  offset: 0, 0
+  index: -1
+Back/shadow_front
+  rotate: false
+  xy: 269, 9
+  size: 167, 45
+  orig: 167, 45
+  offset: 0, 0
+  index: -1
+Front/electrocution
+  rotate: false
+  xy: 2, 3
+  size: 265, 251
+  orig: 265, 251
+  offset: 0, 0
+  index: -1
+Front/jimmy_arm_front_01
+  rotate: false
+  xy: 517, 2
+  size: 59, 53
+  orig: 59, 53
+  offset: 0, 0
+  index: -1
+Front/jimmy_arm_front_012
+  rotate: false
+  xy: 826, 193
+  size: 57, 61
+  orig: 57, 61
+  offset: 0, 0
+  index: -1
+Front/jimmy_belt_01
+  rotate: false
+  xy: 885, 223
+  size: 79, 31
+  orig: 79, 31
+  offset: 0, 0
+  index: -1
+Front/jimmy_belt_02
+  rotate: false
+  xy: 885, 190
+  size: 79, 31
+  orig: 79, 31
+  offset: 0, 0
+  index: -1
+Front/jimmy_belt_03
+  rotate: false
+  xy: 679, 123
+  size: 79, 31
+  orig: 79, 31
+  offset: 0, 0
+  index: -1
+Front/jimmy_body_front_01
+  rotate: false
+  xy: 620, 156
+  size: 101, 98
+  orig: 101, 98
+  offset: 0, 0
+  index: -1
+Front/jimmy_body_front_02
+  rotate: false
+  xy: 517, 154
+  size: 101, 100
+  orig: 101, 100
+  offset: 0, 0
+  index: -1
+Front/jimmy_body_front_03
+  rotate: false
+  xy: 723, 156
+  size: 101, 98
+  orig: 101, 98
+  offset: 0, 0
+  index: -1
+Front/jimmy_electrocuted
+  rotate: false
+  xy: 269, 56
+  size: 246, 198
+  orig: 246, 198
+  offset: 0, 0
+  index: -1
+Front/jimmy_face_front_01
+  rotate: false
+  xy: 738, 80
+  size: 45, 38
+  orig: 45, 38
+  offset: 0, 0
+  index: -1
+Front/jimmy_face_front_02
+  rotate: false
+  xy: 826, 75
+  size: 45, 36
+  orig: 45, 36
+  offset: 0, 0
+  index: -1
+Front/jimmy_face_front_03
+  rotate: false
+  xy: 738, 40
+  size: 45, 38
+  orig: 45, 38
+  offset: 0, 0
+  index: -1
+Front/jimmy_forearm_front_01
+  rotate: false
+  xy: 773, 2
+  size: 32, 35
+  orig: 32, 35
+  offset: 0, 0
+  index: -1
+Front/jimmy_forearm_front_010
+  rotate: false
+  xy: 807, 5
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Front/jimmy_hand_front_011
+  rotate: true
+  xy: 578, 2
+  size: 53, 54
+  orig: 53, 54
+  offset: 0, 0
+  index: -1
+Front/jimmy_hand_front_015
+  rotate: false
+  xy: 634, 2
+  size: 55, 54
+  orig: 55, 54
+  offset: 0, 0
+  index: -1
+Front/jimmy_hand_front_03
+  rotate: false
+  xy: 828, 113
+  size: 57, 42
+  orig: 57, 42
+  offset: 0, 0
+  index: -1
+Front/jimmy_hand_side_03
+  rotate: false
+  xy: 438, 2
+  size: 59, 52
+  orig: 59, 52
+  offset: 0, 0
+  index: -1
+Front/jimmy_leg_02
+  rotate: false
+  xy: 887, 105
+  size: 48, 50
+  orig: 48, 50
+  offset: 0, 0
+  index: -1
+Front/jimmy_leg_03
+  rotate: false
+  xy: 688, 69
+  size: 48, 52
+  orig: 48, 52
+  offset: 0, 0
+  index: -1
+Front/jimmy_leg_04
+  rotate: false
+  xy: 785, 75
+  size: 39, 43
+  orig: 39, 43
+  offset: 0, 0
+  index: -1
+Front/jimmy_leg_05
+  rotate: false
+  xy: 691, 14
+  size: 39, 53
+  orig: 39, 53
+  offset: 0, 0
+  index: -1
+Front/jimmy_leg_front_left_01
+  rotate: true
+  xy: 620, 58
+  size: 39, 66
+  orig: 39, 66
+  offset: 0, 0
+  index: -1

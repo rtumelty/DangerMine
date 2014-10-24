@@ -1,0 +1,111 @@
+
+Jimmy_Side.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Side/crowbar
+  rotate: false
+  xy: 423, 109
+  size: 41, 145
+  orig: 41, 145
+  offset: 0, 0
+  index: -1
+Side/crowbar_02
+  rotate: false
+  xy: 269, 102
+  size: 152, 152
+  orig: 152, 152
+  offset: 0, 0
+  index: -1
+Side/electrocution
+  rotate: false
+  xy: 2, 3
+  size: 265, 251
+  orig: 265, 251
+  offset: 0, 0
+  index: -1
+Side/face_01
+  rotate: false
+  xy: 466, 118
+  size: 47, 40
+  orig: 47, 40
+  offset: 0, 0
+  index: -1
+Side/face_02
+  rotate: false
+  xy: 731, 213
+  size: 45, 41
+  orig: 45, 41
+  offset: 0, 0
+  index: -1
+Side/face_03
+  rotate: false
+  xy: 521, 177
+  size: 46, 41
+  orig: 46, 41
+  offset: 0, 0
+  index: -1
+Side/jimmy_arm_side_01
+  rotate: false
+  xy: 466, 160
+  size: 53, 58
+  orig: 53, 58
+  offset: 0, 0
+  index: -1
+Side/jimmy_body_side_01
+  rotate: true
+  xy: 269, 2
+  size: 98, 88
+  orig: 98, 88
+  offset: 0, 0
+  index: -1
+Side/jimmy_forearm_side_01
+  rotate: false
+  xy: 423, 74
+  size: 29, 33
+  orig: 29, 33
+  offset: 0, 0
+  index: -1
+Side/jimmy_hand_side_02
+  rotate: false
+  xy: 635, 216
+  size: 46, 38
+  orig: 46, 38
+  offset: 0, 0
+  index: -1
+Side/jimmy_hand_side_03
+  rotate: true
+  xy: 683, 216
+  size: 38, 46
+  orig: 38, 46
+  offset: 0, 0
+  index: -1
+Side/jimmy_helmet
+  rotate: false
+  xy: 580, 225
+  size: 53, 29
+  orig: 53, 29
+  offset: 0, 0
+  index: -1
+Side/jimmy_leg_side_01
+  rotate: false
+  xy: 359, 19
+  size: 42, 81
+  orig: 42, 81
+  offset: 0, 0
+  index: -1
+Side/jimmy_pelvis
+  rotate: true
+  xy: 403, 52
+  size: 48, 18
+  orig: 48, 18
+  offset: 0, 0
+  index: -1
+Side/shadow_side
+  rotate: false
+  xy: 466, 220
+  size: 112, 34
+  orig: 112, 34
+  offset: 0, 0
+  index: -1

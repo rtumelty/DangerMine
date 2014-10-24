@@ -1,0 +1,167 @@
+
+skeleton.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+front/Lightning0001
+  rotate: false
+  xy: 322, 148
+  size: 84, 93
+  orig: 84, 93
+  offset: 0, 0
+  index: -1
+front/Lightning0002
+  rotate: false
+  xy: 280, 53
+  size: 84, 93
+  orig: 84, 93
+  offset: 0, 0
+  index: -1
+front/bat_wing3
+  rotate: true
+  xy: 587, 283
+  size: 54, 80
+  orig: 54, 80
+  offset: 0, 0
+  index: -1
+front/bat_wing3_l
+  rotate: true
+  xy: 669, 283
+  size: 54, 80
+  orig: 54, 80
+  offset: 0, 0
+  index: -1
+front/bat_wing4_r
+  rotate: false
+  xy: 167, 243
+  size: 212, 79
+  orig: 212, 79
+  offset: 0, 0
+  index: -1
+front/bat_wing7_l
+  rotate: false
+  xy: 2, 204
+  size: 163, 306
+  orig: 163, 306
+  offset: 0, 0
+  index: -1
+front/bat_wing7_r
+  rotate: false
+  xy: 167, 324
+  size: 236, 186
+  orig: 236, 186
+  offset: 0, 0
+  index: -1
+front/bat_wing_4_l
+  rotate: true
+  xy: 794, 267
+  size: 113, 166
+  orig: 113, 166
+  offset: 0, 0
+  index: -1
+front/body
+  rotate: false
+  xy: 962, 294
+  size: 58, 86
+  orig: 58, 86
+  offset: 0, 0
+  index: -1
+front/body_2
+  rotate: false
+  xy: 408, 211
+  size: 57, 46
+  orig: 57, 46
+  offset: 0, 0
+  index: -1
+front/body_attack
+  rotate: true
+  xy: 794, 382
+  size: 128, 208
+  orig: 128, 208
+  offset: 0, 0
+  index: -1
+front/ear_l
+  rotate: true
+  xy: 2, 2
+  size: 33, 47
+  orig: 33, 47
+  offset: 0, 0
+  index: -1
+front/ear_r
+  rotate: true
+  xy: 51, 4
+  size: 31, 78
+  orig: 31, 78
+  offset: 0, 0
+  index: -1
+front/eye_l
+  rotate: false
+  xy: 1004, 484
+  size: 18, 26
+  orig: 18, 26
+  offset: 0, 0
+  index: -1
+front/eye_r
+  rotate: false
+  xy: 751, 305
+  size: 33, 32
+  orig: 33, 32
+  offset: 0, 0
+  index: -1
+front/head
+  rotate: true
+  xy: 405, 259
+  size: 83, 90
+  orig: 83, 90
+  offset: 0, 0
+  index: -1
+front/head_2
+  rotate: false
+  xy: 366, 49
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+front/head_3
+  rotate: true
+  xy: 497, 258
+  size: 84, 88
+  orig: 84, 88
+  offset: 0, 0
+  index: -1
+front/head_attack
+  rotate: false
+  xy: 2, 37
+  size: 134, 165
+  orig: 134, 165
+  offset: 0, 0
+  index: -1
+front/wing_1
+  rotate: false
+  xy: 167, 149
+  size: 153, 92
+  orig: 153, 92
+  offset: 0, 0
+  index: -1
+front/wing_1_l
+  rotate: false
+  xy: 138, 27
+  size: 140, 120
+  orig: 140, 120
+  offset: 0, 0
+  index: -1
+front/wing_3
+  rotate: true
+  xy: 603, 339
+  size: 171, 189
+  orig: 171, 189
+  offset: 0, 0
+  index: -1
+front/wing_3_l
+  rotate: true
+  xy: 405, 344
+  size: 166, 196
+  orig: 166, 196
+  offset: 0, 0
+  index: -1

@@ -12,13 +12,11 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 	[SerializeField] int goldCost;
 	[SerializeField] float spawnCoolDown;
 
-	private Button button;
 	private bool ready = false;
 	private bool selected = false;
 	private bool cooldownActive = false;
 
 	void Awake() {
-		button = GetComponent<Button>();
 		unitCostText.text = goldCost.ToString();
 	}
 
@@ -35,10 +33,8 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 
 		if (!ready) {
 			unavailableOverlay.enabled = true;
-			button.interactable = false;
 		} else {
 			unavailableOverlay.enabled = false;
-			button.interactable = true;
 		}
 
 		if (selected) selectedOverlay.enabled = true;
@@ -46,7 +42,8 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 	}
 
 	void OnMouseDown() {
-		Clicked();
+		if (ready)
+			Clicked();
 	}
 
 	public void Clicked()

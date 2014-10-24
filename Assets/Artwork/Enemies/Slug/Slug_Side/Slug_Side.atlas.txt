@@ -1,0 +1,139 @@
+
+Slug_Side.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+side/Lightning0001
+  rotate: false
+  xy: 798, 360
+  size: 84, 93
+  orig: 84, 93
+  offset: 0, 0
+  index: -1
+side/Lightning0002
+  rotate: false
+  xy: 884, 405
+  size: 84, 93
+  orig: 84, 93
+  offset: 0, 0
+  index: -1
+side/Slug_body_01_walk_0001
+  rotate: false
+  xy: 269, 315
+  size: 193, 183
+  orig: 193, 183
+  offset: 0, 0
+  index: -1
+side/Slug_body_02
+  rotate: false
+  xy: 2, 51
+  size: 202, 194
+  orig: 202, 194
+  offset: 0, 0
+  index: -1
+side/Slug_body_03
+  rotate: false
+  xy: 464, 315
+  size: 193, 138
+  orig: 193, 138
+  offset: 0, 0
+  index: -1
+side/Slug_body_04
+  rotate: false
+  xy: 269, 192
+  size: 210, 121
+  orig: 210, 121
+  offset: 0, 0
+  index: -1
+side/Slug_body_05
+  rotate: true
+  xy: 659, 315
+  size: 138, 137
+  orig: 138, 137
+  offset: 0, 0
+  index: -1
+side/Slug_body_06
+  rotate: true
+  xy: 481, 164
+  size: 149, 158
+  orig: 149, 158
+  offset: 0, 0
+  index: -1
+side/Techno_slime_walk0001
+  rotate: false
+  xy: 464, 455
+  size: 305, 43
+  orig: 305, 43
+  offset: 0, 0
+  index: -1
+side/arm1
+  rotate: true
+  xy: 870, 473
+  size: 25, 12
+  orig: 25, 12
+  offset: 0, 0
+  index: -1
+side/electrocution
+  rotate: false
+  xy: 2, 247
+  size: 265, 251
+  orig: 265, 251
+  offset: 0, 0
+  index: -1
+side/slug_horn_walk0001
+  rotate: true
+  xy: 798, 315
+  size: 43, 50
+  orig: 43, 50
+  offset: 0, 0
+  index: -1
+side/slug_horn_walk0002
+  rotate: false
+  xy: 2, 2
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: -1
+side/slug_horn_walk0003
+  rotate: false
+  xy: 771, 455
+  size: 97, 43
+  orig: 97, 43
+  offset: 0, 0
+  index: -1
+side/slug_horn_walk0004
+  rotate: false
+  xy: 641, 136
+  size: 120, 78
+  orig: 120, 78
+  offset: 0, 0
+  index: -1
+side/slug_horn_walk0005
+  rotate: false
+  xy: 641, 216
+  size: 157, 97
+  orig: 157, 97
+  offset: 0, 0
+  index: -1
+side/slug_horn_walk0006
+  rotate: false
+  xy: 970, 453
+  size: 44, 45
+  orig: 44, 45
+  offset: 0, 0
+  index: -1
+side/slug_horn_walk0007
+  rotate: false
+  xy: 206, 198
+  size: 48, 47
+  orig: 48, 47
+  offset: 0, 0
+  index: -1
+side/slug_mouth_hole_walk
+  rotate: false
+  xy: 763, 179
+  size: 25, 35
+  orig: 25, 35
+  offset: 0, 0
+  index: -1

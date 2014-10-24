@@ -1,0 +1,209 @@
+
+Boz_Front&Back.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+back/back_head
+  rotate: false
+  xy: 706, 301
+  size: 43, 40
+  orig: 43, 40
+  offset: 0, 0
+  index: -1
+back/back_leg_bent
+  rotate: false
+  xy: 888, 446
+  size: 25, 33
+  orig: 25, 33
+  offset: 0, 0
+  index: -1
+back/back_leg_straight
+  rotate: true
+  xy: 96, 2
+  size: 28, 41
+  orig: 28, 41
+  offset: 0, 0
+  index: -1
+back/body_back
+  rotate: false
+  xy: 551, 404
+  size: 153, 106
+  orig: 153, 106
+  offset: 0, 0
+  index: -1
+back/forearm_back1
+  rotate: false
+  xy: 184, 156
+  size: 52, 86
+  orig: 52, 86
+  offset: 0, 0
+  index: -1
+front/arm_front_01
+  rotate: false
+  xy: 96, 32
+  size: 67, 53
+  orig: 67, 53
+  offset: 0, 0
+  index: -1
+front/arm_front_02
+  rotate: false
+  xy: 760, 426
+  size: 67, 53
+  orig: 67, 53
+  offset: 0, 0
+  index: -1
+front/body_front_01
+  rotate: false
+  xy: 551, 296
+  size: 153, 106
+  orig: 153, 106
+  offset: 0, 0
+  index: -1
+front/electrocuted0002
+  rotate: false
+  xy: 2, 244
+  size: 280, 266
+  orig: 280, 266
+  offset: 0, 0
+  index: -1
+front/electrocution
+  rotate: false
+  xy: 284, 259
+  size: 265, 251
+  orig: 265, 251
+  offset: 0, 0
+  index: -1
+front/forearm_01
+  rotate: false
+  xy: 706, 398
+  size: 52, 81
+  orig: 52, 81
+  offset: 0, 0
+  index: -1
+front/front_face_01
+  rotate: true
+  xy: 165, 51
+  size: 34, 20
+  orig: 34, 20
+  offset: 0, 0
+  index: -1
+front/front_face_03
+  rotate: true
+  xy: 165, 51
+  size: 34, 20
+  orig: 34, 20
+  offset: 0, 0
+  index: -1
+front/front_face_02
+  rotate: true
+  xy: 165, 51
+  size: 34, 20
+  orig: 34, 20
+  offset: 0, 0
+  index: -1
+front/front_leg_out
+  rotate: false
+  xy: 706, 343
+  size: 45, 53
+  orig: 45, 53
+  offset: 0, 0
+  index: -1
+front/front_leg_out2
+  rotate: false
+  xy: 238, 189
+  size: 45, 53
+  orig: 45, 53
+  offset: 0, 0
+  index: -1
+front/front_leg_out2b
+  rotate: false
+  xy: 234, 104
+  size: 41, 42
+  orig: 41, 42
+  offset: 0, 0
+  index: -1
+front/front_leg_out2c
+  rotate: true
+  xy: 919, 469
+  size: 41, 42
+  orig: 41, 42
+  offset: 0, 0
+  index: -1
+front/front_leg_straight
+  rotate: true
+  xy: 963, 480
+  size: 30, 42
+  orig: 30, 42
+  offset: 0, 0
+  index: -1
+front/front_leg_straightback_left
+  rotate: true
+  xy: 635, 264
+  size: 30, 38
+  orig: 30, 38
+  offset: 0, 0
+  index: -1
+front/front_leg_straightright
+  rotate: true
+  xy: 760, 394
+  size: 30, 42
+  orig: 30, 42
+  offset: 0, 0
+  index: -1
+front/front_leg_straightrightback
+  rotate: false
+  xy: 753, 354
+  size: 30, 38
+  orig: 30, 38
+  offset: 0, 0
+  index: -1
+front/googles
+  rotate: false
+  xy: 238, 148
+  size: 43, 39
+  orig: 43, 39
+  offset: 0, 0
+  index: -1
+front/hand_01
+  rotate: true
+  xy: 829, 423
+  size: 56, 57
+  orig: 56, 57
+  offset: 0, 0
+  index: -1
+front/hand_02
+  rotate: false
+  xy: 184, 95
+  size: 48, 59
+  orig: 48, 59
+  offset: 0, 0
+  index: -1
+front/jackhammer_01
+  rotate: false
+  xy: 2, 87
+  size: 180, 155
+  orig: 180, 155
+  offset: 0, 0
+  index: -1
+front/joint
+  rotate: false
+  xy: 551, 271
+  size: 82, 23
+  orig: 82, 23
+  offset: 0, 0
+  index: -1
+front/moustache
+  rotate: false
+  xy: 2, 23
+  size: 92, 62
+  orig: 92, 62
+  offset: 0, 0
+  index: -1
+front/shadow_front
+  rotate: false
+  xy: 706, 481
+  size: 211, 29
+  orig: 211, 29
+  offset: 0, 0
+  index: -1
