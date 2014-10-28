@@ -97,7 +97,7 @@ public class Character : GameEntity {
 
 			if (_allegiance == Allegiance.Ally) {
 				if (gridCoords.x >= (cameraController.GridCoords.x + 1.5)) {
-					currentMoveSpeed = cameraController.MoveSpeed;
+					currentMoveSpeed = CameraController.MoveSpeed;
 				}
 				else {
 					currentMoveSpeed = defaultMoveSpeed;

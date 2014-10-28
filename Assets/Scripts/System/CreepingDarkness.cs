@@ -32,7 +32,8 @@ public class CreepingDarkness : MonoBehaviour {
 				character.SendMessage("Die");
 		}
 		else if (character is Enemy) {
-			StartCoroutine(AdvanceDarkness());
+			//StartCoroutine(AdvanceDarkness());
+			(character as Enemy).Chase();
 		}
 	}
 

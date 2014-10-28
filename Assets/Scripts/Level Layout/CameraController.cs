@@ -2,11 +2,19 @@
 using System.Collections;
 
 public class CameraController : MonoBehaviour {
+	static CameraController instance;
+
+	public static CameraController Instance {
+		get {
+			return instance;
+		}
+	}
+
 	[SerializeField] float moveSpeed = 1f;
 
-	public float MoveSpeed {
+	public static float MoveSpeed {
 		get {
-			return moveSpeed;
+			return instance.moveSpeed;
 		}
 	}
 
@@ -16,6 +24,9 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
+	void Awake() {
+		instance = this;
+	}
 	
 	// Update is called once per frame
 	void LateUpdate () {

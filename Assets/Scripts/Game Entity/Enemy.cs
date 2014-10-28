@@ -5,6 +5,13 @@ using System.Collections.Generic;
 public class Enemy : Character {
 	
 	private static List<Enemy> activeEnemies;
+	private bool chasing = false;
+
+	public bool Chasing {
+		get {
+			return chasing;
+		}
+	}
 	
 	public static int ActiveEnemies {
 		get {
@@ -43,5 +50,12 @@ public class Enemy : Character {
 		
 		if (activeEnemies.Contains(this))
 			activeEnemies.Remove(this);
+	}
+
+	public void Chase() {
+		transform.Rotate(new Vector3(0, 180, 0));
+		moveDirection = 1;
+		chasing = true;
+		currentMoveSpeed = CameraController.MoveSpeed;
 	}
 }
