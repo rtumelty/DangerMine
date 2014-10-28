@@ -18,15 +18,13 @@ public class Rock : GameEntity {
 	}
 
 	protected override void Hit(Character character) {
-		if (character is Miner || character is Beetle) {
-			//currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength * Time.deltaTime), 0, 9999);
+		//currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength * Time.deltaTime), 0, 9999);
 
-			currentHealth = Mathf.Clamp (currentHealth - character.AttackStrength, 0, 9999);
+		currentHealth = Mathf.Clamp (currentHealth - character.AttackStrength, 0, 9999);
 
-			if (currentHealth == 0) {
-				destroyedBy = character;
-				Die ();
-			}
+		if (currentHealth == 0) {
+			destroyedBy = character;
+			Die ();
 		}
 	}
 

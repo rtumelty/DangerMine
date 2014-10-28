@@ -25,8 +25,6 @@ public class SpineMultiSkeleton : MonoBehaviour {
 			SetSkeleton(value);
 		}
 	}
-
-	public bool reserved;
 	
 	string currentAnimation = "";
 
@@ -75,8 +73,6 @@ public class SpineMultiSkeleton : MonoBehaviour {
 	}
 
 	IEnumerator _SetAnimation(string animationName, int track, bool loop = true, float length = 0f) {
-		if (reserved)
-			yield break;
 
 		if (skeleton.state == null) {
 		}
@@ -137,7 +133,6 @@ public class SpineMultiSkeleton : MonoBehaviour {
 			yield return new WaitForSeconds (delay);
 	
 		skeleton.state.ClearTrack (track);
-		reserved = false;
 	}
 
 	void SetSkeleton(SkeletonDataAsset skeletonDataAsset) {

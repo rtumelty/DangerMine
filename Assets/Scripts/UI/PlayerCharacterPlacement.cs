@@ -21,7 +21,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	[SerializeField] private bool released = false;
 
 	private float initialClick = 0;
-	private float clickThreshold = 0.1f;
+	private float clickThreshold = 0.2f;
 
 	private GameObject theHighLight;
 	private GameEntity entity;

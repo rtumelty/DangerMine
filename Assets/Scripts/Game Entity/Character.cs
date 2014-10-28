@@ -129,7 +129,6 @@ public class Character : GameEntity {
 
 	protected virtual IEnumerator Attack() {
 		mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
-		Debug.Log(gameObject + "playing animation " + attackAnimation);
 
 		while (blocked) {
 			if (mySpineMultiSkeleton.skeleton.state.GetCurrent(0) == null) mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
