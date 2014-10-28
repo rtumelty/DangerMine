@@ -35,7 +35,7 @@ public class Rock : GameEntity {
 			return;
 
 		if (dropsGold) {
-			GameObject gold = PrefabPool.GetPool(goldPrefabPoolId).Spawn(transform.position);
+			PrefabPool.GetPool(goldPrefabPoolId).Spawn(transform.position);
 		}
 
 		destroyedBy = null;

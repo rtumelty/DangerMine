@@ -8,9 +8,6 @@ public class SpineMultiSkeletonEditor : Editor {
 	int currentDataIndex = 0;
 	int currentAnimationIndex = 0;
 
-	bool expandData = false;
-	Vector2 animationScrollPos = Vector2.zero;
-
 	void OnEnable() {
 		multiSkeleton = target as SpineMultiSkeleton;
 		multiSkeleton.Init ();

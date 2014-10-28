@@ -29,6 +29,12 @@ public class SpineMultiSkeleton : MonoBehaviour {
 	public bool reserved;
 	
 	string currentAnimation = "";
+
+	public string CurrentAnimation {
+		get {
+			return currentAnimation;
+		}
+	}
 	
 	void Awake() {
 		Init ();
@@ -54,8 +60,10 @@ public class SpineMultiSkeleton : MonoBehaviour {
 					else {
 						int index;
 						animationReferences.TryGetValue(animation.Name, out index);
-						if (i != index)
+						if (i != index) {
 							Debug.LogWarning("Multiple animations with the same name. All animations must have unique names");
+							Debug.Log(gameObject + " " + animation.name);
+						}
 					}
 				}
 			}
@@ -78,40 +86,46 @@ public class SpineMultiSkeleton : MonoBehaviour {
 		}
 
 		currentAnimation = "";
-		
-		int skeletonDataIndex;
-		if (animationReferences.TryGetValue (animationName, out skeletonDataIndex)) {
-			if (!skeleton.skeletonDataAsset.Equals(skeletonDataAssets[skeletonDataIndex])) {
-				SetSkeleton(skeletonDataAssets[skeletonDataIndex]);
-			}
 
-			skeleton.AnimationName = "";
-			skeleton.state.SetAnimation(track, animationName, loop);
-			/*
-			while (skeleton.state.GetCurrent(track) == null || currentAnimation != animationName) {
+		try {
+			int skeletonDataIndex;
+			if (animationReferences.TryGetValue (animationName, out skeletonDataIndex)) {
+				if (!skeleton.skeletonDataAsset.Equals(skeletonDataAssets[skeletonDataIndex])) {
+					SetSkeleton(skeletonDataAssets[skeletonDataIndex]);
+				}
+
 				skeleton.AnimationName = "";
 				skeleton.state.SetAnimation(track, animationName, loop);
-				Debug.Log ("setting animation");
+				/*
+				while (skeleton.state.GetCurrent(track) == null || currentAnimation != animationName) {
+					skeleton.AnimationName = "";
+					skeleton.state.SetAnimation(track, animationName, loop);
+					Debug.Log ("setting animation");
 
-				TrackEntry currentTrack = skeleton.state.GetCurrent(track);
-				if (currentTrack != null) {
-					Debug.Log ("loaded animation: " + currentTrack.Animation.Name);
-					if (currentTrack.Animation.Name == animationName) {
-						Debug.Log("matches expected: " + currentTrack.Animation.Name);
-						currentAnimation = animationName;
+					TrackEntry currentTrack = skeleton.state.GetCurrent(track);
+					if (currentTrack != null) {
+						Debug.Log ("loaded animation: " + currentTrack.Animation.Name);
+						if (currentTrack.Animation.Name == animationName) {
+							Debug.Log("matches expected: " + currentTrack.Animation.Name);
+							currentAnimation = animationName;
+						}
 					}
-				}
-				else {
-					Debug.Log ("track null - retrying next frame");
-					yield return new WaitForSeconds(Time.deltaTime);
-				}
-			}*/
-			
-			if (loop && length != 0)
-				ClearTrack(track, length);
-		} else
+					else {
+						Debug.Log ("track null - retrying next frame");
+						yield return new WaitForSeconds(Time.deltaTime);
+					}
+				}*/
+				
+				if (loop && length != 0)
+					ClearTrack(track, length);
+			} else
+				yield break;
 			yield break;
-		yield break;
+		}
+		catch (Exception e) { 
+			Debug.LogError(e.Message);
+			yield break; 
+		}
 	}
 	
 	public void ClearTrack(int track, float delay = 0f) {

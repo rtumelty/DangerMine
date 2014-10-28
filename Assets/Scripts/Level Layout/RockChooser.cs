@@ -14,16 +14,16 @@ public class RockChooser : MonoBehaviour {
 	void OnEnable () {
 		float seed = Random.Range (0, 1f);
 
-		string poolId;
+		string poolId = "";
 
 		if (seed < crackedRockProbability)
 			poolId = crackedRockPoolId;
 		else if (seed < crackedRockProbability + hardRockProbability)
 			poolId = hardRockPoolId;
-		else
+		else if (seed < crackedRockProbability + hardRockProbability + goldRockProbability)
 			poolId = goldRockPoolId;
 
-		GameObject newRock = PrefabPool.GetPool (poolId).Spawn (transform.position);
+		PrefabPool.GetPool (poolId).Spawn (transform.position);
 
 		gameObject.SetActive (false);
 	}

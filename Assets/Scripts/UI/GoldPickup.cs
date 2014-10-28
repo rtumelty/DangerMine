@@ -8,7 +8,7 @@ public class GoldPickup : Pickup
 	[SerializeField] float highGoldDropOdds = .2f;
 	private bool highDrop = false;
 
-	void OnEnable ()
+	protected override void OnEnable ()
 	{
 		highDrop = Random.Range (0, 1f) < highGoldDropOdds;
 		base.OnEnable();

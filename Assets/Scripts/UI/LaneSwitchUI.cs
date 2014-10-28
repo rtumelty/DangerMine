@@ -25,13 +25,10 @@ public class LaneSwitchUI : MonoBehaviour {
 
 	[SerializeField] Color readyColour;
 	[SerializeField] Color waitingColour;
-	TextMesh textMesh;
 
 	void Awake() {
 		if (_instance != null) Destroy(this);
 		else _instance = this;
-
-		textMesh = GetComponentInChildren<TextMesh>() as TextMesh;
 	}
 	/*
 	void OnGUI() {

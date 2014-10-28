@@ -19,10 +19,12 @@ public class Ally : Character {
 	}
 
 	protected override void Awake() {
-		activeAllies = new List<Ally>();
-		foreach (Ally ally in FindObjectsOfType<Ally>()) {
-			if (!activeAllies.Contains(ally))
-				activeAllies.Add(ally);
+		if (activeAllies == null) {
+			activeAllies = new List<Ally>();
+			foreach (Ally ally in FindObjectsOfType<Ally>()) {
+				if (!activeAllies.Contains(ally))
+					activeAllies.Add(ally);
+			}
 		}
 
 		_allegiance = Allegiance.Ally;

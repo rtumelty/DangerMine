@@ -129,6 +129,7 @@ public class Character : GameEntity {
 
 	protected virtual IEnumerator Attack() {
 		mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
+		Debug.Log(gameObject + "playing animation " + attackAnimation);
 
 		while (blocked) {
 			if (mySpineMultiSkeleton.skeleton.state.GetCurrent(0) == null) mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
@@ -140,7 +141,7 @@ public class Character : GameEntity {
 		}
 	}
 
-	protected virtual void Hit(Character character) {
+	protected override void Hit(Character character) {
 		if (character.allegiance != allegiance) {
 			/* DPS approach
 			currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength / character.AttackSpeed * Time.deltaTime), 0, 9999);

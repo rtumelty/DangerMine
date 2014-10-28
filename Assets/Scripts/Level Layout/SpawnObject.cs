@@ -18,7 +18,6 @@ public class SpawnObject : MonoBehaviour
 	[SerializeField] rule[] ruleSets;
 	[SerializeField] int cameraStartingXPosition = 0;
 	private GameObject spawnPoint0;
-	private int currentObjectsOnScreen = 0;
 	public static int cameraDistanceCovered = 0;
 	
 	void Awake()

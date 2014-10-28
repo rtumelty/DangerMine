@@ -62,16 +62,12 @@ public class CheckInputType : MonoBehaviour
 			TOUCH_TYPE = InputType.TOUCHBEGAN_TYPE;
 		}
 
-#if UNITY_STANDALONE || UNITY_EDITOR
-
-		else if(false)
-#else
-	
+#if !UNITY_STANDALONE || !UNITY_EDITOR
 		else if(Input.touchCount == 2)
-#endif
 		{
 			TOUCH_TYPE = InputType.DUALTOUCH_TYPE;
 		}
+#endif
 
 #if UNITY_STANDALONE || UNITY_EDITOR
 		
