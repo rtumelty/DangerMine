@@ -18,9 +18,9 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
-	public GridCoordinate GridCoords {
+	public static GridCoordinate GridCoords {
 		get {
-			return transform.position as GridCoordinate;
+			return instance.transform.position as GridCoordinate;
 		}
 	}
 

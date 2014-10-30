@@ -36,6 +36,13 @@ public class Character : GameEntity {
 	}
 
 	protected bool blocked;
+
+	public bool IsBlocked {
+		get {
+			return blocked;
+		}
+	}
+
 	protected bool dying = false;
 	GameEntity attackTarget = null;
 	protected float currentMoveSpeed;
@@ -63,6 +70,12 @@ public class Character : GameEntity {
 	protected override void OnEnable() {
 		base.OnEnable();
 
+		if (_allegiance == Allegiance.Ally)
+			moveDirection = 1;
+		else
+			moveDirection = -1;
+
+		transform.rotation = Quaternion.Euler(Vector3.zero);
 		currentMoveSpeed = defaultMoveSpeed;
 		dying = false;
 		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
@@ -76,7 +89,7 @@ public class Character : GameEntity {
 		if (ignoreUpdate)
 			return;
 		
-		if (GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0)))
+		if (GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0))) 
 			Blocked(GridManager.Instance.EntityAt(gridCoords + new GridCoordinate(moveDirection, 0)));
 
 		if (blocked) {		
@@ -96,7 +109,7 @@ public class Character : GameEntity {
 			gridCoords = position as GridCoordinate;
 
 			if (_allegiance == Allegiance.Ally) {
-				if (gridCoords.x >= (cameraController.GridCoords.x + 1.5)) {
+				if (gridCoords.x >= (CameraController.GridCoords.x + 1.5)) {
 					currentMoveSpeed = CameraController.MoveSpeed;
 				}
 				else {
@@ -106,7 +119,7 @@ public class Character : GameEntity {
 		}
 	}
 	
-	public void Blocked(GameEntity target) { 
+	public virtual void Blocked(GameEntity target) { 
 		if (!blocked) {
 			blocked = true;
 

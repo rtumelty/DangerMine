@@ -60,7 +60,6 @@ public class SpineMultiSkeleton : MonoBehaviour {
 						animationReferences.TryGetValue(animation.Name, out index);
 						if (i != index) {
 							Debug.LogWarning("Multiple animations with the same name. All animations must have unique names");
-							Debug.Log(gameObject + " " + animation.name);
 						}
 					}
 				}
