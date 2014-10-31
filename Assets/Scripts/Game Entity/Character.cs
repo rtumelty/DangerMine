@@ -11,7 +11,7 @@ public class Character : GameEntity {
 	[SerializeField] protected float defaultMoveSpeed = 1.5f;
 	[SerializeField] protected int attackStrength = 10;
 	[SerializeField] protected float attackSpeed = 0.5f;
-	[SerializeField] protected float attackRange = 1f;
+	[SerializeField] protected Vector2 attackRange = new Vector2(1.5f, .8f);
 	
 	public SpineMultiSkeleton mySpineMultiSkeleton;
 	[SerializeField] protected string attackAnimation;
@@ -44,9 +44,11 @@ public class Character : GameEntity {
 	}
 
 	protected bool dying = false;
-	GameEntity attackTarget = null;
+	bool attacking = false;
+	GameEntity[] attackTargets = null;
 	protected float currentMoveSpeed;
 	CameraController cameraController;
+	protected AttackZone attackZone;
 
 	public float CurrentMoveSpeed {
 		get {
@@ -64,7 +66,8 @@ public class Character : GameEntity {
 			moveDirection = -1;
 
 		cameraController = Camera.main.gameObject.GetComponent<CameraController> ();
-
+		AttackZone attackZone = GetComponentInChildren<AttackZone>();
+		attackZone.SetSize(attackRange, moveDirection);
 	}
 	
 	protected override void OnEnable() {
@@ -124,32 +127,49 @@ public class Character : GameEntity {
 			blocked = true;
 
 			if (target.allegiance != _allegiance) {
-				attackTarget = target;
-				StartCoroutine ("Attack");
+				//attackTarget = target;
+				//StartCoroutine ("Attack");
 			} else if (target is Character) {
 				Character character = target as Character;
 				currentMoveSpeed = character.CurrentMoveSpeed;
 			}
 		}
 	}
+
 	public void Unblocked() {
 		blocked = false; 
-		attackTarget = null;
+		//attackTarget = null;
 		currentMoveSpeed = defaultMoveSpeed;
 		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
-		StopCoroutine ("Attack");
+		//StopCoroutine ("Attack");
+	}
+
+	public void UpdateTargets(GameEntity[] targets) {
+		attackTargets = targets;
+
+		Debug.LogWarning(attackTargets.Length);
+		if (attacking && targets.Length == 0) {
+			attacking = false;
+		} else if (!attacking && targets.Length > 0) {
+			StartCoroutine("Attack");
+		}
 	}
 
 	protected virtual IEnumerator Attack() {
+		attacking = true;
 		mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
 
-		while (blocked) {
+		while (attacking) {
 			if (mySpineMultiSkeleton.skeleton.state.GetCurrent(0) == null) mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
 			/* DPS approach
 			yield return new WaitForSeconds(Time.deltaTime);
 			*/
 			yield return new WaitForSeconds(attackSpeed);
-			attackTarget.SendMessage("Hit", this,SendMessageOptions.DontRequireReceiver);
+
+			foreach (GameEntity attackTarget in attackTargets) {
+				attackTarget.SendMessage("Hit", this,SendMessageOptions.DontRequireReceiver);
+				Debug.Log(gameObject + " attacking " + attackTarget);
+			}
 		}
 	}
 
@@ -159,6 +179,7 @@ public class Character : GameEntity {
 			currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength / character.AttackSpeed * Time.deltaTime), 0, 9999);
 			 */
 			currentHealth = Mathf.Clamp (currentHealth - character.AttackStrength, 0, 9999);
+			Debug.Log(gameObject + " attacked by " + character);
 
 			if (currentHealth == 0 && !dying) {
 				Die ();
@@ -167,7 +188,7 @@ public class Character : GameEntity {
 	}
 	
 	protected override void Die() {
-		StopCoroutine ("Attack");
+		attacking = false;
 		dying = true;
 		mySpineMultiSkeleton.SetAnimation (deathAnimation, 0, false);
 		StartCoroutine(DisableAfterAnimation(0));

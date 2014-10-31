@@ -58,7 +58,7 @@ public class Enemy : Character {
 			activeEnemies.Remove(this);
 	}
 
-	protected virtual void Update () {
+	protected override void Update () {
 		if (!chasing) {
 			base.Update();
 			return;
