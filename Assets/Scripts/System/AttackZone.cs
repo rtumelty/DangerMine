@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class AttackZone : MonoBehaviour {
 	BoxCollider2D attackRange;
 	Character owner;
@@ -23,7 +25,7 @@ public class AttackZone : MonoBehaviour {
 
 	public void SetSize(Vector2 size, int direction) {
 		if (attackRange == null) {
-			attackRange = gameObject.AddComponent<BoxCollider2D>();
+			attackRange = gameObject.GetComponent<BoxCollider2D>();
 			attackRange.isTrigger = true;
 		}
 
@@ -52,14 +54,17 @@ public class AttackZone : MonoBehaviour {
 	}
 
 	void Update() {
+		List<Collider2D> collidersInRange = new List<Collider2D>( Physics2D.OverlapAreaAll(attackRange.bounds.min, attackRange.bounds.max));
+
 		for (int i = 0; i < targets.Count;i++) {
 			GameEntity entity = targets[i];
-			if (entity.gameObject.activeSelf == false) {
+
+			if (entity.gameObject.activeSelf == false) {// || !collidersInRange.Contains(entity.collider2D)) {
 				targets.Remove(entity);
+				break;
 			}
 		}
 
 		owner.UpdateTargets(targets.ToArray());
-
 	}
 }

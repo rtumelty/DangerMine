@@ -44,8 +44,8 @@ public class Character : GameEntity {
 	}
 
 	protected bool dying = false;
-	bool attacking = false;
-	GameEntity[] attackTargets = null;
+	protected bool attacking = false;
+	protected GameEntity[] attackTargets = null;
 	protected float currentMoveSpeed;
 	CameraController cameraController;
 	protected AttackZone attackZone;
@@ -147,8 +147,8 @@ public class Character : GameEntity {
 	public void UpdateTargets(GameEntity[] targets) {
 		attackTargets = targets;
 
-		Debug.LogWarning(attackTargets.Length);
 		if (attacking && targets.Length == 0) {
+			Debug.Log("Disable attack animation");
 			attacking = false;
 		} else if (!attacking && targets.Length > 0) {
 			StartCoroutine("Attack");
@@ -168,9 +168,10 @@ public class Character : GameEntity {
 
 			foreach (GameEntity attackTarget in attackTargets) {
 				attackTarget.SendMessage("Hit", this,SendMessageOptions.DontRequireReceiver);
-				Debug.Log(gameObject + " attacking " + attackTarget);
 			}
 		}
+
+		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
 	}
 
 	protected override void Hit(Character character) {
@@ -179,7 +180,6 @@ public class Character : GameEntity {
 			currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength / character.AttackSpeed * Time.deltaTime), 0, 9999);
 			 */
 			currentHealth = Mathf.Clamp (currentHealth - character.AttackStrength, 0, 9999);
-			Debug.Log(gameObject + " attacked by " + character);
 
 			if (currentHealth == 0 && !dying) {
 				Die ();
@@ -191,14 +191,11 @@ public class Character : GameEntity {
 		attacking = false;
 		dying = true;
 		mySpineMultiSkeleton.SetAnimation (deathAnimation, 0, false);
-		StartCoroutine(DisableAfterAnimation(0));
+		mySpineMultiSkeleton.skeleton.state.Complete += DisableAfterAnimation;
 	}
 
-	protected IEnumerator DisableAfterAnimation(int layer) {
-		mySpineMultiSkeleton.skeleton.state.GetCurrent (0).Loop = false;
-		while (mySpineMultiSkeleton.skeleton.state.GetCurrent (layer) != null) {
-			yield return new WaitForSeconds (Time.deltaTime);
-		}
+	protected void DisableAfterAnimation(Spine.AnimationState state, int track, int loopCount = 0) {
+		mySpineMultiSkeleton.skeleton.state.Complete -= DisableAfterAnimation;
 		gameObject.SetActive (false);
-	}
+		}
 }
