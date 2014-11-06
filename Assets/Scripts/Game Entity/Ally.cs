@@ -47,6 +47,22 @@ public class Ally : Character {
 			activeAllies.Remove(this);
 		base.OnDisable ();
 	}
+	
+	public override void UpdateTargets(List<GameEntity> targets) {
+		attackTargets.Clear();
+
+		for (int i = 0; i < targets.Count; i++) {
+			if (targets[i] is Enemy) {
+				attackTargets.Add(targets[i]);
+			}
+		}
+		
+		if (attacking && attackTargets.Count == 0) {
+			attacking = false;
+		} else if (!attacking && attackTargets.Count > 0) {
+			StartCoroutine("Attack");
+		}
+	}
 
 	protected override void Die() {
 		if (activeAllies.Contains(this))

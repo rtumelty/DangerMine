@@ -37,6 +37,8 @@ public class Enemy : Character {
 		moveDirection = -1;
 		
 		base.Awake ();
+
+		attackZone = GetComponentInChildren<AttackZone>();
 	}
 	
 	protected override void OnEnable() {
@@ -102,7 +104,7 @@ public class Enemy : Character {
 						transform.position = position;
 					}
 				}
-			} else {Debug.Log ("not blocked, going to distance " +followDistance);
+			} else {
 				Vector3 targetPosition = new Vector3(CameraController.Instance.transform.position.x - followDistance, 
 				                                     transform.position.y, transform.position.z);
 				targetPosition.x = Mathf.Clamp(targetPosition.x, transform.position.x - (currentMoveSpeed * 4 * Time.deltaTime), 
@@ -115,17 +117,34 @@ public class Enemy : Character {
 	}
 
 	public override void Blocked(GameEntity target) { 
-		if (target is Enemy & !chasing) {
+		if (target is Enemy && !chasing) {
 			Enemy enemy = target as Enemy;
 			if (enemy.Chasing) {
 				Chase ();
 				return;
 			}
 		}
-
+	
 		base.Blocked(target);
 	}
 
+	public override void UpdateTargets(List<GameEntity> targets) {
+		attackTargets.Clear();
+		
+		for (int i = 0; i < targets.Count; i++) {
+			if (targets[i] is Ally || targets[i] is Rock) {
+				attackTargets.Add(targets[i]);
+				if (targets[i] is Rock)Debug.Log("yup, that's a rock");
+			}
+		}
+		
+		if (attacking && attackTargets.Count == 0) {
+			attacking = false;
+		} else if (!attacking && attackTargets.Count > 0) {
+			StartCoroutine("Attack");
+		}
+	}
+	
 	public void Chase() {
 		chasing = true;
 
@@ -133,8 +152,8 @@ public class Enemy : Character {
 		moveDirection = 1;
 		currentMoveSpeed = CameraController.MoveSpeed;
 
-		LaneManager.Instance.JoinRow(this, gridCoords.y + 2);
 
-		Debug.Log(followDistance);
+		attackZone.SetSize(attackRange, 1);
+		LaneManager.Instance.JoinRow(this, gridCoords.y + 2);
 	}
 }

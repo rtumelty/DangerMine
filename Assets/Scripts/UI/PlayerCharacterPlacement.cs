@@ -84,6 +84,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		   mySnapPoint != Vector3.zero && !GridManager.Instance.IsOccupied(Camera.main.ScreenToWorldPoint(Input.mousePosition) as GridCoordinate))
 		{
 			entity.enabled = true;
+			entity.Targetable = true;
 			theHighLight.transform.position = defaultHighlightPosition;
 			purchaseButton.SendMessage("StartCooldown");
 			released = true;

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CircleCollider2D))]
@@ -45,7 +46,7 @@ public class Character : GameEntity {
 
 	protected bool dying = false;
 	protected bool attacking = false;
-	protected GameEntity[] attackTargets = null;
+	protected List<GameEntity> attackTargets = null;
 	protected float currentMoveSpeed;
 	CameraController cameraController;
 	protected AttackZone attackZone;
@@ -68,6 +69,7 @@ public class Character : GameEntity {
 		cameraController = Camera.main.gameObject.GetComponent<CameraController> ();
 		AttackZone attackZone = GetComponentInChildren<AttackZone>();
 		attackZone.SetSize(attackRange, moveDirection);
+		attackTargets = new List<GameEntity>();
 	}
 	
 	protected override void OnEnable() {
@@ -144,13 +146,13 @@ public class Character : GameEntity {
 		//StopCoroutine ("Attack");
 	}
 
-	public void UpdateTargets(GameEntity[] targets) {
+	public virtual void UpdateTargets(List<GameEntity> targets) {
 		attackTargets = targets;
 
-		if (attacking && targets.Length == 0) {
-			Debug.Log("Disable attack animation");
+		if (attacking && attackTargets.Count == 0) {
+
 			attacking = false;
-		} else if (!attacking && targets.Length > 0) {
+		} else if (!attacking && attackTargets.Count > 0) {
 			StartCoroutine("Attack");
 		}
 	}

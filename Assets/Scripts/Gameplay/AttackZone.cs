@@ -37,9 +37,9 @@ public class AttackZone : MonoBehaviour {
 		GameEntity entity = other.GetComponentInChildren<GameEntity>();
 		
 		if (entity != null) {
-			if (entity.allegiance != owner.allegiance) {
+			//if (entity.allegiance != owner.allegiance) {
 				targets.Add(entity);
-			}
+			//}
 		}
 	}
 	
@@ -62,13 +62,13 @@ public class AttackZone : MonoBehaviour {
 		for (int i = 0; i < targets.Count;i++) {
 			GameEntity entity = targets[i];
 
-			if (entity.gameObject.activeSelf == false || !collidersInRange.Contains(entity.collider2D)) {
+			if (entity.gameObject.activeSelf == false) {// || !collidersInRange.Contains(entity.collider2D)) {
 				targets.Remove(entity);
 				break;
 			} else if ( entity.Targetable )
 				activeTargets.Add(entity);
 		}
 
-		owner.UpdateTargets(activeTargets.ToArray());
+		owner.UpdateTargets(activeTargets);
 	}
 }
