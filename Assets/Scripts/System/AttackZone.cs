@@ -54,17 +54,21 @@ public class AttackZone : MonoBehaviour {
 	}
 
 	void Update() {
+		if (!owner.enabled) return;
+
 		List<Collider2D> collidersInRange = new List<Collider2D>( Physics2D.OverlapAreaAll(attackRange.bounds.min, attackRange.bounds.max));
+		List<GameEntity> activeTargets = new List<GameEntity>();
 
 		for (int i = 0; i < targets.Count;i++) {
 			GameEntity entity = targets[i];
 
-			if (entity.gameObject.activeSelf == false) {// || !collidersInRange.Contains(entity.collider2D)) {
+			if (entity.gameObject.activeSelf == false || !collidersInRange.Contains(entity.collider2D)) {
 				targets.Remove(entity);
 				break;
-			}
+			} else if ( entity.Targetable )
+				activeTargets.Add(entity);
 		}
 
-		owner.UpdateTargets(targets.ToArray());
+		owner.UpdateTargets(activeTargets.ToArray());
 	}
 }

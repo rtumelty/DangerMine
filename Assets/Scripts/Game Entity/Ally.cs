@@ -8,8 +8,8 @@ public class Ally : Character {
 	#elif UNITY_ANDROID
 	private static float laneSwitchThreshold = 10f;
 #endif
-	//private static float minimumDragTime = 0.005f;
 
+	[SerializeField] bool targetableOnStart = false;
 	private static List<Ally> activeAllies;
 
 	public static int ActiveAllies {
@@ -28,6 +28,8 @@ public class Ally : Character {
 		}
 
 		_allegiance = Allegiance.Ally;
+
+		if (targetableOnStart) targetable = true;
 
 		moveDirection = 1;
 

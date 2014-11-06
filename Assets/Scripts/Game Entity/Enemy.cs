@@ -6,7 +6,7 @@ public class Enemy : Character {
 	
 	private static List<Enemy> activeEnemies;
 	private bool chasing = false;
-	private float followDistance;
+	public float followDistance;
 
 	public bool Chasing {
 		get {
@@ -53,7 +53,9 @@ public class Enemy : Character {
 	
 	protected override void OnDisable() {
 		base.OnDisable ();
-		
+
+		if (chasing) LaneManager.Instance.RemoveFromRow(this, gridCoords.y + 2);
+
 		if (activeEnemies.Contains(this))
 			activeEnemies.Remove(this);
 	}
@@ -84,7 +86,7 @@ public class Enemy : Character {
 						}
 					}
 					else {
-						Vector3 targetPosition = new Vector3(CameraController.Instance.transform.position.x + followDistance, 
+						Vector3 targetPosition = new Vector3(CameraController.Instance.transform.position.x - followDistance, 
 						                                     transform.position.y, transform.position.z);
 						targetPosition.x = Mathf.Clamp(targetPosition.x, transform.position.x - (currentMoveSpeed * 4 * Time.deltaTime), 
 						                               transform.position.x + (currentMoveSpeed * 4 * Time.deltaTime));
@@ -100,8 +102,8 @@ public class Enemy : Character {
 						transform.position = position;
 					}
 				}
-			} else {
-				Vector3 targetPosition = new Vector3(CameraController.Instance.transform.position.x + followDistance, 
+			} else {Debug.Log ("not blocked, going to distance " +followDistance);
+				Vector3 targetPosition = new Vector3(CameraController.Instance.transform.position.x - followDistance, 
 				                                     transform.position.y, transform.position.z);
 				targetPosition.x = Mathf.Clamp(targetPosition.x, transform.position.x - (currentMoveSpeed * 4 * Time.deltaTime), 
 				                               transform.position.x + (currentMoveSpeed * 4 * Time.deltaTime));
@@ -130,8 +132,8 @@ public class Enemy : Character {
 		transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
 		moveDirection = 1;
 		currentMoveSpeed = CameraController.MoveSpeed;
-		
-		followDistance = (gridCoords.x -CameraController.GridCoords.x);
+
+		LaneManager.Instance.JoinRow(this, gridCoords.y + 2);
 
 		Debug.Log(followDistance);
 	}

@@ -26,7 +26,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	private GameObject theHighLight;
 	private GameEntity entity;
 
-	void Start()
+	void Awake()
 	{
 		entity = GetComponent<GameEntity>();
 		theHighLight = GameObject.FindGameObjectWithTag ("HL");
@@ -36,6 +36,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	void OnEnable() {
 		released = false;
 		initialClick = Time.time;
+		entity.enabled = false;
 	}
 
 
@@ -60,7 +61,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		
 		//Clamps highlight over last valid lane position
 		
-		if(transform.position.y < 3 && transform.position.y > -3 && transform.position.x > CreepingDarkness.Instance.LeadingEdge)
+		if(transform.position.y < 3 && transform.position.y > -3 && transform.position.x > ChaseCollider.Instance.LeadingEdge)
 		{
 			entity.UpdateSortingLayer();
 			theHighLight.transform.position = new Vector3(transform.position.x, transform.position.y, theHighLight.transform.position.z);
@@ -82,7 +83,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE && 
 		   mySnapPoint != Vector3.zero && !GridManager.Instance.IsOccupied(Camera.main.ScreenToWorldPoint(Input.mousePosition) as GridCoordinate))
 		{
-			GetComponent<Character>().enabled = true;
+			entity.enabled = true;
 			theHighLight.transform.position = defaultHighlightPosition;
 			purchaseButton.SendMessage("StartCooldown");
 			released = true;

@@ -17,6 +17,17 @@ public class GameEntity : MonoBehaviour {
 	protected GridCoordinate gridCoords;
 	private Renderer[] renderers;
 	
+	protected bool targetable = false;
+	
+	public bool Targetable {
+		get {
+			return targetable;
+		}
+		set {
+			targetable = value;
+		}
+	}
+	
 	public Allegiance allegiance {
 		get {
 			return _allegiance;
@@ -39,6 +50,8 @@ public class GameEntity : MonoBehaviour {
 	}
 	
 	protected virtual void OnDisable() {
+		targetable = false;
+
 		if (GridManager.Instance != null)
 			GridManager.Instance.UnregisterEntity(this);
 	}

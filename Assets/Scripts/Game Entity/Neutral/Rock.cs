@@ -18,7 +18,7 @@ public class Rock : GameEntity {
 	}
 
 	protected override void Hit(Character character) {
-		if (!((character is Enemy) || (character is Miner))) return;
+		if (!((character is Enemy) || (character is Miner) || (character is Boz))) return;
 
 		//currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength * Time.deltaTime), 0, 9999);
 
