@@ -13,14 +13,18 @@ public class Miner : Ally {
 		base.OnDisable ();
 
 		int minerNumber = Random.Range (1, 7);
-		
+		/*
 		walkAnimation = animationNamePrefix + minerNumber.ToString () + walkAnimationSuffix;
 		attackAnimation = animationNamePrefix + minerNumber.ToString () + attackAnimationSuffix;
 		deathAnimation = animationNamePrefix + minerNumber.ToString () + deathAnimationSuffix;
 
-		
 		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
+		*/
 
+		animationManager.ChangeAnimations(animationNamePrefix + minerNumber.ToString () + walkAnimationSuffix,
+		                                  animationNamePrefix + minerNumber.ToString () + attackAnimationSuffix,
+		                                  deathAnimation = animationNamePrefix + minerNumber.ToString () + deathAnimationSuffix);
+		animationManager.State = AnimationStateManager.AnimationState.Walk;
 	}
 
 	public override void UpdateTargets(List<GameEntity> targets) {

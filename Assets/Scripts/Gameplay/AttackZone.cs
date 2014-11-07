@@ -40,6 +40,12 @@ public class AttackZone : MonoBehaviour {
 			//if (entity.allegiance != owner.allegiance) {
 				targets.Add(entity);
 			//}
+			if (owner is Enemy) {
+				Enemy e = owner as Enemy;
+				if (e.Chasing) {
+
+				}
+			}
 		}
 	}
 	

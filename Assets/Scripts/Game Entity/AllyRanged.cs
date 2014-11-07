@@ -28,10 +28,11 @@ public class AllyRanged : Ally {
 
 	protected override IEnumerator Attack() {
 		attacking = true;
-		mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
+		animationManager.State = AnimationStateManager.AnimationState.Attack;
+		//mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
 		
 		while (attacking) {
-			if (mySpineMultiSkeleton.skeleton.state.GetCurrent(0) == null) mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
+			//if (mySpineMultiSkeleton.skeleton.state.GetCurrent(0) == null) mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
 			/* DPS approach
 			yield return new WaitForSeconds(Time.deltaTime);
 			*/
@@ -45,5 +46,6 @@ public class AllyRanged : Ally {
 				Debug.LogWarning("No projectile prefab found: " + gameObject);
 			}
 		}
+		animationManager.State = AnimationStateManager.AnimationState.Walk;
 	}
 }

@@ -13,7 +13,8 @@ public class Character : GameEntity {
 	[SerializeField] protected int attackStrength = 10;
 	[SerializeField] protected float attackSpeed = 0.5f;
 	[SerializeField] protected Vector2 attackRange = new Vector2(1.5f, .8f);
-	
+
+	protected AnimationStateManager animationManager;
 	public SpineMultiSkeleton mySpineMultiSkeleton;
 	[SerializeField] protected string attackAnimation;
 	[SerializeField] protected string walkAnimation;
@@ -70,6 +71,8 @@ public class Character : GameEntity {
 		AttackZone attackZone = GetComponentInChildren<AttackZone>();
 		attackZone.SetSize(attackRange, moveDirection);
 		attackTargets = new List<GameEntity>();
+		animationManager = GetComponentInChildren<AnimationStateManager>();
+		mySpineMultiSkeleton = animationManager.MultiSkeleton;
 	}
 	
 	protected override void OnEnable() {
@@ -83,7 +86,8 @@ public class Character : GameEntity {
 		transform.rotation = Quaternion.Euler(Vector3.zero);
 		currentMoveSpeed = defaultMoveSpeed;
 		dying = false;
-		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
+		//mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
+		animationManager.State = AnimationStateManager.AnimationState.Walk;
 	}
 	
 	protected override void OnDisable() {
@@ -142,7 +146,8 @@ public class Character : GameEntity {
 		blocked = false; 
 		//attackTarget = null;
 		currentMoveSpeed = defaultMoveSpeed;
-		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
+		animationManager.State = AnimationStateManager.AnimationState.Walk;
+		//mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
 		//StopCoroutine ("Attack");
 	}
 
@@ -159,10 +164,11 @@ public class Character : GameEntity {
 
 	protected virtual IEnumerator Attack() {
 		attacking = true;
-		mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
+		animationManager.State = AnimationStateManager.AnimationState.Attack;
+		//mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
 
 		while (attacking) {
-			if (mySpineMultiSkeleton.skeleton.state.GetCurrent(0) == null) mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
+			//if (mySpineMultiSkeleton.skeleton.state.GetCurrent(0) == null) mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);
 			/* DPS approach
 			yield return new WaitForSeconds(Time.deltaTime);
 			*/
@@ -173,7 +179,8 @@ public class Character : GameEntity {
 			}
 		}
 
-		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
+		animationManager.State = AnimationStateManager.AnimationState.Walk;
+		//mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
 	}
 
 	protected override void Hit(Character character) {
@@ -192,7 +199,8 @@ public class Character : GameEntity {
 	protected override void Die() {
 		attacking = false;
 		dying = true;
-		mySpineMultiSkeleton.SetAnimation (deathAnimation, 0, false);
+		animationManager.State = AnimationStateManager.AnimationState.Dying;
+		//mySpineMultiSkeleton.SetAnimation (deathAnimation, 0, false);
 		mySpineMultiSkeleton.skeleton.state.Complete += DisableAfterAnimation;
 	}
 
