@@ -59,7 +59,7 @@ public class Ally : Character {
 		
 		if (attacking && attackTargets.Count == 0) {
 			attacking = false;
-		} else if (!attacking && attackTargets.Count > 0) {
+		} else if (!attacking && attackTargets.Count > 0 && canAttack) {
 			StartCoroutine("Attack");
 		}
 	}
@@ -119,6 +119,7 @@ public class Ally : Character {
 		GridCoordinate newCoord = gridCoords + new GridCoordinate (0f, up);
 
 		ignoreUpdate = true;
+		canAttack = false;
 		
 		float swipeTime = .06f;
 		float elapsedTime = 0f;
@@ -155,5 +156,6 @@ public class Ally : Character {
 		}
 		
 		ignoreUpdate = false;
+		canAttack = true;
 	}
 }

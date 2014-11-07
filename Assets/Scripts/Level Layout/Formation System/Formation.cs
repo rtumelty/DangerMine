@@ -20,12 +20,23 @@ public class Formation : ScriptableObject {
 	public List<FormationProfile> profiles;
 
 	bool expand = false;
+	Vector2 scrollPos = default(Vector2);
 	bool expandSpawnPoints = false;
 	Vector2 scrollSpawnPoints = default(Vector2);
 	bool expandProfiles = false;
 	Vector2 scrollProfiles = default(Vector2);
 
+	public void Initialize() {
+		
+		if (spawnPoints == null)
+			spawnPoints = new List<GridCoordinate>();
+		
+		if (profiles == null)
+			profiles = new List<FormationProfile>();
+	}
+
 	public void DisplayFormation() {
+
 		expand = EditorGUILayout.Foldout(expand, name);
 
 		if (expand) {
@@ -33,17 +44,13 @@ public class Formation : ScriptableObject {
 			
 			EditorGUILayout.Space();
 			
-			EditorGUILayout.BeginHorizontal();
 			height = EditorGUILayout.IntField("Height", height);
 			width = EditorGUILayout.IntField("Width", width);
-			EditorGUILayout.EndHorizontal();
 
 			EditorGUILayout.Space();
 			
-			EditorGUILayout.BeginHorizontal();
 			minimumDistance = EditorGUILayout.IntField("Min Distance", minimumDistance);
 			maximumDistance = EditorGUILayout.IntField("Max Distance", maximumDistance);
-			EditorGUILayout.EndHorizontal();
 			
 			interval = EditorGUILayout.IntField("Interval before", interval);
 			probabilityWeight = EditorGUILayout.FloatField("Probability weight", probabilityWeight);
@@ -52,17 +59,15 @@ public class Formation : ScriptableObject {
 			
 			expandSpawnPoints = EditorGUILayout.Foldout(expandSpawnPoints, "Spawn points");
 			if (expandSpawnPoints) {
-				scrollSpawnPoints = EditorGUILayout.BeginScrollView(scrollSpawnPoints, GUILayout.MaxHeight(100));
-                for (int i = 0; i < spawnPoints.Count; i++) {
-					EditorGUILayout.LabelField("Spawn point " + i);
-					EditorGUILayout.BeginHorizontal();
-					spawnPoints[i].x = EditorGUILayout.IntField("X", spawnPoints[i].x);
-					spawnPoints[i].y = EditorGUILayout.IntField("Y", spawnPoints[i].y);
-					if (GUILayout.Button("-", GUILayout.Width(10))) {
-						spawnPoints.RemoveAt(i);
+				scrollSpawnPoints = EditorGUILayout.BeginScrollView(scrollSpawnPoints, false, true, GUILayout.MinHeight(200));
+	                for (int i = 0; i < spawnPoints.Count; i++) {
+						EditorGUILayout.LabelField("Spawn point " + i);
+							spawnPoints[i].x = EditorGUILayout.IntField("X", spawnPoints[i].x);
+							spawnPoints[i].y = EditorGUILayout.IntField("Y", spawnPoints[i].y);
+							if (GUILayout.Button("Remove")) {
+								spawnPoints.RemoveAt(i);
+							}
 					}
-					EditorGUILayout.EndHorizontal();
-				}
 				EditorGUILayout.EndScrollView();
 
 				if (GUILayout.Button("Add")) {
@@ -71,18 +76,26 @@ public class Formation : ScriptableObject {
 			}
 			
 			expandProfiles = EditorGUILayout.Foldout(expandProfiles, "Profiles");
-			if (expandSpawnPoints) {
-				scrollProfiles = EditorGUILayout.BeginScrollView(scrollProfiles, GUILayout.MinHeight(100));
-				for (int i = 0; i < profiles.Count; i++) {
-					EditorGUILayout.BeginHorizontal();
-					profiles[i].Expand = EditorGUILayout.Foldout(profiles[i].Expand, profiles[i].name);
-					if (GUILayout.Button("-", GUILayout.Width(10))) {
-						spawnPoints.RemoveAt(i);
+			if (expandProfiles) {
+				scrollProfiles = EditorGUILayout.BeginScrollView(scrollProfiles, false, true, GUILayout.MinHeight(100), GUILayout.ExpandWidth(true));
+					for (int i = 0; i < profiles.Count; i++) {
+						if (profiles[i] == null) {
+							profiles[i] = CreateInstance<FormationProfile>();
+							profiles[i].name = "Profile " + profiles.Count.ToString();
+							profiles[i].formation = this;
+						}
+
+						EditorGUILayout.BeginHorizontal();
+							profiles[i].Expand = EditorGUILayout.Foldout(profiles[i].Expand, profiles[i].name);
+						EditorGUILayout.EndHorizontal();
+						
+						if (profiles[i].Expand)
+							profiles[i].DisplayProfile();
+
+						if (GUILayout.Button("Remove")) {
+							profiles.RemoveAt(i);
+						}
 					}
-					EditorGUILayout.EndHorizontal();
-					if (profiles[i].Expand)
-						profiles[i].DisplayProfile();
-				}
 				EditorGUILayout.EndScrollView();
 				
 				if (GUILayout.Button("Add")) {

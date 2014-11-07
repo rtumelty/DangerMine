@@ -32,10 +32,14 @@ public class FormationProfile : ScriptableObject {
 	Vector2 scrollPrefabs = default(Vector2);
 
 	public void UpdatePrefabArraySize() {
+		Debug.Log(formation);
+		Debug.Log(formation.spawnPoints);
 		GameObject[] newPrefabs = new GameObject[formation.spawnPoints.Count];
 
-		for (int i = 0; i < newPrefabs.Length && i < prefabs.Length; i++)
-			newPrefabs[i] = prefabs[i];
+		if (prefabs != null) {
+			for (int i = 0; i < newPrefabs.Length && i < prefabs.Length; i++)
+				newPrefabs[i] = prefabs[i];
+		}
 
 		prefabs = newPrefabs;
 	}
@@ -46,25 +50,24 @@ public class FormationProfile : ScriptableObject {
 
 		EditorGUILayout.Space();
 
-		EditorGUILayout.BeginHorizontal();
 		minimumDistance = Mathf.RoundToInt( Mathf.Clamp(EditorGUILayout.IntField("Min Distance", minimumDistance), 
 		                                                formation.minimumDistance, formation.maximumDistance));
 
 		maximumDistance = Mathf.RoundToInt( Mathf.Clamp(EditorGUILayout.IntField("Max Distance", maximumDistance),
-		                                                formation.minimumDistance, formation.maximumDistance));
+	                                                formation.minimumDistance, formation.maximumDistance));
 
-		EditorGUILayout.EndHorizontal();
-		
 		probabilityWeight = EditorGUILayout.FloatField("Probability weight", probabilityWeight);
 		
 		EditorGUILayout.Space();
 
 		expandPrefabs = EditorGUILayout.Foldout(expandPrefabs, "Prefabs");
 		if (expandPrefabs) {
+			if (prefabs == null) UpdatePrefabArraySize();
+
 			scrollPrefabs = EditorGUILayout.BeginScrollView(scrollPrefabs, GUILayout.MinHeight(50));
 
-			for (int i = 0; i < prefabs.Length; i++)
-				prefabs[i] = EditorGUILayout.ObjectField("Entity " + i.ToString(), prefabs[i], typeof(GameObject), false) as GameObject;
+				for (int i = 0; i < prefabs.Length; i++)
+					prefabs[i] = EditorGUILayout.ObjectField("Entity " + i.ToString(), prefabs[i], typeof(GameObject), false) as GameObject;
 
 			EditorGUILayout.EndScrollView();
 		}

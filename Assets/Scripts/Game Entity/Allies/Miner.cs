@@ -32,7 +32,7 @@ public class Miner : Ally {
 		
 		if (attacking && attackTargets.Count == 0) {
 			attacking = false;
-		} else if (!attacking && attackTargets.Count > 0) {
+		} else if (!attacking && attackTargets.Count > 0 && canAttack) {
 			StartCoroutine("Attack");
 		}
 	}

@@ -45,6 +45,7 @@ public class Character : GameEntity {
 	}
 
 	protected bool dying = false;
+	protected bool canAttack = true;
 	protected bool attacking = false;
 	protected List<GameEntity> attackTargets = null;
 	protected float currentMoveSpeed;
@@ -152,7 +153,7 @@ public class Character : GameEntity {
 		if (attacking && attackTargets.Count == 0) {
 
 			attacking = false;
-		} else if (!attacking && attackTargets.Count > 0) {
+		} else if (!attacking && attackTargets.Count > 0 && canAttack) {
 			StartCoroutine("Attack");
 		}
 	}
