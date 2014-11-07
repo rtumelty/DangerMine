@@ -31,7 +31,7 @@ public class Rock : GameEntity {
 	}
 
 	protected override void OnDisable() {
-		if (destroyedBy == null)
+		if (destroyedBy == null || destroyedBy is Enemy)
 			return;
 
 		if (dropsGold) {

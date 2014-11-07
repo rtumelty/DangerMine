@@ -45,5 +45,7 @@ public class AllyRanged : Ally {
 				Debug.LogWarning("No projectile prefab found: " + gameObject);
 			}
 		}
+		
+		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
 	}
 }
