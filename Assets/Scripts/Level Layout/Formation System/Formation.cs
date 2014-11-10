@@ -25,6 +25,41 @@ public class Formation : SpawnGroup {
 			profiles = new List<FormationProfile>();
 	}
 
+	List<FormationProfile> GetActiveProfiles(int distance) {
+		List<FormationProfile> activeProfiles = new List<FormationProfile>();
+		for(int i = 0; i < profiles.Count; i++)
+		{ 
+			if (profiles[i].minimumDistance <= distance && profiles[i].maximumDistance >= distance)
+				activeProfiles.Add(profiles[i]);
+		}
+		
+		if (activeProfiles.Count == 0) {
+			Debug.LogError("No active spawn groups at distance " + distance);
+			return null;
+		}
+		
+		return activeProfiles;
+	}
+	
+	public FormationProfile ChooseProfile(int distance) {
+		List<FormationProfile> activeProfiles = GetActiveProfiles(distance);
+		if (activeProfiles == null) return null;
+		
+		float combinedWeights = 0;
+		foreach (FormationProfile profile in activeProfiles)
+			combinedWeights += profile.probabilityWeight;
+		
+		float spawnValue = Random.value;
+		
+		for (int i = 0; i < activeProfiles.Count; i++) {
+			spawnValue -= activeProfiles[i].probabilityWeight / combinedWeights;
+			if (spawnValue < 0 || i+1 == activeProfiles.Count)
+				return activeProfiles[i];
+		}
+		
+		return null;
+	}
+
 	public void DisplayFormation() {
 		Initialize();
 
@@ -71,12 +106,10 @@ public class Formation : SpawnGroup {
 			
 			expandProfiles = EditorGUILayout.Foldout(expandProfiles, "Profiles");
 			if (expandProfiles) {
-				scrollProfiles = EditorGUILayout.BeginScrollView(scrollProfiles, false, true, GUILayout.MinHeight(100), GUILayout.ExpandWidth(true));
+				scrollProfiles = EditorGUILayout.BeginScrollView(scrollProfiles, false, true, GUILayout.MinHeight(200), GUILayout.ExpandWidth(true));
 					for (int i = 0; i < profiles.Count; i++) {
 						if (profiles[i] == null) {
-							profiles[i] = CreateInstance<FormationProfile>();
-							profiles[i].name = "Profile " + profiles.Count.ToString();
-							profiles[i].formation = this;
+							profiles[i] = new FormationProfile(this);
 						}
 
 						EditorGUILayout.BeginHorizontal();
@@ -93,10 +126,7 @@ public class Formation : SpawnGroup {
 				EditorGUILayout.EndScrollView();
 				
 				if (GUILayout.Button("Add")) {
-					FormationProfile profile = CreateInstance<FormationProfile>();
-					profile.formation = this;
-					profile.name = "Profile " + profiles.Count.ToString();
-					profiles.Add(profile);
+					profiles.Add(new FormationProfile(this));
 				}
         	}
 		}

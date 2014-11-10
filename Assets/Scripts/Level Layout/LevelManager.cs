@@ -1,4 +1,4 @@
-﻿using UnityEngine;	
+using UnityEngine;	
 using System.Collections;
 
 public class LevelManager : MonoBehaviour {
@@ -48,8 +48,8 @@ public class LevelManager : MonoBehaviour {
 
 	IEnumerator GameOver() {
 		Debug.Log("Last miner died!");
-		GlobalManagement.LAST_DISTANCE_COVERED = SpawnObject.cameraDistanceCovered;
-		GlobalManagement.SCORE = SpawnObject.cameraDistanceCovered * 10;
+		GlobalManagement.LAST_DISTANCE_COVERED = FormationManager.CameraDistanceCovered;
+		GlobalManagement.SCORE = FormationManager.CameraDistanceCovered * 10;
 		UIMessageReceiver.Instance.SendTrigger("PlayerDied");
 
 		float slowDelay = .05f;

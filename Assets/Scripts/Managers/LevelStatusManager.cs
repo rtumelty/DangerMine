@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public enum LevelState
@@ -40,6 +40,6 @@ public class LevelStatusManager : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		distanceCovered = SpawnObject.cameraDistanceCovered;
+		distanceCovered = FormationManager.CameraDistanceCovered;
 	}
 }

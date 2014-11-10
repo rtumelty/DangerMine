@@ -3,7 +3,7 @@ using UnityEditor;
 
 public class FormationMenus
 {
-	[MenuItem("Formations/Create formation")]
+	[MenuItem("Assets/Formations/Create formation")]
 	public static void CreateFormationAsset ()
 	{
 		Formation newFormation = ScriptableObjectUtility.CreateAsset<Formation> ();
@@ -12,7 +12,7 @@ public class FormationMenus
 		Selection.activeObject = newFormation;
 	}
 	
-	[MenuItem("Formations/Create sequence")]
+	[MenuItem("Assets/Formations/Create sequence")]
 	public static void CreateSequenceAsset ()
 	{
 		Sequence newSequence = ScriptableObjectUtility.CreateAsset<Sequence> ();

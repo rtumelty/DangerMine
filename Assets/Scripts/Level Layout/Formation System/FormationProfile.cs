@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class FormationProfile : ScriptableObject {
+public class FormationProfile {
 	public Formation formation;
 
 	public string name;
@@ -14,7 +14,7 @@ public class FormationProfile : ScriptableObject {
 
 	public float probabilityWeight;
 
-	public GameObject[] prefabs;
+	public string[] prefabPoolIds;
 	
 	
 	bool expand;
@@ -31,15 +31,24 @@ public class FormationProfile : ScriptableObject {
 	bool expandPrefabs;
 	Vector2 scrollPrefabs = default(Vector2);
 
-	public void UpdatePrefabArraySize() {
-		GameObject[] newPrefabs = new GameObject[formation.spawnPoints.Count];
+	public FormationProfile(Formation parent) {
+		formation = parent;
+		name = parent.name + "_" + parent.profiles.Count;
+		minimumDistance = parent.minimumDistance;
+		maximumDistance = parent.maximumDistance;
+		probabilityWeight = 1;
+		prefabPoolIds = new string[parent.spawnPoints.Count];
+	}
 
-		if (prefabs != null) {
-			for (int i = 0; i < newPrefabs.Length && i < prefabs.Length; i++)
-				newPrefabs[i] = prefabs[i];
+	public void UpdatePrefabArraySize() {
+		string[] newPrefabs = new string[formation.spawnPoints.Count];
+
+		if (prefabPoolIds != null) {
+			for (int i = 0; i < newPrefabs.Length && i < prefabPoolIds.Length; i++)
+				newPrefabs[i] = prefabPoolIds[i];
 		}
 
-		prefabs = newPrefabs;
+		prefabPoolIds = newPrefabs;
 	}
 
 	public void DisplayProfile() {
@@ -60,12 +69,13 @@ public class FormationProfile : ScriptableObject {
 
 		expandPrefabs = EditorGUILayout.Foldout(expandPrefabs, "Prefabs");
 		if (expandPrefabs) {
-			if (prefabs == null) UpdatePrefabArraySize();
+			if (prefabPoolIds == null) UpdatePrefabArraySize();
 
 			scrollPrefabs = EditorGUILayout.BeginScrollView(scrollPrefabs, GUILayout.MinHeight(50));
 
-				for (int i = 0; i < prefabs.Length; i++)
-					prefabs[i] = EditorGUILayout.ObjectField("Entity " + i.ToString(), prefabs[i], typeof(GameObject), false) as GameObject;
+				for (int i = 0; i < prefabPoolIds.Length; i++)
+					prefabPoolIds[i] = EditorGUILayout.TextField("Entity " + i.ToString(), prefabPoolIds[i]
+				                                             );
 
 			EditorGUILayout.EndScrollView();
 		}

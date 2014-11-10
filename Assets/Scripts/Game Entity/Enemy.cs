@@ -134,7 +134,6 @@ public class Enemy : Character {
 		for (int i = 0; i < targets.Count; i++) {
 			if (targets[i] is Ally || targets[i] is Rock) {
 				attackTargets.Add(targets[i]);
-				if (targets[i] is Rock)Debug.Log("yup, that's a rock");
 			}
 		}
 		
