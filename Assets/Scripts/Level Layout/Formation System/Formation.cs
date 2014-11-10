@@ -4,18 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class Formation : ScriptableObject {
-	public string name = "new formation";
-
-	public int height;
-	public int width;
-
-	public int minimumDistance;
-	public int maximumDistance;
+public class Formation : SpawnGroup {
 	public int interval;
-
-	public float probabilityWeight;
-
 	public List<GridCoordinate> spawnPoints;
 	public List<FormationProfile> profiles;
 
@@ -36,6 +26,7 @@ public class Formation : ScriptableObject {
 	}
 
 	public void DisplayFormation() {
+		Initialize();
 
 		expand = EditorGUILayout.Foldout(expand, name);
 
@@ -72,6 +63,9 @@ public class Formation : ScriptableObject {
 
 				if (GUILayout.Button("Add")) {
 					spawnPoints.Add(new GridCoordinate(0, 0));
+					foreach (FormationProfile profile in profiles) {
+						profile.UpdatePrefabArraySize();
+					}
 				}
 			}
 			

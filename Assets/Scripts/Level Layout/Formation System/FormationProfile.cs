@@ -32,8 +32,6 @@ public class FormationProfile : ScriptableObject {
 	Vector2 scrollPrefabs = default(Vector2);
 
 	public void UpdatePrefabArraySize() {
-		Debug.Log(formation);
-		Debug.Log(formation.spawnPoints);
 		GameObject[] newPrefabs = new GameObject[formation.spawnPoints.Count];
 
 		if (prefabs != null) {
