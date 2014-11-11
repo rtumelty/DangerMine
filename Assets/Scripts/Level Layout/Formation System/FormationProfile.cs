@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -17,19 +16,9 @@ public class FormationProfile {
 	public string[] prefabPoolIds;
 	
 	
-	bool expand;
-
-	public bool Expand {
-		get {
-			return expand;
-		}
-		set {
-			expand = value;
-		}
-	}
-
-	bool expandPrefabs;
-	Vector2 scrollPrefabs = default(Vector2);
+	public bool expand;
+	public bool expandPrefabs;
+	public Vector2 scrollPrefabs = default(Vector2);
 
 	public FormationProfile(Formation parent) {
 		formation = parent;
@@ -51,34 +40,4 @@ public class FormationProfile {
 		prefabPoolIds = newPrefabs;
 	}
 
-	public void DisplayProfile() {
-		name = EditorGUILayout.TextField("Name", name);
-		EditorGUILayout.ObjectField("Formation", formation, typeof(Formation), false);
-
-		EditorGUILayout.Space();
-
-		minimumDistance = Mathf.RoundToInt( Mathf.Clamp(EditorGUILayout.IntField("Min Distance", minimumDistance), 
-		                                                formation.minimumDistance, formation.maximumDistance));
-
-		maximumDistance = Mathf.RoundToInt( Mathf.Clamp(EditorGUILayout.IntField("Max Distance", maximumDistance),
-	                                                formation.minimumDistance, formation.maximumDistance));
-
-		probabilityWeight = EditorGUILayout.FloatField("Probability weight", probabilityWeight);
-		
-		EditorGUILayout.Space();
-
-		expandPrefabs = EditorGUILayout.Foldout(expandPrefabs, "Prefabs");
-		if (expandPrefabs) {
-			if (prefabPoolIds == null) UpdatePrefabArraySize();
-
-			scrollPrefabs = EditorGUILayout.BeginScrollView(scrollPrefabs, GUILayout.MinHeight(50));
-
-				for (int i = 0; i < prefabPoolIds.Length; i++)
-					prefabPoolIds[i] = EditorGUILayout.TextField("Entity " + i.ToString(), prefabPoolIds[i]
-				                                             );
-
-			EditorGUILayout.EndScrollView();
-		}
-		
-	}
 }

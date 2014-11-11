@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Miner : Ally {
-	[SerializeField] protected string animationNamePrefix;
-	[SerializeField] protected string walkAnimationSuffix;
-	[SerializeField] protected string attackAnimationSuffix;
-	[SerializeField] protected string deathAnimationSuffix;
+	[SerializeField] string animationNamePrefix;
+	[SerializeField] string walkAnimationSuffix;
+	[SerializeField] string attackAnimationSuffix;
+	[SerializeField] string deathAnimationSuffix;
 
 	protected override void OnDisable() {
 		
