@@ -6,6 +6,7 @@ public class FormationManager : MonoBehaviour
 {
 	
 	[SerializeField] SpawnGroup[] spawnGroups;
+	[SerializeField] bool printDebugInfo = false;
 
 	private int cameraStartingXPosition = 0;
 	private Transform spawnOrigin;
@@ -38,6 +39,7 @@ public class FormationManager : MonoBehaviour
 		List<SpawnGroup> activeSpawnGroups = new List<SpawnGroup>();
 		for(int i = 0; i < spawnGroups.Length; i++)
 		{ 
+			if (spawnGroups[i].maximumDistance == 0) spawnGroups[i].maximumDistance = Mathf.Infinity; 
 			if (spawnGroups[i].minimumDistance <= cameraDistanceCovered && spawnGroups[i].maximumDistance >= cameraDistanceCovered) {
 				activeSpawnGroups.Add(spawnGroups[i]);
 			}
@@ -60,7 +62,6 @@ public class FormationManager : MonoBehaviour
 			combinedWeights += group.probabilityWeight;
 		
 		float spawnValue = Random.value;
-		//float 
 
 		for (int i = 0; i < activeGroups.Count; i++) {
 			spawnValue -= activeGroups[i].probabilityWeight / combinedWeights;
@@ -88,6 +89,9 @@ public class FormationManager : MonoBehaviour
 	void PlaceFormation(Formation formation) {
 		FormationProfile profile = formation.ChooseProfile(nextSpawnDistance);
 
+		if (printDebugInfo)
+			Debug.Log("Placing formation " + formation.name + ", profile " + profile.name + " at distance " + cameraDistanceCovered);
+
 		nextSpawnDistance += formation.interval;
 		int heightOffset = Random.Range(0, 6 - formation.height);
 		Vector3 formationOffset = spawnOrigin.position + new Vector3(nextSpawnDistance, heightOffset, 0);
@@ -99,6 +103,9 @@ public class FormationManager : MonoBehaviour
 	}
 
 	IEnumerator PlaceSequence(Sequence sequence) {
+		if (printDebugInfo)
+			Debug.Log("Starting sequence " + sequence.name + " at distance " + cameraDistanceCovered);
+
 		int i = 0;
 
 		while (i < sequence.formations.Count) {

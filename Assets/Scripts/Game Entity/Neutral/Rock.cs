@@ -31,10 +31,8 @@ public class Rock : GameEntity {
 	}
 
 	protected override void OnDisable() {
-		if (destroyedBy == null || destroyedBy is Enemy)
-			return;
-
-		if (dropsGold) {
+		if (destroyedBy == null || destroyedBy is Enemy);
+		else if (dropsGold) {
 			PrefabPool.GetPool(goldPrefabPoolId).Spawn(transform.position);
 		}
 

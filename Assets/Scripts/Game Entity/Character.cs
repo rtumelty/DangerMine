@@ -129,10 +129,7 @@ public class Character : GameEntity {
 		if (!blocked) {
 			blocked = true;
 
-			if (target.allegiance != _allegiance) {
-				//attackTarget = target;
-				//StartCoroutine ("Attack");
-			} else if (target is Character) {
+			if (target is Character) {
 				Character character = target as Character;
 				currentMoveSpeed = character.CurrentMoveSpeed;
 			}
@@ -141,10 +138,9 @@ public class Character : GameEntity {
 
 	public void Unblocked() {
 		blocked = false; 
-		//attackTarget = null;
+
 		currentMoveSpeed = defaultMoveSpeed;
 		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
-		//StopCoroutine ("Attack");
 	}
 
 	public virtual void UpdateTargets(List<GameEntity> targets) {

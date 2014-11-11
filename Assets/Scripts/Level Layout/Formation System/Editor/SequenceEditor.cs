@@ -22,8 +22,8 @@ public class SequenceEditor : Editor {
 		
 		EditorGUILayout.Space();
 		
-		sequence.minimumDistance = EditorGUILayout.IntField("Min Distance", sequence.minimumDistance);
-		sequence.maximumDistance = EditorGUILayout.IntField("Max Distance", sequence.maximumDistance);
+		sequence.minimumDistance = EditorGUILayout.FloatField("Min Distance", sequence.minimumDistance);
+		sequence.maximumDistance = EditorGUILayout.FloatField("Max Distance", sequence.maximumDistance);
 		
 		EditorGUILayout.Space();
 		

@@ -27,6 +27,8 @@ public class Formation : SpawnGroup {
 		List<FormationProfile> activeProfiles = new List<FormationProfile>();
 		for(int i = 0; i < profiles.Count; i++)
 		{ 
+			if (profiles[i].maximumDistance == 0) profiles[i].maximumDistance = Mathf.Infinity;
+
 			if (profiles[i].minimumDistance <= distance && profiles[i].maximumDistance >= distance)
 				activeProfiles.Add(profiles[i]);
 		}

@@ -8,8 +8,8 @@ public class FormationProfile {
 
 	public string name;
 
-	public int minimumDistance;
-	public int maximumDistance;
+	public float minimumDistance;
+	public float maximumDistance;
 
 	public float probabilityWeight;
 

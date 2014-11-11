@@ -26,8 +26,8 @@ public class FormationEditor : Editor {
 		
 		EditorGUILayout.Space();
 		
-		formation.minimumDistance = EditorGUILayout.IntField("Min Distance", formation.minimumDistance);
-		formation.maximumDistance = EditorGUILayout.IntField("Max Distance", formation.maximumDistance);
+		formation.minimumDistance = Mathf.Clamp(EditorGUILayout.FloatField("Min Distance", formation.minimumDistance), 0, Mathf.Infinity);
+		formation.maximumDistance = Mathf.Clamp(EditorGUILayout.FloatField("Max Distance", formation.maximumDistance), 0, Mathf.Infinity);
 		
 		formation.interval = EditorGUILayout.IntField("Interval before", formation.interval);
 		formation.probabilityWeight = EditorGUILayout.FloatField("Probability weight", formation.probabilityWeight);
@@ -91,11 +91,17 @@ public class FormationEditor : Editor {
 		
 		EditorGUILayout.Space();
 		
-		profile.minimumDistance = Mathf.RoundToInt( Mathf.Clamp(EditorGUILayout.IntField("Min Distance", profile.minimumDistance), 
-		                                                        profile.formation.minimumDistance, profile.formation.maximumDistance));
+		profile.minimumDistance = Mathf.RoundToInt(EditorGUILayout.FloatField("Min Distance", profile.minimumDistance));
+		if (profile.formation.maximumDistance != 0) 
+			profile.minimumDistance = Mathf.Clamp(profile.minimumDistance, profile.formation.minimumDistance, profile.formation.maximumDistance);
+		else 
+			profile.minimumDistance = Mathf.Clamp(profile.minimumDistance, profile.formation.minimumDistance, Mathf.Infinity);
 		
-		profile.maximumDistance = Mathf.RoundToInt( Mathf.Clamp(EditorGUILayout.IntField("Max Distance", profile.maximumDistance),
-		                                                        profile.formation.minimumDistance, profile.formation.maximumDistance));
+		profile.maximumDistance = EditorGUILayout.FloatField("Max Distance", profile.maximumDistance);
+		if (profile.formation.maximumDistance != 0) 
+			profile.maximumDistance = Mathf.RoundToInt( Mathf.Clamp(profile.maximumDistance, profile.formation.minimumDistance, profile.formation.maximumDistance));
+		else
+			profile.maximumDistance = Mathf.RoundToInt( Mathf.Clamp(profile.maximumDistance, profile.formation.minimumDistance, Mathf.Infinity));
 		
 		profile.probabilityWeight = EditorGUILayout.FloatField("Probability weight", profile.probabilityWeight);
 		

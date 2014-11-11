@@ -7,8 +7,8 @@ public class SpawnGroup : ScriptableObject {
 	public int height = 5;
 	public int width;
 	
-	public int minimumDistance;
-	public int maximumDistance;
+	public float minimumDistance;
+	public float maximumDistance;
 	
 	public float probabilityWeight;
 	
