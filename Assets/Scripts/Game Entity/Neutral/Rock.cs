@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(Collider2D))]
 public class Rock : GameEntity {
 	[SerializeField] bool dropsGold = false;
 
@@ -27,6 +27,12 @@ public class Rock : GameEntity {
 		if (currentHealth == 0) {
 			destroyedBy = character;
 			Die ();
+		}
+		else {
+			foreach (Renderer r in renderers) {
+				if (r is SpriteRenderer)
+					StartCoroutine(TintSpriteRenderer(r as SpriteRenderer));
+			}
 		}
 	}
 

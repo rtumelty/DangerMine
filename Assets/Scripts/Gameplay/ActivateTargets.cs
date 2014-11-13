@@ -10,6 +10,8 @@ public class ActivateTargets : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
 		GameEntity entity = other.GetComponent<GameEntity>();
 
+		if (entity is Ally) return;
+
 		if (entity != null) entity.Targetable = true;
 		else if (other.GetComponent<Projectile>() != null) other.gameObject.SetActive(false);
 	}

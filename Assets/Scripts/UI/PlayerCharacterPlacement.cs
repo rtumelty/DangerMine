@@ -37,6 +37,11 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		released = false;
 		initialClick = Time.time;
 		entity.enabled = false;
+
+		Renderer[] renderers = GetComponentsInChildren<Renderer>();
+		foreach ( Renderer rend in renderers) {
+			rend.sortingLayerName = "Overlay" ;
+		}
 	}
 
 
@@ -55,15 +60,15 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	void StickToCursor()
 	{
 		//Snaps character to cursor
-		
-		Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 8f);
-		transform.position = new Vector3(Mathf.RoundToInt(newPosition.x), Mathf.RoundToInt(newPosition.y), Mathf.RoundToInt(newPosition.z));
+		GridCoordinate gridCoord = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		transform.position = gridCoord.ToVector3();
+		//transform.position = new Vector3(Mathf.RoundToInt(newPosition.x), Mathf.RoundToInt(newPosition.y), Mathf.RoundToInt(newPosition.z));
 		
 		//Clamps highlight over last valid lane position
 		
-		if(transform.position.y < 3 && transform.position.y > -3 && transform.position.x > ChaseCollider.Instance.LeadingEdge)
+		if(transform.position.y < (3 * GridCoordinate.YScale) && transform.position.y > -(3 * GridCoordinate.YScale) 
+		   && (transform.position.x * GridCoordinate.XScale) > ChaseCollider.Instance.LeadingEdge)
 		{
-			entity.UpdateSortingLayer();
 			theHighLight.transform.position = new Vector3(transform.position.x, transform.position.y, theHighLight.transform.position.z);
 			mySnapPoint = transform.position;
 		}

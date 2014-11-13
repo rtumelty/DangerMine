@@ -23,6 +23,8 @@ public class FormationManager : MonoBehaviour
 	void Awake()
 	{
 		cameraStartingXPosition = Mathf.RoundToInt(Camera.main.transform.position.x);
+		cameraDistanceCovered = 0;
+		nextSpawnDistance = 0;
 		spawnOrigin = GameObject.FindWithTag ("SP0").transform;
 	}
 	
@@ -89,9 +91,9 @@ public class FormationManager : MonoBehaviour
 	void PlaceFormation(Formation formation) {
 		FormationProfile profile = formation.ChooseProfile(nextSpawnDistance);
 
-		if (printDebugInfo)
-			Debug.Log("Placing formation " + formation.name + ", profile " + profile.name + " at distance " + cameraDistanceCovered);
-
+		if (printDebugInfo){
+			Debug.Log("Placing formation " + formation + ", profile " + profile + " at distance " + cameraDistanceCovered);
+		}
 		nextSpawnDistance += formation.interval;
 		int heightOffset = Random.Range(0, 6 - formation.height);
 		Vector3 formationOffset = spawnOrigin.position + new Vector3(nextSpawnDistance, heightOffset, 0);

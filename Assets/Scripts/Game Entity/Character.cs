@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(Collider2D))]
 
 public class Character : GameEntity {
 
@@ -85,6 +85,16 @@ public class Character : GameEntity {
 		currentMoveSpeed = defaultMoveSpeed;
 		dying = false;
 		mySpineMultiSkeleton.SetAnimation (walkAnimation, 0);
+
+		Spine.Skeleton skeleton = mySpineMultiSkeleton.skeleton.skeleton;
+
+		if (skeleton != null) {
+			skeleton.R = 1;
+			skeleton.G = 1;
+			skeleton.B = 1;
+			skeleton.A = 1;
+		}
+
 	}
 	
 	protected override void OnDisable() {
@@ -183,7 +193,30 @@ public class Character : GameEntity {
 			if (currentHealth == 0 && !dying) {
 				Die ();
 			}
+			else 
+				StartCoroutine(TintSkeleton());
 		}
+	}
+
+	IEnumerator TintSkeleton() {
+		Spine.Skeleton skeleton = mySpineMultiSkeleton.skeleton.skeleton;
+		
+		float initialR = skeleton.R;
+		float initialG = skeleton.G;
+		float initialB = skeleton.B;
+		float initialA = skeleton.A;
+
+		skeleton.R = 255;
+		skeleton.G = 255;
+		skeleton.B = 255;
+		skeleton.A = 255;
+
+		yield return new WaitForSeconds(.2f);
+
+		skeleton.R = initialR;
+		skeleton.G = initialG;
+		skeleton.B = initialB;
+		skeleton.A = initialA;
 	}
 	
 	protected override void Die() {

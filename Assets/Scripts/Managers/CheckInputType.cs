@@ -40,6 +40,10 @@ public class CheckInputType : MonoBehaviour
 
 	void Update()
 	{
+#if !(UNITY_STANDALONE || UNITY_EDITOR)
+		if (Input.touchCount == 0) return;
+#endif
+
 #if UNITY_STANDALONE || UNITY_EDITOR
 
 		if(Input.GetMouseButtonUp(0))

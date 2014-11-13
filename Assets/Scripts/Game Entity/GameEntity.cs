@@ -8,14 +8,14 @@ public enum Allegiance {
 }
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(Collider2D))]
 public class GameEntity : MonoBehaviour {
 	
 	[SerializeField] protected Allegiance _allegiance;
 	[SerializeField] protected int health = 10;
 	[SerializeField] protected float currentHealth;
 	protected GridCoordinate gridCoords;
-	private Renderer[] renderers;
+	protected Renderer[] renderers;
 	
 	protected bool targetable = false;
 	
@@ -47,6 +47,16 @@ public class GameEntity : MonoBehaviour {
 		GridManager.Instance.RegisterEntity(this);
 		
 		currentHealth = health;
+
+		foreach (Renderer r in renderers) {
+			if (r is SpriteRenderer) {
+				MaterialPropertyBlock block = new MaterialPropertyBlock();
+
+				r.GetPropertyBlock(block);
+				block.AddFloat("_FlashAmount", 0);
+				r.SetPropertyBlock(block);
+			}
+		}
 	}
 	
 	protected virtual void OnDisable() {
@@ -64,8 +74,26 @@ public class GameEntity : MonoBehaviour {
 
 		currentHealth = Mathf.Clamp(currentHealth - character.AttackStrength, 0, 9999);
 
+		foreach (Renderer r in renderers) {
+			if (r is SpriteRenderer)
+				StartCoroutine(TintSpriteRenderer(r as SpriteRenderer));
+		}
+
 		if (currentHealth == 0)
 			Die ();
+	}
+
+	protected IEnumerator TintSpriteRenderer(SpriteRenderer r) {
+		MaterialPropertyBlock block = new MaterialPropertyBlock();
+
+		r.GetPropertyBlock(block);
+		block.AddFloat("_FlashAmount", .7f);
+		r.SetPropertyBlock(block);
+
+		yield return new WaitForSeconds(.2f);
+		
+		block.AddFloat("_FlashAmount", 0);
+		r.SetPropertyBlock(block);
 	}
 	
 	protected virtual void Die() {
@@ -73,7 +101,7 @@ public class GameEntity : MonoBehaviour {
 	}
 
 	public void UpdateSortingLayer() {
-		
+		Debug.Log("New layer: " + "Lane_" + gridCoords.y);
 		foreach ( Renderer rend in renderers) {
 			rend.sortingLayerName = "Lane_" + gridCoords.y;
 		}
