@@ -56,7 +56,7 @@ public class Enemy : Character {
 	protected override void OnDisable() {
 		base.OnDisable ();
 
-		if (chasing) LaneManager.Instance.RemoveFromRow(this, gridCoords.y + 2);
+		if (chasing) LaneManager.Instance.RemoveFromRow(this, worldGridCoords.y + 2);
 
 		if (activeEnemies.Contains(this))
 			activeEnemies.Remove(this);
@@ -69,8 +69,8 @@ public class Enemy : Character {
 		}
 		else {
 			GameEntity blockingObject = null;
-			if (GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0))) {
-				blockingObject = GridManager.Instance.EntityAt(gridCoords + new GridCoordinate(moveDirection, 0));
+			if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0))) {
+				blockingObject = GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0));
 				Blocked(blockingObject);
 			} else 
 				Unblocked();
@@ -80,7 +80,7 @@ public class Enemy : Character {
 					Enemy enemy = blockingObject as Enemy;
 
 					if (enemy.IsBlocked) {
-						Vector3 coordsInV3 = gridCoords.ToVector3(transform.position.z);
+						Vector3 coordsInV3 = worldGridCoords.ToVector3(transform.position.z);
 						if (transform.position.x != coordsInV3.x) {
 							Vector3 position = transform.position;
 							position += new Vector3((coordsInV3.x - transform.position.x) * currentMoveSpeed * Time.deltaTime, 0, 0);
@@ -97,7 +97,7 @@ public class Enemy : Character {
 					}
 				}
 				else {
-					Vector3 coordsInV3 = gridCoords.ToVector3(transform.position.z);
+					Vector3 coordsInV3 = worldGridCoords.ToVector3(transform.position.z);
 					if (transform.position.x != coordsInV3.x) {
 						Vector3 position = transform.position;
 						position += new Vector3((coordsInV3.x - transform.position.x) * currentMoveSpeed * Time.deltaTime, 0, 0);
@@ -112,7 +112,7 @@ public class Enemy : Character {
 
 				transform.position = Vector3.Lerp(transform.position, targetPosition, .9f);
 			}
-			gridCoords = transform.position as GridCoordinate;
+			worldGridCoords = transform.position as GridCoordinate;
 		}
 	}
 
@@ -153,6 +153,7 @@ public class Enemy : Character {
 
 
 		attackZone.SetSize(attackRange, 1);
-		LaneManager.Instance.JoinRow(this, gridCoords.y + 2);
+		LaneManager.Instance.JoinRow(this, worldGridCoords.y + 2);
+		GridManager.Instance.RegisterEntity(GridManager.Grid.ScreenGrid, this);
 	}
 }

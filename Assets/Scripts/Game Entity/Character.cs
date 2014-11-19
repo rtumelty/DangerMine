@@ -25,17 +25,6 @@ public class Character : GameEntity {
 		}
 	}
 
-	protected bool ignoreUpdate = false;
-
-	public bool IgnoreUpdate {
-		get {
-			return ignoreUpdate;
-		}
-		set {
-			ignoreUpdate = value;
-		}
-	}
-
 	protected bool blocked;
 
 	public bool IsBlocked {
@@ -102,30 +91,27 @@ public class Character : GameEntity {
 	}
 
 	protected virtual void Update () {
-		if (ignoreUpdate)
-			return;
-		
-		if (GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0))) 
-			Blocked(GridManager.Instance.EntityAt(gridCoords + new GridCoordinate(moveDirection, 0)));
+		if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0))) 
+			Blocked(GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0)));
 
 		if (blocked) {		
-			Vector3 coordsInV3 = gridCoords.ToVector3(transform.position.z);
+			Vector3 coordsInV3 = worldGridCoords.ToVector3(transform.position.z);
 			if (transform.position.x != coordsInV3.x) {
 				Vector3 position = transform.position;
 				position += new Vector3((coordsInV3.x - transform.position.x) * currentMoveSpeed * Time.deltaTime, 0, 0);
 				transform.position = position;
 			}
-			if (!GridManager.Instance.IsOccupied(gridCoords + new GridCoordinate(moveDirection, 0)))
+			if (!GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0)))
 				Unblocked();
 		} else {
 			
 			Vector3 position = transform.position;
 			position += new Vector3(currentMoveSpeed * moveDirection * Time.deltaTime, 0, 0);
 			transform.position = position;
-			gridCoords = position as GridCoordinate;
+			worldGridCoords = position as GridCoordinate;
 
 			if (_allegiance == Allegiance.Ally) {
-				if (gridCoords.x >= (CameraController.GridCoords.x + 1.5)) {
+				if (worldGridCoords.x >= (CameraController.GridCoords.x + 1.5)) {
 					currentMoveSpeed = CameraController.MoveSpeed;
 				}
 				else {
@@ -146,7 +132,7 @@ public class Character : GameEntity {
 		}
 	}
 
-	public void Unblocked() {
+	public virtual void Unblocked() {
 		blocked = false; 
 
 		currentMoveSpeed = defaultMoveSpeed;

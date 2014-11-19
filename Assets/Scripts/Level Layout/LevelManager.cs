@@ -2,6 +2,14 @@ using UnityEngine;
 using System.Collections;
 
 public class LevelManager : MonoBehaviour {
+	static LevelManager instance;
+
+	public static LevelManager Instance {
+		get {
+			return instance;
+		}
+	}
+
 	[SerializeField] Transform cameraTransform;
 	[SerializeField] string blockPrefabPoolId;
 	[SerializeField] Transform spawnPoint;
@@ -9,10 +17,23 @@ public class LevelManager : MonoBehaviour {
 	PrefabPool levelBlockPool;
 	GameObject lastBlock;
 	Camera mainCamera;
+	bool gameStarted = false;
 	bool gameOver = false;
+
+	public bool GameStarted {
+		get {
+			return gameStarted;
+		}
+		set {
+			gameStarted = value;
+		}
+	}
 
 	// Use this for initialization
 	void Awake () {
+		if (instance == null) instance = this;
+		else Destroy(this);
+
 		if (cameraTransform == null)
 			cameraTransform = Camera.main.transform;
 
@@ -27,23 +48,31 @@ public class LevelManager : MonoBehaviour {
 		GlobalManagement.LAST_DISTANCE_COVERED = 0;
 		GlobalManagement.SCORE = 0;
 	}
+
+	void OnDisable() {
+		StopAllCoroutines();
+	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (spawnPoint.position.x - (cameraTransform.position.x + (mainCamera.orthographicSize * mainCamera.aspect)) < 5)
 			PlaceNextBlock ();	
 
-		// End conditions
-		if (Ally.ActiveAllies == 0 && !gameOver) {
-			gameOver = true;
-			StartCoroutine (GameOver ());
-		}
 	}
 
 	void PlaceNextBlock() {
 		lastBlock = levelBlockPool.Spawn (spawnPoint.position, spawnPoint.rotation);
 		lastBlock.GetComponent<PooledPrefab> ().distanceObject = cameraTransform;
 		spawnPoint = lastBlock.transform.FindChild ("NextBlock");
+	}
+
+	public void CheckEndCondition() {
+		if (!gameStarted) return;
+		// End conditions
+		if (Ally.ActiveAllies == 0 && !gameOver) {
+			gameOver = true;
+			StartCoroutine (GameOver ());
+		}
 	}
 
 	IEnumerator GameOver() {

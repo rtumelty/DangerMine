@@ -26,6 +26,13 @@ public class AllyRanged : Ally {
 		attackZone.SetSize(attackRange, shotDirection);
 	}
 
+	public override void UpdateTargets (System.Collections.Generic.List<GameEntity> targets)
+	{
+		base.UpdateTargets (targets);
+
+		cantMove = false;
+	}
+
 	protected override IEnumerator Attack() {
 		attacking = true;
 		mySpineMultiSkeleton.SetAnimation (attackAnimation, 0);

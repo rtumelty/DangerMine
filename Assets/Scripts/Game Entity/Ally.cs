@@ -10,6 +10,9 @@ public class Ally : Character {
 #endif
 
 	[SerializeField] bool targetableOnStart = false;
+	protected bool cantMove = false;
+	protected bool moving = false;
+
 	private static List<Ally> activeAllies;
 
 	public static int ActiveAllies {
@@ -17,6 +20,8 @@ public class Ally : Character {
 			return activeAllies.Count;
 		}
 	}
+
+	protected GridCoordinate targetGridPosition;
 
 	protected override void Awake() {
 		if (activeAllies == null) {
@@ -29,8 +34,6 @@ public class Ally : Character {
 
 		_allegiance = Allegiance.Ally;
 
-		if (targetableOnStart) targetable = true;
-
 		moveDirection = 1;
 
 		base.Awake ();
@@ -38,16 +41,69 @@ public class Ally : Character {
 
 	protected override void OnEnable() {
 		base.OnEnable ();
+
+		if (targetableOnStart) {
+			targetable = true;
+			GridManager.Instance.RegisterEntity(GridManager.Grid.ScreenGrid, this);
+		}
+		
 		if (!activeAllies.Contains(this))
 			activeAllies.Add(this);
+		
+		targetGridPosition = GridManager.WorldToScreenGridCoords(transform.position);
 	}
 
 	protected override void OnDisable() {
 		if (activeAllies.Contains(this))
 			activeAllies.Remove(this);
+
+		LevelManager.Instance.CheckEndCondition();
 		base.OnDisable ();
 	}
-	
+
+	protected override void Update() {
+		if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0)) && ! cantMove) 
+			Blocked(GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0)));
+
+		Vector3 targetPosition;
+
+		if (moving) {
+			targetPosition = GridManager.ScreenCoordsToWorldPosition(targetGridPosition);
+			if ((transform.position - targetPosition).magnitude < .1) moving = false;
+		}
+		else if (cantMove) {
+			Debug.Log("Can't move, staying at " + worldGridCoords);
+			targetPosition = worldGridCoords.ToVector3(transform.position.z);
+			targetGridPosition = GridManager.WorldToScreenGridCoords(worldGridCoords);
+
+			if (!GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0)))
+				Unblocked();
+		} else {
+			targetPosition = GridManager.ScreenCoordsToWorldPosition(targetGridPosition);
+		}
+
+		Vector3 deltaPosition = targetPosition - transform.position;
+		
+		float maxSpeed = currentMoveSpeed * Time.deltaTime;
+		deltaPosition = new Vector3(Mathf.Clamp(deltaPosition.x, -maxSpeed, maxSpeed), Mathf.Clamp(deltaPosition.y, -maxSpeed, maxSpeed), 0);
+		transform.position += deltaPosition;
+		worldGridCoords = transform.position as GridCoordinate;
+
+	}
+
+	public override void Blocked(GameEntity entity) {
+		cantMove = true;
+		targetGridPosition = GridManager.WorldToScreenGridCoords(transform.position);
+
+		base.Blocked(entity);
+	}
+
+	public override void Unblocked() {
+		cantMove = false;
+
+		base.Unblocked();
+	}
+
 	public override void UpdateTargets(List<GameEntity> targets) {
 		attackTargets.Clear();
 
@@ -60,6 +116,7 @@ public class Ally : Character {
 		if (attacking && attackTargets.Count == 0) {
 			attacking = false;
 		} else if (!attacking && attackTargets.Count > 0 && canAttack) {
+			cantMove = true;
 			StartCoroutine("Attack");
 		}
 	}
@@ -75,87 +132,59 @@ public class Ally : Character {
 
 		StartCoroutine (Drag ());
 	}
-
+	
 	protected virtual IEnumerator Drag() {
-
+		Debug.Log("Starting Drag");
 		yield return new WaitForSeconds (Time.deltaTime);
-
-		float totalY = 0f;
-		bool insufficientDeltaY = true;
+		
+		GridCoordinate moveTarget = screenGridCoords;
+		GridCoordinate lastMoveTarget = screenGridCoords;
 
 		while (CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE || CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) {
-#if UNITY_EDITOR || UNITY_STANDALONE
-			totalY += Input.GetAxis("Mouse Y");
-			#elif UNITY_ANDROID
-			totalY += Input.touches[0].deltaPosition.y;
-#endif
-			if (Mathf.Abs(totalY) > laneSwitchThreshold) {
-				insufficientDeltaY = 	false;
-				
-				break;
+			lastMoveTarget = moveTarget;
+
+			moveTarget = GridManager.WorldToScreenGridCoords(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+/*
+			if (Mathf.Abs(moveTarget.x - screenGridCoords.x) > Mathf.Abs(moveTarget.y - screenGridCoords.y))
+				moveTarget.y = screenGridCoords.y;
+			else
+				moveTarget.x = screenGridCoords.x;
+*/			
+			moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
+			moveTarget.y = Mathf.Clamp(moveTarget.y, GridManager.minY, GridManager.maxY);
+
+			LaneHighlight.Instance.UpdatePosition(GridManager.ScreenCoordsToWorldPosition(moveTarget));
+
+			if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, moveTarget)) {
+				GameEntity entityAtCoords = GridManager.Instance.EntityAt(GridManager.Grid.ScreenGrid, moveTarget);
+				if (!entityAtCoords is Ally) {
+					Debug.Log("Drag hit entity " + entityAtCoords + ", ending input.");
+					UpdateTargetCoordinates(lastMoveTarget);
+					yield break;
+				} else if (entityAtCoords != this) {
+					Debug.Log("Drag hit entity " + entityAtCoords + ", ending input.");
+					UpdateTargetCoordinates(moveTarget);
+					yield break;
+				}
 			}
 
-			//dragLength += Time.deltaTime;
 			yield return new WaitForSeconds (Time.deltaTime);
 		}
 
+		LaneHighlight.Instance.Hide();
+
 		if (dying) yield break;
-
-		if (insufficientDeltaY){
-			
-			Debug.Log("Drag too short");
-			yield break;
-		}
-
-		/*
-		// Ignore if drag too short
-		if (dragLength < minimumDragTime) {
-			Debug.Log("Too short!");
-			yield break;
-		}*/
-
-		float up = Mathf.Sign (totalY);
-
-		GridCoordinate newCoord = gridCoords + new GridCoordinate (0f, up);
-
-		ignoreUpdate = true;
-		canAttack = false;
 		
-		float swipeTime = .06f;
-		float elapsedTime = 0f;
-		
-		Vector3 startPosition = transform.position;
-		Vector3 targetPosition = new Vector3(transform.position.x, newCoord.ToVector3().y, transform.position.z);
+		Debug.Log("Drag ended");
+		UpdateTargetCoordinates(moveTarget);
+	}
 
-		// "Wobble" if out of level range or coordinates are occupied
-		if (GridManager.Instance.IsOccupied(newCoord)) {
-			swipeTime *= 2;
-			while (elapsedTime <= swipeTime / 2) {
-				transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime * (1 / swipeTime));
-				elapsedTime += Time.deltaTime;
-				yield return new WaitForSeconds(Time.deltaTime);
-			}
-			
-			
-			while (elapsedTime <= swipeTime) {
-				transform.position = Vector3.Lerp(startPosition, targetPosition, 1 - (elapsedTime * (1 / swipeTime)));
-				elapsedTime += Time.deltaTime;
-				yield return new WaitForSeconds(Time.deltaTime);
-			}
-			transform.position = startPosition;
-		}
-		else {
-			while (elapsedTime <= swipeTime) {
-				transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime * (1 / swipeTime));
-				elapsedTime += Time.deltaTime;
-				yield return new WaitForSeconds(Time.deltaTime);
-			}
-			transform.position = targetPosition;
-			gridCoords = new GridCoordinate (transform.position);
-			UpdateSortingLayer();
-		}
-		
-		ignoreUpdate = false;
-		canAttack = true;
+	public void UpdateTargetCoordinates(GridCoordinate coord) {
+		GridCoordinate relativeDistance = coord - screenGridCoords;
+
+		GridCoordinate newTarget = screenGridCoords + relativeDistance;
+		moving = true;
+
+		targetGridPosition = newTarget;
 	}
 }

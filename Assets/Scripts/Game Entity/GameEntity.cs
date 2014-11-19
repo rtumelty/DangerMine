@@ -14,8 +14,18 @@ public class GameEntity : MonoBehaviour {
 	[SerializeField] protected Allegiance _allegiance;
 	[SerializeField] protected int health = 10;
 	[SerializeField] protected float currentHealth;
-	protected GridCoordinate gridCoords;
+	protected GridCoordinate worldGridCoords;
+	protected GridCoordinate screenGridCoords;
 	protected Renderer[] renderers;
+
+	public GridCoordinate ScreenGridCoords {
+		get {
+			return screenGridCoords;
+		}
+		set {
+			screenGridCoords = value;
+		}
+	}
 	
 	protected bool targetable = false;
 	
@@ -42,9 +52,11 @@ public class GameEntity : MonoBehaviour {
 	}
 
 	protected virtual void OnEnable() {
-		gridCoords = transform.position as GridCoordinate;
+		worldGridCoords = transform.position as GridCoordinate;
+		screenGridCoords = null;
+
 		UpdateSortingLayer();
-		GridManager.Instance.RegisterEntity(this);
+		GridManager.Instance.RegisterEntity(GridManager.Grid.WorldGrid, this);
 		
 		currentHealth = health;
 
@@ -62,8 +74,10 @@ public class GameEntity : MonoBehaviour {
 	protected virtual void OnDisable() {
 		targetable = false;
 
-		if (GridManager.Instance != null)
-			GridManager.Instance.UnregisterEntity(this);
+		if (GridManager.Instance != null) {
+			GridManager.Instance.UnregisterEntity(GridManager.Grid.WorldGrid, this);
+			GridManager.Instance.UnregisterEntity(GridManager.Grid.ScreenGrid, this);
+		}
 	}
 
 	protected virtual void Hit(Character character) {
@@ -101,9 +115,9 @@ public class GameEntity : MonoBehaviour {
 	}
 
 	public void UpdateSortingLayer() {
-		Debug.Log("New layer: " + "Lane_" + gridCoords.y);
+//		Debug.Log("New layer: " + "Lane_" + worldGridCoords.y);
 		foreach ( Renderer rend in renderers) {
-			rend.sortingLayerName = "Lane_" + gridCoords.y;
+			rend.sortingLayerName = "Lane_" + worldGridCoords.y;
 		}
 
 	}

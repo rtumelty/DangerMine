@@ -28,6 +28,10 @@ public class PooledPrefab : MonoBehaviour {
 		if (recycleAfterTime)
 			StartCoroutine(Recycle(recycleTime));
 	}
+
+	void OnDisable() {
+		StopAllCoroutines();
+	}
 	
 	void OnBecameInvisible() {
 		if (recycleWhenOffScreen && gameObject.activeSelf) {
