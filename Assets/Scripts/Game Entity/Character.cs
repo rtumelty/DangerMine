@@ -92,7 +92,7 @@ public class Character : GameEntity {
 
 	protected virtual void Update () {
 		if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0))) 
-			Blocked(GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0)));
+			Blocked(GridManager.Instance.EntitiesAt(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0)));
 
 		if (blocked) {		
 			Vector3 coordsInV3 = worldGridCoords.ToVector3(transform.position.z);
@@ -121,14 +121,15 @@ public class Character : GameEntity {
 		}
 	}
 	
-	public virtual void Blocked(GameEntity target) { 
+	public virtual void Blocked(List<GameEntity> targets) { 
 		if (!blocked) {
 			blocked = true;
-
+			/*
 			if (target is Character) {
 				Character character = target as Character;
 				currentMoveSpeed = character.CurrentMoveSpeed;
 			}
+			*/
 		}
 	}
 

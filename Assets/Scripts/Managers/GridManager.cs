@@ -91,12 +91,13 @@ public class GridManager : MonoBehaviour {
 		return false;
 	}
 	
-	public GameEntity EntityAt(Grid grid, Vector2 position) {
-		return EntityAt (grid, position as GridCoordinate);
+	public List<GameEntity> EntitiesAt(Grid grid, Vector2 position) {
+		return EntitiesAt (grid, position as GridCoordinate);
 	}
 
-	public GameEntity EntityAt(Grid grid, GridCoordinate position) {
+	public List<GameEntity> EntitiesAt(Grid grid, GridCoordinate position) {
 		Dictionary<GameEntity, GridCoordinate> gridToCheck = null;
+		List<GameEntity> entities = new List<GameEntity>();
 		
 		switch (grid) {
 		case Grid.WorldGrid:
@@ -111,9 +112,9 @@ public class GridManager : MonoBehaviour {
 			return null;
 
 		foreach (KeyValuePair<GameEntity, GridCoordinate> pair in gridToCheck) {
-			if (pair.Value == position) return pair.Key;
+			if (pair.Value == position) entities.Add(pair.Key);
 		}
-		return null;
+		return entities;
 	}
 
 	public void RegisterEntity(Grid grid, GameEntity entity) {
@@ -139,7 +140,6 @@ public class GridManager : MonoBehaviour {
 			position = new GridCoordinate(entity.transform.position);
 			break;
 		case Grid.ScreenGrid:
-			Debug.Log("screen grid count: " + occupiedScreenPositions.Count);
 			position = new GridCoordinate(entity.transform.position - instance.screenGridOrigin.position);
 			break;
 		}

@@ -63,7 +63,7 @@ public class Ally : Character {
 
 	protected override void Update() {
 		if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0)) && ! cantMove) 
-			Blocked(GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0)));
+			Blocked(GridManager.Instance.EntitiesAt(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0)));
 
 		Vector3 targetPosition;
 
@@ -72,7 +72,6 @@ public class Ally : Character {
 			if ((transform.position - targetPosition).magnitude < .1) moving = false;
 		}
 		else if (cantMove) {
-			Debug.Log("Can't move, staying at " + worldGridCoords);
 			targetPosition = worldGridCoords.ToVector3(transform.position.z);
 			targetGridPosition = GridManager.WorldToScreenGridCoords(worldGridCoords);
 
@@ -86,16 +85,29 @@ public class Ally : Character {
 		
 		float maxSpeed = currentMoveSpeed * Time.deltaTime;
 		deltaPosition = new Vector3(Mathf.Clamp(deltaPosition.x, -maxSpeed, maxSpeed), Mathf.Clamp(deltaPosition.y, -maxSpeed, maxSpeed), 0);
+
+		if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, new GridCoordinate(transform.position + deltaPosition))) {
+			List<GameEntity> entities = GridManager.Instance.EntitiesAt(GridManager.Grid.WorldGrid, new GridCoordinate(transform.position + deltaPosition));
+
+			foreach (GameEntity entity in entities) {
+				if (entity != this && entity is Ally) {
+		   	 		(entity as Ally).FallBack();
+
+					targetGridPosition = GridManager.WorldToScreenGridCoords(transform.position + deltaPosition);
+				}
+			}
+		}
+
 		transform.position += deltaPosition;
 		worldGridCoords = transform.position as GridCoordinate;
 
 	}
 
-	public override void Blocked(GameEntity entity) {
+	public override void Blocked(List<GameEntity> entities) {
 		cantMove = true;
 		targetGridPosition = GridManager.WorldToScreenGridCoords(transform.position);
 
-		base.Blocked(entity);
+		base.Blocked(entities);
 	}
 
 	public override void Unblocked() {
@@ -154,9 +166,9 @@ public class Ally : Character {
 			moveTarget.y = Mathf.Clamp(moveTarget.y, GridManager.minY, GridManager.maxY);
 
 			LaneHighlight.Instance.UpdatePosition(GridManager.ScreenCoordsToWorldPosition(moveTarget));
-
+			/*
 			if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, moveTarget)) {
-				GameEntity entityAtCoords = GridManager.Instance.EntityAt(GridManager.Grid.ScreenGrid, moveTarget);
+				GameEntity entityAtCoords = GridManager.Instance.EntitiesAt(GridManager.Grid.ScreenGrid, moveTarget);
 				if (!entityAtCoords is Ally) {
 					Debug.Log("Drag hit entity " + entityAtCoords + ", ending input.");
 					UpdateTargetCoordinates(lastMoveTarget);
@@ -167,6 +179,7 @@ public class Ally : Character {
 					yield break;
 				}
 			}
+			*/
 
 			yield return new WaitForSeconds (Time.deltaTime);
 		}
@@ -186,5 +199,9 @@ public class Ally : Character {
 		moving = true;
 
 		targetGridPosition = newTarget;
+	}
+
+	public void FallBack() {
+		UpdateTargetCoordinates(screenGridCoords - new GridCoordinate(1, 0));
 	}
 }

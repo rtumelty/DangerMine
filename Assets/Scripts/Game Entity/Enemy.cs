@@ -68,16 +68,16 @@ public class Enemy : Character {
 			return;
 		}
 		else {
-			GameEntity blockingObject = null;
+			List<GameEntity> blockingObjects = null;
 			if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0))) {
-				blockingObject = GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0));
-				Blocked(blockingObject);
+				blockingObjects = GridManager.Instance.EntitiesAt(GridManager.Grid.WorldGrid, worldGridCoords + new GridCoordinate(moveDirection, 0));
+				Blocked(blockingObjects);
 			} else 
 				Unblocked();
 
 			if (blocked) {
-				if (blockingObject is Enemy) {
-					Enemy enemy = blockingObject as Enemy;
+				if (blockingObjects[0] is Enemy) {
+					Enemy enemy = blockingObjects[0] as Enemy;
 
 					if (enemy.IsBlocked) {
 						Vector3 coordsInV3 = worldGridCoords.ToVector3(transform.position.z);
@@ -116,16 +116,19 @@ public class Enemy : Character {
 		}
 	}
 
-	public override void Blocked(GameEntity target) { 
-		if (target is Enemy && !chasing) {
-			Enemy enemy = target as Enemy;
-			if (enemy.Chasing) {
-				Chase ();
-				return;
+	public override void Blocked(List<GameEntity> targets) { 
+		foreach (GameEntity target in targets) {
+			if (target is Enemy && !chasing) {
+				Enemy enemy = target as Enemy;
+				if (enemy.Chasing) {
+					Chase ();
+					return;
+				}
 			}
+		
 		}
-	
-		base.Blocked(target);
+		base.Blocked(targets);
+
 	}
 
 	public override void UpdateTargets(List<GameEntity> targets) {
