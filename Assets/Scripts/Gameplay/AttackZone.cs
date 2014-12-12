@@ -5,11 +5,14 @@ using System.Collections.Generic;
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class AttackZone : MonoBehaviour {
-	BoxCollider2D attackRange;
+	BoxCollider2D attackArea;
 	Character owner;
 
-	List<GameEntity> targets;
-	public List<GameEntity> Targets {
+	List<DestructibleEntity> ignoredTargets;
+	LayerMask targetedLayers;
+
+	List<DestructibleEntity> targets;
+	public List<DestructibleEntity> Targets {
 		get {
 			return targets;
 		}
@@ -18,33 +21,51 @@ public class AttackZone : MonoBehaviour {
  
 
 	void Awake() {
-		targets = new List<GameEntity>();
+		targets = new List<DestructibleEntity>();
 
 		owner = transform.GetComponentInParent<Character>();
+		ignoredTargets = owner.IgnoredTargets;
+		targetedLayers = owner.TargetingMask;
 	}
 
-	public void SetSize(Vector2 size, int direction) {
-		if (attackRange == null) {
-			attackRange = gameObject.GetComponent<BoxCollider2D>();
-			attackRange.isTrigger = true;
+	void OnEnable() {
+		if (attackArea == null) {
+			attackArea = gameObject.GetComponent<BoxCollider2D>();
+			attackArea.isTrigger = true;
 		}
 
-		attackRange.size = size;
-		attackRange.center = new Vector2(size.x / 2 * direction, 0);
+		attackArea.size = owner.AttackRange;
+
+		float xOffset = 0, yOffset = 0;
+		if ((owner.AttackDirection & Character.AttackDirections.Forwards) != 0)
+			xOffset ++;
+		if ((owner.AttackDirection & Character.AttackDirections.Backwards) != 0)
+			xOffset --;
+		if ((owner.AttackDirection & Character.AttackDirections.Up) != 0)
+			yOffset ++;
+		if ((owner.AttackDirection & Character.AttackDirections.Down) != 0)
+			xOffset --;
+
+		attackArea.center = new Vector2(attackArea.size.x / 2 * xOffset, attackArea.size.y / 2 * yOffset);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		GameEntity entity = other.GetComponentInChildren<GameEntity>();
+		DestructibleEntity entity = other.GetComponentInChildren<DestructibleEntity>();
 		
 		if (entity != null) {
-			//if (entity.allegiance != owner.allegiance) {
-				targets.Add(entity);
-			//}
+			if ((1 << entity.gameObject.layer & targetedLayers) == 0) return;
+
+			foreach (DestructibleEntity ignoredTarget in ignoredTargets) {
+				if (ignoredTarget.GetType() == entity.GetType())
+					return;
+			}
+
+			targets.Add(entity);
 		}
 	}
 	
 	void OnTriggerExit2D(Collider2D other) {
-		GameEntity entity = other.GetComponentInChildren<GameEntity>();
+		DestructibleEntity entity = other.GetComponentInChildren<DestructibleEntity>();
 		
 		if (entity != null) {
 			if (targets.Contains(entity)) {
@@ -53,19 +74,20 @@ public class AttackZone : MonoBehaviour {
 		}
 	}
 
-	void Update() {
-		if (!owner.enabled) return;
+	void FixedUpdate() {
+		if (owner.State != DestructibleEntity.EntityState.Active) return;
 
-		List<Collider2D> collidersInRange = new List<Collider2D>( Physics2D.OverlapAreaAll(attackRange.bounds.min, attackRange.bounds.max));
-		List<GameEntity> activeTargets = new List<GameEntity>();
+		List<Collider2D> collidersInRange = new List<Collider2D>( Physics2D.OverlapAreaAll(attackArea.bounds.min, attackArea.bounds.max));
+		List<DestructibleEntity> activeTargets = new List<DestructibleEntity>();
 
 		for (int i = 0; i < targets.Count;i++) {
-			GameEntity entity = targets[i];
+			DestructibleEntity entity = targets[i];
 
-			if (entity.gameObject.activeSelf == false) {// || !collidersInRange.Contains(entity.collider2D)) {
+			if (entity.gameObject.activeSelf == false || entity.State != DestructibleEntity.EntityState.Active 
+			    	|| !collidersInRange.Contains(entity.collider2D)) {
 				targets.Remove(entity);
 				break;
-			} else if ( entity.Targetable )
+			} else if ( entity.State == DestructibleEntity.EntityState.Active )
 				activeTargets.Add(entity);
 		}
 

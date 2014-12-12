@@ -4,34 +4,34 @@ using System.Collections.Generic;
 
 public class ProbabilityTable : MonoBehaviour {
 	[System.Serializable]
-	public struct WeightedPoolId {
-		public string poolId;
+	public struct WeightedPrefab {
+		public GameObject prefab;
 		public float weight;
 	}
 
-	[SerializeField] List<WeightedPoolId> poolIds;
+	[SerializeField] List<WeightedPrefab> prefabs;
 
 	void Awake() {
-		if (poolIds == null) poolIds = new List<WeightedPoolId>();
+		if (prefabs == null) prefabs = new List<WeightedPrefab>();
 	}
 
 	void OnEnable () {
 		float spawnValue = Random.Range (0, 1f);
 
-		string poolId = "";
+		GameObject prefab = null;
 
 		float combinedWeights = 0;
-		foreach (WeightedPoolId id in poolIds)
+		foreach (WeightedPrefab id in prefabs)
 			combinedWeights += id.weight;
 
-		for (int i = 0; i < poolIds.Count; i++) {
-			spawnValue -= poolIds[i].weight / combinedWeights;
-			if (spawnValue < 0 || i+1 == poolIds.Count)  {
-				poolId = poolIds[i].poolId;
+		for (int i = 0; i < prefabs.Count; i++) {
+			spawnValue -= prefabs[i].weight / combinedWeights;
+			if (spawnValue < 0 || i+1 == prefabs.Count)  {
+				prefab = prefabs[i].prefab;
 			}
 		}
 
-		PrefabPool.GetPool (poolId).Spawn (transform.position);
+		PrefabPool.GetPool (prefab).Spawn (transform.position);
 
 		gameObject.SetActive (false);
 	}

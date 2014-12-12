@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Jimmy : AllyRanged {
+public class EnvironmentalHazard : GameEntity {
+
 }

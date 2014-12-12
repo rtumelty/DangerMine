@@ -13,7 +13,7 @@ public class FormationProfile {
 
 	public float probabilityWeight;
 
-	public string[] prefabPoolIds;
+	public GameObject[] prefabs;
 	
 	
 	public bool expand;
@@ -26,18 +26,18 @@ public class FormationProfile {
 		minimumDistance = parent.minimumDistance;
 		maximumDistance = parent.maximumDistance;
 		probabilityWeight = 1;
-		prefabPoolIds = new string[parent.spawnPoints.Count];
+		prefabs = new GameObject[parent.spawnPoints.Count];
 	}
 
 	public void UpdatePrefabArraySize() {
-		string[] newPrefabs = new string[formation.spawnPoints.Count];
+		GameObject[] newPrefabs = new GameObject[formation.spawnPoints.Count];
 
-		if (prefabPoolIds != null) {
-			for (int i = 0; i < newPrefabs.Length && i < prefabPoolIds.Length; i++)
-				newPrefabs[i] = prefabPoolIds[i];
+		if (prefabs != null) {
+			for (int i = 0; i < newPrefabs.Length && i < prefabs.Length; i++)
+				newPrefabs[i] = prefabs[i];
 		}
 
-		prefabPoolIds = newPrefabs;
+		prefabs = newPrefabs;
 	}
 
 }

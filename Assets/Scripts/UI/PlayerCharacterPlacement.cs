@@ -32,7 +32,6 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	void OnEnable() {
 		released = false;
 		initialClick = Time.time;
-		entity.enabled = false;
 
 		Renderer[] renderers = GetComponentsInChildren<Renderer>();
 		foreach ( Renderer rend in renderers) {
@@ -80,8 +79,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		   !GridManager.Instance.IsOccupied(GridManager.Grid.ScreenGrid, GridManager.WorldToScreenGridCoords(transform.position)))
 		{
 			entity.enabled = true;
-			entity.Targetable = true;
-			GridManager.Instance.RegisterEntity(GridManager.Grid.ScreenGrid, entity);
+			entity.State = GameEntity.EntityState.Active;
 
 			LaneHighlight.Instance.Hide();
 			purchaseButton.SendMessage("StartCooldown");

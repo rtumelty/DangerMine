@@ -4,17 +4,18 @@ using System.Collections;
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class Projectile : MonoBehaviour {
-	AllyRanged source;
+	[SerializeField] float projectileSpeed;
+	Character source;
 
 	void Awake() {
 		collider2D.isTrigger = true;
 		rigidbody2D.gravityScale = 0;
 	}
 
-	public void Init(AllyRanged owner) {
+	public void Init(Character owner, Vector2 direction) {
 		source = owner;
 
-		rigidbody2D.velocity = new Vector2(owner.ShotDirection * owner.ProjectileSpeed, 0);
+		rigidbody2D.velocity = direction * projectileSpeed;
 	}
 
 	void OnDisable() {
@@ -22,15 +23,12 @@ public class Projectile : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		GameEntity entity = other.GetComponent<GameEntity>();
+		DestructibleEntity entity = other.GetComponent<DestructibleEntity>();
 
 		if (entity != null) {
-			if (entity.allegiance == source.allegiance)
-				return;
-			else {
-				entity.SendMessage("Hit", source);
-				gameObject.SetActive(false);
-			}
+			if ((1 << entity.gameObject.layer & source.TargetingMask) != 0)
+				entity.TakeDamage(source.AttackStrength, source);
+			gameObject.SetActive(false);
 		}
 	}
 }

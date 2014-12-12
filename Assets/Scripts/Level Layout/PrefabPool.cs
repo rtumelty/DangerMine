@@ -3,30 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class PrefabPool : MonoBehaviour {
-	public string identifier;
-	
 	List<GameObject> pool;
 	int currentPoolIndex = 0;
 	[SerializeField] GameObject prefabToPool;
 	[SerializeField] int preinstantiatedCount = 20;
 	[SerializeField] int maxObjectCount = 100;
 
-	private static Dictionary<string, PrefabPool> pools;
-
-	// Use this for initialization
+	private static Dictionary<GameObject, PrefabPool> pools;
 
 	void Awake () 
 	{
 		if (pools == null) 
 		{
-			pools = new Dictionary<string, PrefabPool>();
+			pools = new Dictionary<GameObject, PrefabPool>();
 		}
 
 		PrefabPool temp;
-		if (pools.TryGetValue (identifier, out temp)) 
-						pools.Remove (identifier);
+		if (pools.TryGetValue (prefabToPool, out temp)) 
+						pools.Remove (prefabToPool);
 
-		pools.Add (identifier, this);
+		pools.Add (prefabToPool, this);
 
 		pool = new List<GameObject>();
 
@@ -39,9 +35,9 @@ public class PrefabPool : MonoBehaviour {
 		}
 	}
 
-	public static PrefabPool GetPool(string id) {
+	public static PrefabPool GetPool(GameObject prefab) {
 		PrefabPool fetchedPool;
-		pools.TryGetValue (id, out fetchedPool);
+		pools.TryGetValue (prefab, out fetchedPool);
 		return fetchedPool;
 	}
 

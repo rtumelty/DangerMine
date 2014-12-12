@@ -29,7 +29,7 @@ public class LaneManager : MonoBehaviour {
 			if (lanes[row][i] == null) {
 				lanes[row][i] = enemy;
 
-				enemy.followDistance = maxFollowDistance - i;
+//				enemy.followDistance = maxFollowDistance - i;
 				members++;
 				break;
 			}
@@ -60,9 +60,9 @@ public class LaneManager : MonoBehaviour {
 
 		foreach (Enemy[] lane in lanes) {
 			for (int i = 0; i < lane.Length; i++) {
-				if (lane[i] != null)
-					lane[i].followDistance = maxFollowDistance - i;
-				else break;
+			//	if (lane[i] != null)
+			//		lane[i].followDistance = maxFollowDistance - i;
+			//	else break;
 			}
 		}
 	}

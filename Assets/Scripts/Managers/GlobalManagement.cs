@@ -3,7 +3,7 @@ using System.Collections;
 
 public static class GlobalManagement
 {
-	public static int PLAYERGOLD = 500;
+	public static int PLAYERGOLD = 5000;
 	public static int PLAYERDIAMONDS = 0;
 
 	public static int MAX_PLAYER_CHARS;

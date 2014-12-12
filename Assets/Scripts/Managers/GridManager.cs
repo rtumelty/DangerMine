@@ -62,7 +62,6 @@ public class GridManager : MonoBehaviour {
 		foreach (GameEntity key in keys) {
 			GridCoordinate position = WorldToScreenGridCoords(key.transform.position);
 			occupiedScreenPositions[key] = position;
-			key.ScreenGridCoords = position;
 		}
 	}
 	

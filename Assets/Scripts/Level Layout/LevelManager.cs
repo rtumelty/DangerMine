@@ -11,7 +11,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	[SerializeField] Transform cameraTransform;
-	[SerializeField] string blockPrefabPoolId;
+	[SerializeField] GameObject blockPrefab;
 	[SerializeField] Transform spawnPoint;
 
 	PrefabPool levelBlockPool;
@@ -39,7 +39,7 @@ public class LevelManager : MonoBehaviour {
 
 		mainCamera = Camera.main;
 
-		levelBlockPool = PrefabPool.GetPool (blockPrefabPoolId);
+		levelBlockPool = PrefabPool.GetPool (blockPrefab);
 
 		PlaceNextBlock ();
 		PlaceNextBlock ();
@@ -68,11 +68,14 @@ public class LevelManager : MonoBehaviour {
 
 	public void CheckEndCondition() {
 		if (!gameStarted) return;
+
+		/*
 		// End conditions
 		if (Ally.ActiveAllies == 0 && !gameOver) {
 			gameOver = true;
 			StartCoroutine (GameOver ());
 		}
+		*/
 	}
 
 	IEnumerator GameOver() {

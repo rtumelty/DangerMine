@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
@@ -109,13 +109,12 @@ public class FormationEditor : Editor {
 		
 		profile.expandPrefabs = EditorGUILayout.Foldout(profile.expandPrefabs, "Prefabs");
 		if (profile.expandPrefabs) {
-			if (profile.prefabPoolIds == null) profile.UpdatePrefabArraySize();
+			if (profile.prefabs == null) profile.UpdatePrefabArraySize();
 			
 			profile.scrollPrefabs = EditorGUILayout.BeginScrollView(profile.scrollPrefabs, GUILayout.MinHeight(50));
 			
-			for (int i = 0; i < profile.prefabPoolIds.Length; i++)
-				profile.prefabPoolIds[i] = EditorGUILayout.TextField("Entity " + i.ToString(), profile.prefabPoolIds[i]
-				                                             );
+			for (int i = 0; i < profile.prefabs.Length; i++)
+				profile.prefabs[i] = EditorGUILayout.ObjectField("Entity " + i.ToString(), profile.prefabs[i], typeof(GameObject), false) as GameObject;
 			
 			EditorGUILayout.EndScrollView();
 		}

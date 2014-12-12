@@ -99,7 +99,7 @@ public class FormationManager : MonoBehaviour
 		Vector3 formationOffset = spawnOrigin.position + new Vector3(nextSpawnDistance, heightOffset * GridCoordinate.YScale, 0);
 
 		for (int i = 0; i < formation.spawnPoints.Count; i++) {
-			PrefabPool.GetPool(profile.prefabPoolIds[i]).Spawn(formationOffset + formation.spawnPoints[i].ToVector3());
+			PrefabPool.GetPool(profile.prefabs[i]).Spawn(formationOffset + formation.spawnPoints[i].ToVector3());
 		}
 		nextSpawnDistance += formation.width;
 	}

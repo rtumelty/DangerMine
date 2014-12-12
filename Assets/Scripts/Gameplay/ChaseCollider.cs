@@ -29,8 +29,8 @@ public class ChaseCollider : MonoBehaviour {
 		if (character == null) return;
 		else if (character is Enemy) {
 			Enemy enemy = character as Enemy;
-			if (!enemy.Chasing)
-				enemy.Chase();
+			if (enemy.MoveState != Enemy.EnemyMoveState.Chase)
+				enemy.MoveState = Enemy.EnemyMoveState.Chase;
 		}
 	}
 }

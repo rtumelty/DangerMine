@@ -12,7 +12,9 @@ public class ActivateTargets : MonoBehaviour {
 
 		if (entity is Ally) return;
 
-		if (entity != null) entity.Targetable = true;
+		if (entity != null) {
+			entity.State = GameEntity.EntityState.Active;
+		}
 		else if (other.GetComponent<Projectile>() != null) other.gameObject.SetActive(false);
 	}
 }
