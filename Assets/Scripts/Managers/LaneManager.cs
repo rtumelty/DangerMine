@@ -25,11 +25,13 @@ public class LaneManager : MonoBehaviour {
 	}
 
 	public void JoinRow(Enemy enemy, int row) {
+		row += 2;
+
 		for (int i = 0; i < lanes[row].Length; i++) {
 			if (lanes[row][i] == null) {
 				lanes[row][i] = enemy;
 
-//				enemy.followDistance = maxFollowDistance - i;
+				enemy.followDistance = maxFollowDistance - i;
 				members++;
 				break;
 			}
@@ -37,6 +39,7 @@ public class LaneManager : MonoBehaviour {
 	}
 
 	public void RemoveFromRow(Enemy enemy, int row) {
+		row += 2;
 		int position = 0;
 
 		while (enemy != lanes[row][position]) { position++; }
@@ -60,9 +63,9 @@ public class LaneManager : MonoBehaviour {
 
 		foreach (Enemy[] lane in lanes) {
 			for (int i = 0; i < lane.Length; i++) {
-			//	if (lane[i] != null)
-			//		lane[i].followDistance = maxFollowDistance - i;
-			//	else break;
+				if (lane[i] != null)
+					lane[i].followDistance = maxFollowDistance - i;
+				else break;
 			}
 		}
 	}

@@ -37,6 +37,7 @@ public class DestructibleEntity : GameEntity {
 	}
 
 	protected override void OnEnable() {
+		collider2D.enabled = true;
 		currentHealth = baseHealth;
 		healthMultiplier = 1;
 		destroyedBy = null;
@@ -64,6 +65,7 @@ public class DestructibleEntity : GameEntity {
 	protected virtual IEnumerator Dying(GameEntity cause) {
 		LogMessage("Dying, cause " + cause.name);
 
+		destroyedBy = cause;
 		collider2D.enabled = false;
 		yield return new WaitForSeconds(.0f);
 

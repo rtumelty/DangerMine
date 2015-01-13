@@ -18,7 +18,11 @@ public class Rock : DestructibleEntity {
 	}
 
 	protected override void OnDisable() {
+		Debug.LogWarning(destroyedBy + " " + (destroyedBy is Ally));
+
 		if (destroyedBy is Ally && dropsPickup) {
+			LogMessage("Dropping object " + droppedObject + " from pool " + droppedObjectPool);
+
 			if (droppedObjectPool != null)
 				droppedObjectPool.Spawn(transform.position);
 		}

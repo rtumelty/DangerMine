@@ -47,6 +47,11 @@ public class LevelManager : MonoBehaviour {
 		
 		GlobalManagement.LAST_DISTANCE_COVERED = 0;
 		GlobalManagement.SCORE = 0;
+
+		gameStarted = false;
+		gameOver = false;
+
+		Ally.ActiveAllies = 0;
 	}
 
 	void OnDisable() {
@@ -67,15 +72,18 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void CheckEndCondition() {
-		if (!gameStarted) return;
+		if (!gameStarted) { 
+			if (Ally.ActiveAllies > 0) 
+				gameStarted = true;
 
-		/*
+			return;
+		}	
+
 		// End conditions
 		if (Ally.ActiveAllies == 0 && !gameOver) {
 			gameOver = true;
 			StartCoroutine (GameOver ());
 		}
-		*/
 	}
 
 	IEnumerator GameOver() {

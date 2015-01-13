@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(BoxCollider2D))]
-[RequireComponent(typeof(Rigidbody2D))]
 public class AttackZone : MonoBehaviour {
 	BoxCollider2D attackArea;
 	Character owner;
@@ -26,27 +25,12 @@ public class AttackZone : MonoBehaviour {
 		owner = transform.GetComponentInParent<Character>();
 		ignoredTargets = owner.IgnoredTargets;
 		targetedLayers = owner.TargetingMask;
+
+		Resize();
 	}
 
 	void OnEnable() {
-		if (attackArea == null) {
-			attackArea = gameObject.GetComponent<BoxCollider2D>();
-			attackArea.isTrigger = true;
-		}
-
-		attackArea.size = owner.AttackRange;
-
-		float xOffset = 0, yOffset = 0;
-		if ((owner.AttackDirection & Character.AttackDirections.Forwards) != 0)
-			xOffset ++;
-		if ((owner.AttackDirection & Character.AttackDirections.Backwards) != 0)
-			xOffset --;
-		if ((owner.AttackDirection & Character.AttackDirections.Up) != 0)
-			yOffset ++;
-		if ((owner.AttackDirection & Character.AttackDirections.Down) != 0)
-			xOffset --;
-
-		attackArea.center = new Vector2(attackArea.size.x / 2 * xOffset, attackArea.size.y / 2 * yOffset);
+		Resize();
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -92,5 +76,26 @@ public class AttackZone : MonoBehaviour {
 		}
 
 		owner.UpdateTargets(activeTargets);
+	}
+
+	public void Resize() {
+		if (attackArea == null) {
+			attackArea = gameObject.GetComponent<BoxCollider2D>();
+			attackArea.isTrigger = true;
+		}
+		
+		attackArea.size = owner.AttackRange;
+		
+		float xOffset = 0, yOffset = 0;
+		if ((owner.AttackDirection & Character.AttackDirections.Forwards) != 0)
+			xOffset ++;
+		if ((owner.AttackDirection & Character.AttackDirections.Backwards) != 0)
+			xOffset --;
+		if ((owner.AttackDirection & Character.AttackDirections.Up) != 0)
+			yOffset ++;
+		if ((owner.AttackDirection & Character.AttackDirections.Down) != 0)
+			xOffset --;
+		
+		attackArea.center = new Vector2(attackArea.size.x / 2 * xOffset, attackArea.size.y / 2 * yOffset);
 	}
 }

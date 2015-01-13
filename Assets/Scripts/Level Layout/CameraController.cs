@@ -35,9 +35,11 @@ public class CameraController : MonoBehaviour {
 	}
 
 	void LateUpdate () {
-		Vector3 position = transform.position;
-		position += new Vector3 (moveSpeed * Time.deltaTime, 0, 0);
-		transform.position = position;
+		if (LevelManager.Instance.GameStarted) {
+			Vector3 position = transform.position;
+			position += new Vector3 (moveSpeed * Time.deltaTime, 0, 0);
+			transform.position = position;
+		}
 	}
 	
 	public static bool IsVisibleToCamera(Collider c) {

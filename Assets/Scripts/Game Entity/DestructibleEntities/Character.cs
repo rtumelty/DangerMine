@@ -26,9 +26,9 @@ public class Character : DestructibleEntity {
 
 	protected Vector3 targetPosition = default(Vector3);
 
-	[SerializeField] float maxMoveSpeed;
+	[SerializeField] protected float maxMoveSpeed;
 	float currentSpeed;
-	[SerializeField] float maxVelocityChange;
+	[SerializeField] protected float maxVelocityChange;
 	[SerializeField] float attackStrength;
 	[SerializeField] float attackInterval;
 
@@ -48,7 +48,7 @@ public class Character : DestructibleEntity {
 		}
 	}
 
-	[SerializeField] AttackZone attackHitbox;
+	[SerializeField] protected AttackZone attackHitbox;
 	[SerializeField] AttackDirections attackDirection;
 
 	public AttackDirections AttackDirection {
@@ -102,8 +102,12 @@ public class Character : DestructibleEntity {
 
 		activeTargets = new List<DestructibleEntity>();
 
-		if (ranged) {
-			attackHitbox = GetComponentInChildren<AttackZone>();
+		attackHitbox = GetComponentInChildren<AttackZone>();
+		if (attackHitbox == null) {
+			GameObject go = new GameObject("AttackZone");
+			go.transform.parent = transform;
+			go.AddComponent<BoxCollider2D>();
+			attackHitbox = go.AddComponent<AttackZone>();
 		}
 	}
 
@@ -177,6 +181,10 @@ public class Character : DestructibleEntity {
 			LogMessage(mainTarget.name + " state: " + mainTarget.State + ", stopping attack.");
 			mainTarget = null;
 			checkForNewTarget = true;
+		} else if (!activeTargets.Contains(mainTarget)) {
+			LogMessage(mainTarget.name + " no longer in range, stopping attack.");
+			mainTarget = null;
+			checkForNewTarget = true;
 		}
 
 		if (ranged && checkForNewTarget) {
@@ -198,12 +206,20 @@ public class Character : DestructibleEntity {
 	/// <summary>
 	/// Raises the collision enter event - if non-ranged unit and collided object is targetable, triggers Attacking state
 	/// </summary>
-	protected void OnCollisionEnter2D(Collision2D other) {
+	protected virtual void OnCollisionEnter2D(Collision2D other) {
 		LogMessage("Collided with " + other.gameObject.name);
 		if (!ranged) {
 			DestructibleEntity entity = other.gameObject.GetComponent<DestructibleEntity>();
 
 			if (entity == null) return;
+			else if ((1 << entity.gameObject.layer & targetingMask) == 0) {
+				LogMessage(entity.name + " not on targeted layer.");
+				return;
+			}
+			else if (!activeTargets.Contains(entity)) {
+				LogMessage(entity.name + " not in attack range." + activeTargets.Count);
+				return;
+			}
 			else {
 				foreach (DestructibleEntity ignoredTarget in ignoredTargets) {
 					if (ignoredTarget.GetType() == entity.GetType())
@@ -221,13 +237,13 @@ public class Character : DestructibleEntity {
 	/// <summary>
 	/// Updates character velocity to move towards targetPosition. targetPosition's value determines in subclasses.
 	/// </summary>
-	private void Move() {
+	protected virtual void Move() {
 		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, maxMoveSpeed);
 		Vector2 velocityChange = targetVelocity - rigidbody2D.velocity;
 
 		velocityChange = Vector2.ClampMagnitude(velocityChange, maxVelocityChange);
 		rigidbody2D.AddForce(velocityChange * rigidbody2D.mass, ForceMode2D.Force);
-		LogMessage("Moving to " + targetPosition + ", target velocity: " + targetVelocity + ", delta velocity: " + velocityChange);
+		//LogMessage("Moving to " + targetPosition + ", target velocity: " + targetVelocity + ", delta velocity: " + velocityChange);
 	}
 
 	protected override IEnumerator Dying(GameEntity cause) {
@@ -282,6 +298,8 @@ public class Character : DestructibleEntity {
 			EditorGUILayout.LabelField("General", EditorStyles.boldLabel);
 			attackStrength = EditorGUILayout.FloatField("Attack strength:", attackStrength);
 			attackInterval = EditorGUILayout.FloatField("Attack interval (s):", attackInterval);
+			attackRange = EditorGUILayout.Vector2Field("Attack range:", attackRange);
+			attackDirection = (AttackDirections) EditorGUILayout.EnumMaskField("Attack direction", attackDirection);
 			EditorGUILayout.Space();
 			
 			EditorGUILayout.LabelField("Ranged stats", EditorStyles.boldLabel);
@@ -289,8 +307,6 @@ public class Character : DestructibleEntity {
 
 			if (ranged) {
 				projectilePrefab = EditorGUILayout.ObjectField("Projectile prefab:", projectilePrefab, typeof(GameObject), false) as GameObject;
-				attackRange = EditorGUILayout.Vector2Field("Attack range:", attackRange);
-				attackDirection = (AttackDirections) EditorGUILayout.EnumMaskField("Attack direction", attackDirection);
 			}
 			EditorGUILayout.Space();
 
