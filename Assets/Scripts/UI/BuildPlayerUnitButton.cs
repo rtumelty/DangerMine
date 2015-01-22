@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -15,6 +15,8 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 	private bool ready = false;
 	private bool selected = false;
 	private bool cooldownActive = false;
+
+	GameObject mySpawnedCharacter = null;
 
 	void Awake() {
 		unitCostText.text = goldCost.ToString();
@@ -39,27 +41,31 @@ public class BuildPlayerUnitButton : MonoBehaviour {
 
 		if (selected) selectedOverlay.enabled = true;
 		else selectedOverlay.enabled = false;
-	}
+	}	
 
 	void OnMouseDown() {
-		if (ready)
-			Clicked();
+		if (selected) {
+			selected = false;
+		}
+		else if (ready) {
+			SpawnCharacter();
+			selected = true;
+		}
 	}
 
-	public void Clicked()
-	{
+	void SpawnCharacter() {
 		//Spawns character at cursor position
-		GameObject mySpawnedCharacter = playerChar.Spawn (Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 1f));
+		mySpawnedCharacter = playerChar.Spawn (Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 1f));
 		mySpawnedCharacter.GetComponent <Character>().enabled = false;
 
 		PlayerCharacterPlacement placement = mySpawnedCharacter.GetComponent<PlayerCharacterPlacement>();
 		if (placement == null) placement = mySpawnedCharacter.AddComponent<PlayerCharacterPlacement>();
 		placement.PurchaseButton = this;
 
-		selected = true;
 	}
 
-	public void Cancelled() {
+	public void Cancel() {
+		mySpawnedCharacter = null;
 		selected = false;
 	}
 

@@ -36,11 +36,22 @@ public class DestructibleEntity : GameEntity {
 		}
 	}
 
+	private bool dead = false;
+
+	public bool Dead {
+		get {
+			return dead;
+		}
+	}
+
 	protected override void OnEnable() {
+		base.OnEnable();
+
 		collider2D.enabled = true;
 		currentHealth = baseHealth;
 		healthMultiplier = 1;
 		destroyedBy = null;
+		dead = false;
 	}
 
 	/// <summary>
@@ -66,6 +77,8 @@ public class DestructibleEntity : GameEntity {
 		LogMessage("Dying, cause " + cause.name);
 
 		destroyedBy = cause;
+		dead = true;
+
 		collider2D.enabled = false;
 		yield return new WaitForSeconds(.0f);
 

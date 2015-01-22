@@ -53,6 +53,7 @@ public class Ally : Character {
 	float collisionTimeout = .5f;
 	bool collide = true;
 	Collider2D collidedObject = null;
+	bool swapping = false;
 	
 	float baseMass;
 	[SerializeField] float chargeMassMultiplier = .0000001f;
@@ -78,6 +79,7 @@ public class Ally : Character {
 
 		ActiveAllies++;
 		screenTargetPosition = ScreenCoords;
+		collidedObject = null;
 	}
 
 	protected override void OnDisable() {
@@ -87,6 +89,33 @@ public class Ally : Character {
 	}
 
 	protected override void Update() {
+		if (CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) {
+			Vector2 touchPosition;
+#if UNITY_EDITOR || UNITY_STANDALONE
+			touchPosition = Input.mousePosition;
+#elif UNITY_ANDROID || UNITY_IPHONE
+			touchPosition = Input.touches[0].position;
+#endif
+
+
+			Ray ray = Camera.main.ScreenPointToRay(touchPosition);
+			RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
+
+			if (hit.collider == collider2D) {
+				StartCoroutine(Drag());
+			}
+		}
+
+
+		if (collidedObject != null) {
+			DestructibleEntity entity = collidedObject.GetComponent<DestructibleEntity>();
+
+			if (entity != null) {
+				if (!entity.gameObject.activeSelf || entity.Dead)
+					collidedObject = null;
+			}
+		}
+
 		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition);
 
 		if (MoveState == AllyMoveState.Moving) {
@@ -95,6 +124,8 @@ public class Ally : Character {
 		}
 
 		base.Update();
+
+		LogMessage(screenTargetPosition.ToString(), DebugLevel.Error);
 	}
 
 	protected override void OnCollisionEnter2D(Collision2D collision) {
@@ -114,9 +145,17 @@ public class Ally : Character {
 			if (entity is Ally) {
 				Ally ally = entity as Ally;
 
-				if (ally.MoveState == AllyMoveState.Moving) {
-					screenTargetPosition = screenTargetPosition - new GridCoordinate(1, 0);
-					MoveState = AllyMoveState.Moving;
+				if (ally.MoveState == AllyMoveState.Idle) {
+					if (ally.ScreenCoords.x > ScreenCoords.x) {
+						screenTargetPosition = ally.ScreenCoords - new GridCoordinate(1, 0); 
+						MoveState = AllyMoveState.Moving;
+						PauseCollision();
+					}
+					else {
+						ally.screenTargetPosition = ScreenCoords - new GridCoordinate(1, 0); 
+						ally.MoveState = AllyMoveState.Moving;
+						ally.SendMessage("PauseCollision");
+					}
 				}
 			}
 			break;
@@ -124,11 +163,19 @@ public class Ally : Character {
 			if (entity is Ally) {
 				Ally ally = entity as Ally;
 
+				collider2D.enabled = false;
+
 				screenTargetPosition = ally.ScreenCoords;
-				MoveState = AllyMoveState.Idle;
+
+				ally.screenTargetPosition = ally.ScreenCoords - new GridCoordinate(1, 0);
+				ally.MoveState = AllyMoveState.Moving;
+
+				
+				PauseCollision();
 			}
 			else {
 				screenTargetPosition = ScreenCoords;
+				MoveState = AllyMoveState.Idle;
 			}
 			break;
 		}
@@ -156,10 +203,17 @@ public class Ally : Character {
 		rigidbody2D.velocity = newVelocity;
 	}
 
-	protected virtual void OnMouseDown () {
-		if (State != EntityState.Active) return;
 
-		StartCoroutine (Drag ());
+	private void PauseCollision() {
+		StartCoroutine(_PauseCollision());
+	}
+
+	protected virtual IEnumerator _PauseCollision() {
+		LogMessage("Pausing collisions");
+
+		yield return new WaitForSeconds(.2f);
+
+		collider2D.enabled = true;
 	}
 
 	protected virtual IEnumerator Drag() {
@@ -173,34 +227,21 @@ public class Ally : Character {
 			lastMoveTarget = moveTarget;
 			
 			moveTarget = GridManager.WorldToScreenGridCoords(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-			/*
-			if (Mathf.Abs(moveTarget.x - screenGridCoords.x) > Mathf.Abs(moveTarget.y - screenGridCoords.y))
-				moveTarget.y = screenGridCoords.y;
-			else
-				moveTarget.x = screenGridCoords.x;
-*/			
-			if (collidedObject != null)
-				moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, ScreenCoords.x);
+
+			if (collidedObject != null) {
+				DestructibleEntity entity = collidedObject.GetComponent<DestructibleEntity>();
+
+				if (!entity is Ally)
+					moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, ScreenCoords.x);
+				else
+					moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
+			}
 			else
 				moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
 			moveTarget.y = Mathf.Clamp(moveTarget.y, GridManager.minY, GridManager.maxY);
 			
 			LaneHighlight.Instance.UpdatePosition(GridManager.ScreenCoordsToWorldPosition(moveTarget));
-			/*
-			if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, moveTarget)) {
-				GameEntity entityAtCoords = GridManager.Instance.EntitiesAt(GridManager.Grid.ScreenGrid, moveTarget);
-				if (!entityAtCoords is Ally) {
-					Debug.Log("Drag hit entity " + entityAtCoords + ", ending input.");
-					UpdateTargetCoordinates(lastMoveTarget);
-					yield break;
-				} else if (entityAtCoords != this) {
-					Debug.Log("Drag hit entity " + entityAtCoords + ", ending input.");
-					UpdateTargetCoordinates(moveTarget);
-					yield break;
-				}
-			}
-			*/
-			
+
 			yield return new WaitForSeconds (Time.deltaTime);
 		}
 		
@@ -218,6 +259,7 @@ public class Ally : Character {
 		collide = false;
 		yield return new WaitForSeconds(collisionTimeout);
 		collide = true;
+		yield break;
 	}
 
 #if UNITY_EDITOR
@@ -225,6 +267,7 @@ public class Ally : Character {
 		base.DrawInspectorGUI(editor);
 
 		chargeMassMultiplier = EditorGUILayout.FloatField("Charge mass multiplier", chargeMassMultiplier);
+		EditorGUILayout.EnumPopup("Move state", moveState);
 	}
 #endif
 }

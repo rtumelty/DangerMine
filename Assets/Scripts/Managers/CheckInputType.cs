@@ -41,7 +41,7 @@ public class CheckInputType : MonoBehaviour
 	void Update()
 	{
 #if !(UNITY_STANDALONE || UNITY_EDITOR)
-		if (Input.touchCount == 0) return;
+		if (Input.touchCount == 0) TOUCH_TYPE = InputType.NO_TYPE;
 #endif
 
 #if UNITY_STANDALONE || UNITY_EDITOR
@@ -49,7 +49,7 @@ public class CheckInputType : MonoBehaviour
 		if(Input.GetMouseButtonUp(0))
 #else
 
-		if(Input.touches[0].phase == TouchPhase.Ended)
+		else if(Input.touches[0].phase == TouchPhase.Ended)
 #endif
 		{
 			TOUCH_TYPE = InputType.TOUCHRELEASE_TYPE;

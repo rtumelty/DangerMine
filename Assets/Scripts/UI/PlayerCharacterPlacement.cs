@@ -2,9 +2,12 @@
 using System.Collections;
 
 public class PlayerCharacterPlacement : MonoBehaviour {
-	
+	private Vector3 defaultPosition = new Vector3(-1000, 0, 0);
+
 	private Vector3 mySnapPoint;
 	private Vector3 myWorldPos;
+
+	private bool dragging = false;
 
 	private BuildPlayerUnitButton purchaseButton;
 
@@ -20,7 +23,11 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	[SerializeField] private bool released = false;
 
 	private float initialClick = 0;
-	private float clickThreshold = 0.2f;
+#if UNITY_EDITOR || UNITY_STANDALONE
+	private float clickThreshold = 0.1f;
+	#elif UNITY_ANDROID || UNITY_IPHONE
+	private float clickThreshold = 0.25f;
+#endif
 
 	private GameEntity entity;
 
@@ -31,24 +38,24 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 	void OnEnable() {
 		released = false;
+		dragging = false;
 		initialClick = Time.time;
 
 		Renderer[] renderers = GetComponentsInChildren<Renderer>();
 		foreach ( Renderer rend in renderers) {
 			rend.sortingLayerName = "Overlay" ;
 		}
+
+		StartCoroutine(UpdatePosition());
 	}
 
+	IEnumerator UpdatePosition() {
+		while (!released) {
+			StickToCursor();
+			CheckForRelease();
 
-	void Update()
-	{
-		if(released)
-		{
-			return;
+			yield return new WaitForSeconds(Time.deltaTime);
 		}
-
-		StickToCursor();
-		CheckForRelease();
 	}
 
 
@@ -60,11 +67,14 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 		GridCoordinate moveTarget = GridManager.WorldToScreenGridCoords(inputPosition);
 
 		moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
-		moveTarget.y = Mathf.Clamp(moveTarget.y, GridManager.minY, GridManager.maxY);
 
-		transform.position = GridManager.ScreenCoordsToWorldPosition(moveTarget);
+		if (moveTarget.y < GridManager.minY || moveTarget.y > GridManager.maxY) 
+			transform.position = defaultPosition;
+		else
+			transform.position = GridManager.ScreenCoordsToWorldPosition(moveTarget);
 
 		LaneHighlight.Instance.UpdatePosition(transform.position);
+
 		mySnapPoint = transform.position;
 	}
 
@@ -73,25 +83,29 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	{
 		if (Time.time - initialClick < clickThreshold) return;
 
+		if (CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE || CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) dragging = true;
+
 		//Checks for release of character. Snaps to lane or returns to pool if no valid lane.
-		if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE && mySnapPoint != Vector3.zero && 
-		   !GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, transform.position as GridCoordinate) && 
-		   !GridManager.Instance.IsOccupied(GridManager.Grid.ScreenGrid, GridManager.WorldToScreenGridCoords(transform.position)))
-		{
-			entity.enabled = true;
-			entity.State = GameEntity.EntityState.Active;
+		if(dragging && (CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE || CheckInputType.TOUCH_TYPE == InputType.NO_TYPE)) {
+			if (mySnapPoint != defaultPosition && 
+			   !GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, transform.position as GridCoordinate) && 
+			   !GridManager.Instance.IsOccupied(GridManager.Grid.ScreenGrid, GridManager.WorldToScreenGridCoords(transform.position)))
+			{
+				entity.enabled = true;
+				entity.State = GameEntity.EntityState.Active;
 
-			LaneHighlight.Instance.Hide();
-			purchaseButton.SendMessage("StartCooldown");
-			released = true;
+				LaneHighlight.Instance.Hide();
+				purchaseButton.SendMessage("StartCooldown");
+				released = true;
 
-			if (!LevelManager.Instance.GameStarted) LevelManager.Instance.GameStarted = true;
-		}
-		else if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE)
-		{
-			gameObject.SetActive(false);
-			purchaseButton.Cancelled();
-			LaneHighlight.Instance.Hide();
+				if (!LevelManager.Instance.GameStarted) LevelManager.Instance.GameStarted = true;
+			}
+			else 
+			{
+				purchaseButton.Cancel();
+				gameObject.SetActive(false);
+				LaneHighlight.Instance.Hide();
+			}
 		}
 	}
 }

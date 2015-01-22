@@ -52,11 +52,13 @@ public class GameEntity : MonoBehaviour {
 	}
 
 	protected virtual void Awake() {
-		renderers = GetComponentsInChildren<Renderer>();
 	}
 
 	protected virtual void OnEnable() {
 		LogMessage("Enabled");
+
+		if (renderers == null)
+			renderers = GetComponentsInChildren<Renderer>();
 
 		UpdateSortingLayer();
 		
@@ -112,13 +114,13 @@ public class GameEntity : MonoBehaviour {
 		if ((level & debugLevel) > 0) {
 			switch (level) {
 			case DebugLevel.Info:
-				Debug.Log ("Time: " + Time.time + ", GameEntity: " + name + ": \n" + message);
+				Debug.Log (/*"Time: " + Time.time + ",*/ "GameEntity: " + name + ": \n" + message);
 				break;
 			case DebugLevel.Warning:
-				Debug.LogWarning ("Time: " + Time.time + ", GameEntity: " + name + ": \n" + message);
+				Debug.LogWarning (/*"Time: " + Time.time + ",*/ "GameEntity: " + name + ": \n" + message);
 				break;
 			case DebugLevel.Error:
-				Debug.LogError ("Time: " + Time.time + ", GameEntity: " + name + ": \n" + message);
+				Debug.LogError (/*"Time: " + Time.time + ",*/ "GameEntity: " + name + ": \n" + message);
 				break;
 			default:
 				break;
