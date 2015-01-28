@@ -70,6 +70,7 @@ public class Enemy : Character {
 			break;
 		case EnemyMoveState.Chase:
 			targetPosition = GridManager.ScreenCoordsToWorldPosition(new GridCoordinate(-followDistance, ScreenCoords.y));
+			AttackMultiplier = 2f * (LaneManager.MaxFollowDistance - followDistance);
 			break;
 		case EnemyMoveState.Blocked:
 			targetPosition = WorldCoords.ToVector3();

@@ -29,12 +29,13 @@ public class Character : DestructibleEntity {
 	[SerializeField] protected float maxMoveSpeed;
 	float currentSpeed;
 	[SerializeField] protected float maxVelocityChange;
-	[SerializeField] float attackStrength;
+	[SerializeField] float baseAttackStrength;
 	[SerializeField] float attackInterval;
+	private float currentAttackStrength;
 
 	public float AttackStrength {
 		get {
-			return attackStrength;
+			return baseAttackStrength;
 		}
 	}
 
@@ -76,7 +77,19 @@ public class Character : DestructibleEntity {
 			return ignoredTargets;
 		}
 	}
-
+	
+	private float attackMultiplier = 1f;
+	public float AttackMultiplier {
+		get {
+			return attackMultiplier;
+		}
+		set {
+			attackMultiplier = value;
+			
+			currentAttackStrength = baseAttackStrength * attackMultiplier;
+		}
+	}
+	
 	private float speedMultiplier = 1f;
 	public float SpeedMultiplier {
 		get {
@@ -84,8 +97,8 @@ public class Character : DestructibleEntity {
 		}
 		set {
 			speedMultiplier = value;
-
-			currentSpeed = maxMoveSpeed / speedMultiplier;
+			
+			currentSpeed = maxMoveSpeed * speedMultiplier;
 		}
 	}
 
@@ -93,6 +106,7 @@ public class Character : DestructibleEntity {
 		base.OnEnable();
 
 		currentSpeed = maxMoveSpeed;
+		currentAttackStrength = baseAttackStrength;
 
 		rigidbody2D.gravityScale = 0;
 		rigidbody2D.fixedAngle = true;
@@ -165,8 +179,8 @@ public class Character : DestructibleEntity {
 					projectile.Init(this, transform.TransformDirection(0, -1, 0));
 				}
 			} else {
-				LogMessage("Melee attack on " + mainTarget.name + ", strength " + attackStrength);
-				mainTarget.TakeDamage(attackStrength, this);
+				LogMessage("Melee attack on " + mainTarget.name + ", strength " + currentAttackStrength);
+				mainTarget.TakeDamage(currentAttackStrength, this);
 			}
 		}
 	}
@@ -296,7 +310,7 @@ public class Character : DestructibleEntity {
 			EditorGUILayout.BeginVertical(EditorStyles.textArea);
 			
 			EditorGUILayout.LabelField("General", EditorStyles.boldLabel);
-			attackStrength = EditorGUILayout.FloatField("Attack strength:", attackStrength);
+			baseAttackStrength = EditorGUILayout.FloatField("Attack strength:", baseAttackStrength);
 			attackInterval = EditorGUILayout.FloatField("Attack interval (s):", attackInterval);
 			attackRange = EditorGUILayout.Vector2Field("Attack range:", attackRange);
 			attackDirection = (AttackDirections) EditorGUILayout.EnumMaskField("Attack direction", attackDirection);

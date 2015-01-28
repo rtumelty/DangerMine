@@ -15,6 +15,12 @@ public class LaneManager : MonoBehaviour {
 	Enemy[][] lanes;
 	int members = 0;
 
+	public static int MaxFollowDistance {
+		get {
+			return maxFollowDistance;
+		}
+	}
+
 	// Use this for initialization
 	void Awake () {
 		instance = this;

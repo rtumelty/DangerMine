@@ -16,4 +16,8 @@ public static class GlobalManagement
 		PLAYERGOLD += gold;
 		GOLD_COLLECTED += gold;
 	}
+
+	public static void AddDiamonds(int diamonds) {
+		PLAYERDIAMONDS += diamonds;
+	}
 }

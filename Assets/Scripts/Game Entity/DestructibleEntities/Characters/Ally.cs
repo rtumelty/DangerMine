@@ -122,6 +122,9 @@ public class Ally : Character {
 			if (ScreenCoords == screenTargetPosition)
 				MoveState = AllyMoveState.Idle;
 		}
+		else if (MoveState == AllyMoveState.Idle) {
+			screenTargetPosition = ScreenCoords;
+		}
 
 		base.Update();
 
