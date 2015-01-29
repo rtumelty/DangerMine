@@ -68,6 +68,8 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 		moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
 
+		Debug.LogError(moveTarget.ToString() + " " +GridManager.minY + " " +GridManager.maxY);
+
 		if (moveTarget.y < GridManager.minY || moveTarget.y > GridManager.maxY) 
 			transform.position = defaultPosition;
 		else
@@ -87,8 +89,8 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 		//Checks for release of character. Snaps to lane or returns to pool if no valid lane.
 		if(dragging && (CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE || CheckInputType.TOUCH_TYPE == InputType.NO_TYPE)) {
-			if (mySnapPoint != defaultPosition && 
-			   !GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, transform.position as GridCoordinate) && 
+			if ((mySnapPoint != defaultPosition) && 
+			   //!GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, transform.position as GridCoordinate) && 
 			   !GridManager.Instance.IsOccupied(GridManager.Grid.ScreenGrid, GridManager.WorldToScreenGridCoords(transform.position)))
 			{
 				entity.enabled = true;

@@ -137,6 +137,9 @@ public class Character : DestructibleEntity {
 			}
 			break;
 		}
+	}
+
+	protected virtual void FixedUpdate() {
 
 		Move ();
 	}

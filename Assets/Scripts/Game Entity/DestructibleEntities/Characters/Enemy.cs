@@ -81,4 +81,21 @@ public class Enemy : Character {
 
 		base.Update();
 	}
+
+	protected override void Move() {
+		
+		Vector2 velocity = rigidbody2D.velocity;
+		velocity.y = 0;
+		rigidbody2D.velocity = velocity;
+
+		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, maxMoveSpeed);
+		Vector2 velocityChange = targetVelocity - rigidbody2D.velocity;
+		
+		velocityChange = Vector2.ClampMagnitude(velocityChange, maxVelocityChange);
+
+		if (MoveState == EnemyMoveState.Chase)
+			velocityChange *= 3;
+
+		rigidbody2D.AddForce(velocityChange * rigidbody2D.mass, ForceMode2D.Force);
+	}
 }

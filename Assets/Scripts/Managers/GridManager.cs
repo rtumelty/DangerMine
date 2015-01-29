@@ -5,11 +5,26 @@ using System.Collections.Generic;
 public class GridManager : MonoBehaviour {
 	[SerializeField] Transform screenGridOrigin;
 
-	public const int maxY = 2;
-	public const int minY = -2;
+	public Vector3 ScreenOrigin {
+		set {
+			screenGridOrigin.transform.position = value;
+		}
+		get {
+			return screenGridOrigin.position;
+		}
+	}
 
-	public const int minScreenX = -3;
-	public const int maxScreenX = 3;
+	public const int maxY = 4;
+	public const int minY = 0;
+
+	public const int minScreenX = -5;
+	public const int maxScreenX = 5;
+
+	public static int PlayableAreaWidth {
+		get {
+			return 3 + Mathf.Abs(minScreenX) + maxScreenX;
+		}
+	}
 
 	static bool destroyed = false;
 

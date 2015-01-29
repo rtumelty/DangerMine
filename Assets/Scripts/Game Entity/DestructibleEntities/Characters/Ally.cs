@@ -127,8 +127,6 @@ public class Ally : Character {
 		}
 
 		base.Update();
-
-		LogMessage(screenTargetPosition.ToString(), DebugLevel.Error);
 	}
 
 	protected override void OnCollisionEnter2D(Collision2D collision) {

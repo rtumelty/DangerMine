@@ -11,6 +11,8 @@ public class CameraController : MonoBehaviour {
 	}
 
 	[SerializeField] float moveSpeed = 1f;
+	[SerializeField] Transform screenBottom;
+	float currentAspect;
 
 	public static float MoveSpeed {
 		get {
@@ -27,11 +29,28 @@ public class CameraController : MonoBehaviour {
 
 	void Awake() {
 		instance = this;
+
+		Resize();
+	}
+
+	void Resize() {
+		currentAspect = camera.aspect;
+
+		Vector3 gridOrigin = GridManager.Instance.ScreenOrigin;
+
+		camera.orthographicSize = (float)GridManager.PlayableAreaWidth / camera.aspect / 2;
+		
+		camera.transform.position = new Vector3(transform.position.x, screenBottom.position.y + 
+		                                        camera.orthographicSize, transform.position.z);
+
+		GridManager.Instance.ScreenOrigin = gridOrigin;
 	}
 	
 	// Update is called once per frame
 	void Update() {
-		planes = GeometryUtility.CalculateFrustumPlanes(camera);
+		if (currentAspect != camera.aspect) Resize();
+
+		//planes = GeometryUtility.CalculateFrustumPlanes(camera);
 	}
 
 	void LateUpdate () {

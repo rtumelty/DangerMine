@@ -106,6 +106,10 @@ public class GameEntity : MonoBehaviour {
 		EditorGUILayout.LabelField("Debugging / Logging", EditorStyles.boldLabel);
 		debugLevel = (DebugLevel) EditorGUILayout.EnumPopup("Debug level:", debugLevel);
 		entityState = (EntityState) EditorGUILayout.EnumPopup("Entity state:", entityState);
+
+		EditorGUILayout.Vector2Field("Screen coords:", new Vector2(ScreenCoords.x, ScreenCoords.y));
+		EditorGUILayout.Vector2Field("World coords:", new Vector2(WorldCoords.x, WorldCoords.y));
+	
 		EditorGUILayout.Space();
 	}
 #endif
