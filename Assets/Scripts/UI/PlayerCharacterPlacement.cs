@@ -68,8 +68,6 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 		moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
 
-		Debug.LogError(moveTarget.ToString() + " " +GridManager.minY + " " +GridManager.maxY);
-
 		if (moveTarget.y < GridManager.minY || moveTarget.y > GridManager.maxY) 
 			transform.position = defaultPosition;
 		else

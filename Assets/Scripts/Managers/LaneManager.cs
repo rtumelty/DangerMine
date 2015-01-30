@@ -32,7 +32,6 @@ public class LaneManager : MonoBehaviour {
 
 	public void JoinRow(Enemy enemy, int row) {
 
-		Debug.Log(enemy.ScreenCoords.y + " " + row + " " + lanes.Length);
 		for (int i = 0; i < lanes[row].Length; i++) {
 			if (lanes[row][i] == null) {
 				lanes[row][i] = enemy;
@@ -45,7 +44,8 @@ public class LaneManager : MonoBehaviour {
 	}
 
 	public void RemoveFromRow(Enemy enemy, int row) {
-		row += 2;
+		Debug.Log("Row: " + row);
+		//row += 2;
 		int position = 0;
 
 		while (enemy != lanes[row][position]) { position++; }

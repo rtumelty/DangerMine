@@ -4,6 +4,7 @@ using UnityEditor;
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Ally : Character {
 	protected static int activeAllies = 0;
@@ -20,7 +21,8 @@ public class Ally : Character {
 
 	public enum AllyMoveState {
 		Idle,
-		Moving
+		Moving,
+		Blocked
 	}
 
 	protected AllyMoveState moveState = AllyMoveState.Idle;
@@ -31,17 +33,22 @@ public class Ally : Character {
 		set {
 			switch (value) {
 			case AllyMoveState.Idle:
-				LogMessage("Entering idle state.");
-				
+				LogMessage("State change: idle");
+				RestoreCollisions();
+
 				MassMultiplier = 1;
 				break;
 			case AllyMoveState.Moving:					 
-				LogMessage("Responding to player input");
+				LogMessage("State change: moving");
 
 				StartCoroutine(CollisionTimeout());
 				MassMultiplier = chargeMassMultiplier;
 				break;
+			case AllyMoveState.Blocked:
+				LogMessage("State change: blocked");
+				break;
 			}
+
 
 			LogMessage("Mass change: " + rigidbody2D.mass);
 			moveState = value;
@@ -53,7 +60,8 @@ public class Ally : Character {
 	float collisionTimeout = .5f;
 	bool collide = true;
 	Collider2D collidedObject = null;
-	bool swapping = false;
+	List<Collider2D> ignoredColliders;
+	bool reactingToInput = false;
 	
 	float baseMass;
 	[SerializeField] float chargeMassMultiplier = .0000001f;
@@ -78,6 +86,7 @@ public class Ally : Character {
 		base.OnEnable();
 
 		ActiveAllies++;
+		ignoredColliders = new List<Collider2D>();
 		screenTargetPosition = ScreenCoords;
 		collidedObject = null;
 	}
@@ -89,6 +98,10 @@ public class Ally : Character {
 	}
 
 	protected override void Update() {
+		if (MoveState == AllyMoveState.Blocked) {
+			if (!CheckIfBlocked()) MoveState = AllyMoveState.Idle;
+		}
+
 		if (CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) {
 			Vector2 touchPosition;
 #if UNITY_EDITOR || UNITY_STANDALONE
@@ -101,7 +114,7 @@ public class Ally : Character {
 			Ray ray = Camera.main.ScreenPointToRay(touchPosition);
 			RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
 
-			if (hit.collider == collider2D) {
+			if (hit.collider == collider2D && !reactingToInput) {
 				StartCoroutine(Drag());
 			}
 		}
@@ -134,6 +147,8 @@ public class Ally : Character {
 			if (!collide) return;
 		}
 
+		if (CheckIfBlocked()) MoveState = AllyMoveState.Blocked;
+
 		DestructibleEntity entity = collision.gameObject.GetComponent<DestructibleEntity>();
 
 		if (entity != null) {
@@ -142,11 +157,12 @@ public class Ally : Character {
 		else return;
 
 		switch (moveState) {
+		case AllyMoveState.Blocked:
 		case AllyMoveState.Idle:
 			if (entity is Ally) {
 				Ally ally = entity as Ally;
 
-				if (ally.MoveState == AllyMoveState.Idle) {
+				if (ally.MoveState == AllyMoveState.Idle || ally.MoveState == AllyMoveState.Blocked) {
 					if (ally.ScreenCoords.x > ScreenCoords.x) {
 						screenTargetPosition = ally.ScreenCoords - new GridCoordinate(1, 0); 
 						MoveState = AllyMoveState.Moving;
@@ -188,20 +204,58 @@ public class Ally : Character {
 	protected virtual void OnCollisionExit2D(Collision2D collision) {
 		if (collision.collider == collidedObject) collidedObject = null;
 	}
+
+	bool CheckIfBlocked() {
+
+		LogMessage("Checking if character blocked.");
+		RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, new Vector2(1,0), .5f);
+
+		if (hits.Length > 0) {
+
+			bool blocked = false;
+
+			foreach (RaycastHit2D hit in hits) {
+				if (hit.collider != collider2D) {
+
+					GameEntity entity = hit.collider.GetComponent<GameEntity>();
+
+					if (entity != null) {
+						if (entity is Ally) {
+							Ally ally = entity as Ally;
+
+							if (ally.MoveState == AllyMoveState.Blocked) {
+								blocked = true;
+								break;
+							}
+						}
+						else blocked = true;
+					}
+				}
+			}
+			return blocked;
+		}
+
+		return false;
+	}
 	
 	/// <summary>
 	/// Updates character velocity to move towards targetPosition. targetPosition's value determines in subclasses.
 	/// </summary>
 	protected override void Move() {
-		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, maxMoveSpeed);
-		Vector2 newVelocity = Vector2.Lerp(rigidbody2D.velocity, targetVelocity, .9f);
+		if (moveState == AllyMoveState.Blocked)
+			rigidbody2D.velocity = Vector2.zero;
+		else {
 
-		if ((targetPosition - transform.position).sqrMagnitude > (.75f * .75f)) {
-			newVelocity = newVelocity.normalized * maxMoveSpeed;
+			Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, maxMoveSpeed);
+			Vector2 newVelocity = Vector2.Lerp(rigidbody2D.velocity, targetVelocity, .9f);
+
+			if ((targetPosition - transform.position).sqrMagnitude > (.75f * .75f)) {
+				newVelocity = newVelocity.normalized * maxMoveSpeed;
+			}
+			else newVelocity *= 5;
+
+			rigidbody2D.velocity = newVelocity;
 		}
-		else newVelocity *= 5;
-
-		rigidbody2D.velocity = newVelocity;
 	}
 
 
@@ -253,6 +307,8 @@ public class Ally : Character {
 		LogMessage("Drag ended");
 
 		screenTargetPosition = moveTarget;
+		IgnoreCollidersOnPath();
+
 		MoveState = AllyMoveState.Moving;
 	}
 
@@ -261,6 +317,32 @@ public class Ally : Character {
 		yield return new WaitForSeconds(collisionTimeout);
 		collide = true;
 		yield break;
+	}
+
+	void IgnoreCollidersOnPath() {
+		Vector3 currentPosition = GridManager.ScreenCoordsToWorldPosition(ScreenCoords);
+		Vector3 targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition);
+
+		RaycastHit2D[] hits = Physics2D.RaycastAll(currentPosition, targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
+
+		foreach (RaycastHit2D hit in hits) {
+			Ally ally = hit.collider.GetComponent<Ally>();
+
+			if (ally != null) {
+				if (ally.ScreenCoords == screenTargetPosition) break;
+
+				ignoredColliders.Add(hit.collider);
+				Physics2D.IgnoreCollision(collider2D, hit.collider);
+			}
+		}
+	}
+
+	void RestoreCollisions() {
+		foreach (Collider2D otherCollider in ignoredColliders) {
+			Physics2D.IgnoreCollision(collider2D, otherCollider, false);
+		}
+
+		ignoredColliders.Clear();
 	}
 
 #if UNITY_EDITOR

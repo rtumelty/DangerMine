@@ -185,6 +185,8 @@ public class GridManager : MonoBehaviour {
 	}
 	
 	public static GridCoordinate WorldToScreenGridCoords(Vector3 position) {
+		if (instance == null) return new GridCoordinate(position);
+
 		return new GridCoordinate(position - instance.screenGridOrigin.position);
 	}
 
