@@ -111,6 +111,8 @@ public class GameEntity : MonoBehaviour {
 		EditorGUILayout.Vector2Field("World coords:", new Vector2(WorldCoords.x, WorldCoords.y));
 	
 		EditorGUILayout.Space();
+
+		EditorUtility.SetDirty(this);
 	}
 #endif
 

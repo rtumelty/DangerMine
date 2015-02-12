@@ -24,9 +24,9 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 	private float initialClick = 0;
 #if UNITY_EDITOR || UNITY_STANDALONE
-	private float clickThreshold = 0.1f;
+	private float clickThreshold = 0.2f;
 	#elif UNITY_ANDROID || UNITY_IPHONE
-	private float clickThreshold = 0.25f;
+	private float clickThreshold = 0.35f;
 #endif
 
 	private GameEntity entity;
@@ -50,9 +50,19 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	}
 
 	IEnumerator UpdatePosition() {
+		StickToCursor();
+		while (Time.time - initialClick < clickThreshold) yield return new WaitForSeconds(Time.deltaTime);
+
 		while (!released) {
-			StickToCursor();
-			CheckForRelease();
+			
+			if (dragging) {
+				StickToCursor();
+				CheckForRelease();
+			}
+			else {
+				if (CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE || CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) dragging = true;
+
+			}
 
 			yield return new WaitForSeconds(Time.deltaTime);
 		}
@@ -81,12 +91,12 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 	void CheckForRelease()
 	{
-		if (Time.time - initialClick < clickThreshold) return;
 
 		if (CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE || CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) dragging = true;
 
 		//Checks for release of character. Snaps to lane or returns to pool if no valid lane.
 		if(dragging && (CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE || CheckInputType.TOUCH_TYPE == InputType.NO_TYPE)) {
+			Debug.Log("Release the kraken! Time - initial: " + (Time.time - initialClick) + ", threshold: " + clickThreshold);
 			if ((mySnapPoint != defaultPosition) && 
 			   //!GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, transform.position as GridCoordinate) && 
 			   !GridManager.Instance.IsOccupied(GridManager.Grid.ScreenGrid, GridManager.WorldToScreenGridCoords(transform.position)))

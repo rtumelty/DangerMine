@@ -31,6 +31,9 @@ public class Pickup : MonoBehaviour {
 		Vector3 startPosition = transform.position;
 		Vector3 targetPosition = transform.position + new Vector3(destination.x, destination.y, 0);
 
+		targetPosition = new Vector2(Mathf.Clamp(targetPosition.x, GridManager.minWorldX, GridManager.maxWorldX),
+		                             Mathf.Clamp(targetPosition.y, GridManager.minWorldY, GridManager.maxWorldY));
+
 		float elapsedTime = 0f;
 
 		while (elapsedTime < moveTime) {

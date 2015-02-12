@@ -16,9 +16,33 @@ public class GridManager : MonoBehaviour {
 
 	public const int maxY = 4;
 	public const int minY = 0;
+	
+	public static float minWorldY {
+		get {
+			return instance.screenGridOrigin.position.y + ((float)minY * GridCoordinate.XScale);
+		}
+	}
+	
+	public static float maxWorldY {
+		get {
+			return instance.screenGridOrigin.position.y + ((float)maxY * GridCoordinate.XScale);
+		}
+	}
 
 	public const int minScreenX = -5;
 	public const int maxScreenX = 5;
+	
+	public static float minWorldX {
+		get {
+			return instance.screenGridOrigin.position.x + ((float)minScreenX * GridCoordinate.XScale);
+		}
+	}
+	
+	public static float maxWorldX {
+		get {
+			return instance.screenGridOrigin.position.x + ((float)maxScreenX * GridCoordinate.XScale);
+		}
+	}
 
 	public static int PlayableAreaWidth {
 		get {

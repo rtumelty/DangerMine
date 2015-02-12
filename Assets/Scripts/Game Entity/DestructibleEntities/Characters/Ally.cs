@@ -34,7 +34,7 @@ public class Ally : Character {
 			switch (value) {
 			case AllyMoveState.Idle:
 				LogMessage("State change: idle");
-				RestoreCollisions();
+				StartCoroutine(RestoreCollisions());
 
 				MassMultiplier = 1;
 				break;
@@ -207,7 +207,6 @@ public class Ally : Character {
 
 	bool CheckIfBlocked() {
 
-		LogMessage("Checking if character blocked.");
 		RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, new Vector2(1,0), .5f);
 
 		if (hits.Length > 0) {
@@ -337,7 +336,9 @@ public class Ally : Character {
 		}
 	}
 
-	void RestoreCollisions() {
+	IEnumerator RestoreCollisions() {
+		yield return new WaitForSeconds(Time.fixedDeltaTime * 2);
+
 		foreach (Collider2D otherCollider in ignoredColliders) {
 			Physics2D.IgnoreCollision(collider2D, otherCollider, false);
 		}

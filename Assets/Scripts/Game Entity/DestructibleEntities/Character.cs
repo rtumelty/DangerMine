@@ -339,6 +339,8 @@ public class Character : DestructibleEntity {
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.EndHorizontal();
 			EditorGUILayout.Space();
+
+			EditorUtility.SetDirty(this);
 		}
 	}
 	#endif

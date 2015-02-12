@@ -29,12 +29,13 @@ public class Formation : SpawnGroup {
 		{ 
 			if (profiles[i].maximumDistance == 0) profiles[i].maximumDistance = Mathf.Infinity;
 
-			if (profiles[i].minimumDistance <= distance && profiles[i].maximumDistance >= distance)
+			if (profiles[i].minimumDistance <= distance && profiles[i].maximumDistance >= distance) {
 				activeProfiles.Add(profiles[i]);
+			}
 		}
 		
 		if (activeProfiles.Count == 0) {
-			Debug.LogError("No active spawn groups at distance " + distance);
+			Debug.LogError("Formation " + name + ": No active profiles at distance " + distance);
 			return null;
 		}
 		

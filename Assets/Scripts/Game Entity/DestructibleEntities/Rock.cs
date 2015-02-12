@@ -17,6 +17,10 @@ public class Rock : DestructibleEntity {
 		base.Awake();
 	}
 
+	protected override void OnEnable() {
+		base.OnEnable();
+	}
+
 	protected override void OnDisable() {
 
 		if (destroyedBy is Ally && dropsPickup) {

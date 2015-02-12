@@ -33,19 +33,32 @@ public class AttackZone : MonoBehaviour {
 		Resize();
 	}
 
-	void OnTriggerEnter2D(Collider2D other) {
-		DestructibleEntity entity = other.GetComponentInChildren<DestructibleEntity>();
+	void AddTarget(DestructibleEntity entity) {
 		
 		if (entity != null) {
+			if (targets.Contains(entity)) return;
+			
 			if ((1 << entity.gameObject.layer & targetedLayers) == 0) return;
-
+			
 			foreach (DestructibleEntity ignoredTarget in ignoredTargets) {
 				if (ignoredTarget.GetType() == entity.GetType())
 					return;
 			}
-
+			
 			targets.Add(entity);
 		}
+	}
+	
+	void OnTriggerEnter2D(Collider2D other) {
+		DestructibleEntity entity = other.GetComponentInChildren<DestructibleEntity>();
+		
+		AddTarget(entity);
+	}
+	
+	void OnTriggerStay2D(Collider2D other) {
+		DestructibleEntity entity = other.GetComponentInChildren<DestructibleEntity>();
+		
+		AddTarget(entity);
 	}
 	
 	void OnTriggerExit2D(Collider2D other) {

@@ -20,7 +20,7 @@ public class FormationManager : MonoBehaviour
 		}
 	}
 	
-	void Awake()
+	void OnEnable()
 	{
 		cameraStartingXPosition = Mathf.RoundToInt(Camera.main.transform.position.x);
 		cameraDistanceCovered = 0;
@@ -38,9 +38,11 @@ public class FormationManager : MonoBehaviour
 	}
 
 	List<SpawnGroup> GetActiveSpawnGroups() {
+
 		List<SpawnGroup> activeSpawnGroups = new List<SpawnGroup>();
 		for(int i = 0; i < spawnGroups.Length; i++)
 		{ 
+
 			if (spawnGroups[i].maximumDistance == 0) spawnGroups[i].maximumDistance = Mathf.Infinity; 
 			if (spawnGroups[i].minimumDistance <= cameraDistanceCovered && spawnGroups[i].maximumDistance >= cameraDistanceCovered) {
 				activeSpawnGroups.Add(spawnGroups[i]);
