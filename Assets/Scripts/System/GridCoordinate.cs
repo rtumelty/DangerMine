@@ -5,6 +5,7 @@ using System.Collections;
 public class GridCoordinate {
 	static float xScale = 1;
 	static float yScale = 1.15f;
+	static float xOffset = .4f;
 
 	public static float XScale {
 		get {
@@ -32,13 +33,13 @@ public class GridCoordinate {
 	}
 	
 	public GridCoordinate(Vector2 coords) {
-		x = Mathf.RoundToInt (coords.x / xScale);
 		y = Mathf.RoundToInt (coords.y / yScale);
+		x = Mathf.RoundToInt ((coords.x - (xOffset * y))/ xScale);
 	}
 	
 	public GridCoordinate(Vector3 coords) {
-		x = Mathf.RoundToInt (coords.x / xScale);
 		y = Mathf.RoundToInt (coords.y / yScale);
+		x = Mathf.RoundToInt ((coords.x - (xOffset * y))/ xScale);
 	}
 	
 	public static GridCoordinate operator +(GridCoordinate a, GridCoordinate b) {
@@ -97,7 +98,7 @@ public class GridCoordinate {
 	{return new GridCoordinate(vector);}
 
 	public Vector3 ToVector3(float z = 0) {
-		return new Vector3(x * xScale, y * yScale, z);
+		return new Vector3(x * xScale + xOffset * y, y * yScale, z);
 	}
 
 	public override string ToString ()
