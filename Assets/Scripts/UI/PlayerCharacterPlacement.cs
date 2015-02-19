@@ -96,7 +96,6 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 		//Checks for release of character. Snaps to lane or returns to pool if no valid lane.
 		if(dragging && (CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE || CheckInputType.TOUCH_TYPE == InputType.NO_TYPE)) {
-			Debug.Log("Release the kraken! Time - initial: " + (Time.time - initialClick) + ", threshold: " + clickThreshold);
 			if ((mySnapPoint != defaultPosition) && 
 			   //!GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, transform.position as GridCoordinate) && 
 			   !GridManager.Instance.IsOccupied(GridManager.Grid.ScreenGrid, GridManager.WorldToScreenGridCoords(transform.position)))

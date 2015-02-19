@@ -66,9 +66,12 @@ public class Enemy : Character {
 	protected override void Update() {
 		switch (moveState) {
 		case EnemyMoveState.Default:
+			LogMessage("Transform coords: " + transform.position + ", World coords: " + WorldCoords, DebugLevel.Warning);
+			LogMessage("New target: " +(WorldCoords + new GridCoordinate(-1, 0)).ToVector3(), DebugLevel.Error);
 			targetPosition = (WorldCoords + new GridCoordinate(-1, 0)).ToVector3();
 			break;
 		case EnemyMoveState.Chase:
+			Debug.Log("Screen coords: " + ScreenCoords + ", target: " + new GridCoordinate(-followDistance, ScreenCoords.y));
 			targetPosition = GridManager.ScreenCoordsToWorldPosition(new GridCoordinate(-followDistance, ScreenCoords.y));
 			AttackMultiplier = 2f * (LaneManager.MaxFollowDistance - followDistance);
 			break;
@@ -77,16 +80,18 @@ public class Enemy : Character {
 			break;
 		}
 
-		targetPosition.y = Mathf.Clamp(targetPosition.y, GridManager.minY, GridManager.maxY);
+		//targetPosition.y = Mathf.Clamp(targetPosition.y, GridManager.minY, GridManager.maxY);
 
 		base.Update();
 	}
 
 	protected override void Move() {
-		
+		/*
 		Vector2 velocity = rigidbody2D.velocity;
 		velocity.y = 0;
 		rigidbody2D.velocity = velocity;
+		*/
+		LogMessage("Move target: " + targetPosition + ", difference: " + (targetPosition - transform.position));
 
 		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, maxMoveSpeed);
 		Vector2 velocityChange = targetVelocity - rigidbody2D.velocity;
@@ -94,8 +99,9 @@ public class Enemy : Character {
 		velocityChange = Vector2.ClampMagnitude(velocityChange, maxVelocityChange);
 
 		if (MoveState == EnemyMoveState.Chase)
+		{
 			velocityChange *= 3;
-
+		}
 		rigidbody2D.AddForce(velocityChange * rigidbody2D.mass, ForceMode2D.Force);
 	}
 }

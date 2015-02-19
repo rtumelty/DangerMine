@@ -132,7 +132,7 @@ public class Ally : Character {
 		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition);
 
 		if (MoveState == AllyMoveState.Moving) {
-			if (ScreenCoords == screenTargetPosition)
+			if ((GridManager.ScreenCoordsToWorldPosition(screenTargetPosition) - transform.position).magnitude < .1f)
 				MoveState = AllyMoveState.Idle;
 		}
 		else if (MoveState == AllyMoveState.Idle) {
@@ -305,8 +305,11 @@ public class Ally : Character {
 		
 		LogMessage("Drag ended");
 
+		IgnoreCollidersOnPath(GridManager.ScreenCoordsToWorldPosition(moveTarget));
+
+		yield return new WaitForSeconds(Time.fixedDeltaTime * 3);
+		
 		screenTargetPosition = moveTarget;
-		IgnoreCollidersOnPath();
 
 		MoveState = AllyMoveState.Moving;
 	}
@@ -318,20 +321,38 @@ public class Ally : Character {
 		yield break;
 	}
 
-	void IgnoreCollidersOnPath() {
-		Vector3 currentPosition = GridManager.ScreenCoordsToWorldPosition(ScreenCoords);
-		Vector3 targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition);
+	IEnumerator DebugRays(Vector3 start, Vector3 dir) {
+		Debug.DrawRay(start - new Vector3(0, -.25f, 0), dir, Color.white, 2);
+		Debug.DrawRay(start + new Vector3(0, .5f, 0), dir, Color.white, 2);
+		Debug.DrawRay(start + new Vector3(0, 1f, 0), dir, Color.white, 2);
+		yield return new WaitForSeconds(Time.deltaTime);
+	}
 
-		RaycastHit2D[] hits = Physics2D.RaycastAll(currentPosition, targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
+	void IgnoreCollidersOnPath(Vector3 targetPosition) {
+		Vector3 currentPosition = transform.position;
+		Debug.LogError(currentPosition + " " +targetPosition);
 
+		RaycastHit2D[] hitsA = Physics2D.RaycastAll(currentPosition - new Vector3(0, -.25f, 0), targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
+		RaycastHit2D[] hitsB = Physics2D.RaycastAll(currentPosition + new Vector3(0, .5f, 0), targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
+		RaycastHit2D[] hitsC = Physics2D.RaycastAll(currentPosition + Vector3.up, targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
+
+		StartCoroutine(DebugRays(currentPosition, targetPosition - currentPosition));
+
+		RaycastHit2D[] hits = new RaycastHit2D[hitsA.Length + hitsB.Length + hitsC.Length];
+		System.Array.Copy(hitsA, hits, hitsA.Length);
+		System.Array.Copy(hitsB, 0, hits, hitsA.Length, hitsB.Length);
+		System.Array.Copy(hitsC, 0, hits, hitsA.Length + hitsB.Length, hitsC.Length);
+
+		int i = 0;
 		foreach (RaycastHit2D hit in hits) {
+			Debug.Log(i++ + " " +hit.collider);
 			Ally ally = hit.collider.GetComponent<Ally>();
 
 			if (ally != null) {
-				if (ally.ScreenCoords == screenTargetPosition) break;
-
-				ignoredColliders.Add(hit.collider);
-				Physics2D.IgnoreCollision(collider2D, hit.collider);
+				if (ally.ScreenCoords != screenTargetPosition) {
+					ignoredColliders.Add(hit.collider);
+					Physics2D.IgnoreCollision(collider2D, hit.collider);
+				}
 			}
 		}
 	}
