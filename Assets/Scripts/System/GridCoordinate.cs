@@ -4,8 +4,8 @@ using System.Collections;
 [System.Serializable]
 public class GridCoordinate {
 	static float xScale = 1;
-	static float yScale = 1.15f;
-	static float xOffset = .4f;
+	static float yScale = 1f;//.15f;
+	static float xOffset = .25f;
 
 	public static float XScale {
 		get {

@@ -35,7 +35,9 @@ public class GroundManager : MonoBehaviour {
 		}
 
 		lastSegment = PrefabPool.GetPool(defaultSegment).Spawn(lastSegment.connectPoint.position).GetComponent<GroundSegment>();
+		lastSegment.renderer.sortingOrder = sortingOrder++;
 		lastSegment = PrefabPool.GetPool(defaultSegment).Spawn(lastSegment.connectPoint.position).GetComponent<GroundSegment>();
+		lastSegment.renderer.sortingOrder = sortingOrder++;
 
 		LevelManager.NextSectionStart = Mathf.RoundToInt(lastSegment.connectPoint.position.x);
 	}
