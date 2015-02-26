@@ -76,7 +76,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 
 		GridCoordinate moveTarget = GridManager.WorldToScreenGridCoords(inputPosition);
 
-		moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
+		//moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
 
 		if (moveTarget.y < GridManager.minY || moveTarget.y > GridManager.maxY) 
 			transform.position = defaultPosition;
