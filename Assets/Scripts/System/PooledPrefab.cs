@@ -18,6 +18,8 @@ public class PooledPrefab : MonoBehaviour {
 	[SerializeField] bool recycleWhenFar;
 	[SerializeField] public Transform distanceObject;
 	[SerializeField] float distance = 10f;
+	[SerializeField] bool xAxis = true;
+	[SerializeField] int direction = -1;
 
 	[SerializeField] bool recyclable = false;
 	bool recycling = false;
@@ -40,17 +42,24 @@ public class PooledPrefab : MonoBehaviour {
 	}
 	
 	void OnCollisionEnter(Collision c) {
-		if (recycleOnCollision) Recycle(0);
+		if (recycleOnCollision) StartCoroutine(Recycle(0));
 	}
 	
 	void OnCollisionEnter2D(Collision2D c) {
-		if (recycleOnCollision2D) Recycle(0);
+		if (recycleOnCollision2D) StartCoroutine(Recycle(0));
 	}
-
+	[SerializeField]bool debug;
 	void Update() {
 		if (recycleWhenFar && distanceObject != null) {
-			if ((transform.position - distanceObject.position).magnitude > distance)
-				Recycle(recycleDelay);
+			if (xAxis) {
+				float difference = transform.position.x - distanceObject.position.x;
+				if (Mathf.Abs(difference) > distance && direction * difference > 0) {
+					StartCoroutine(Recycle(recycleDelay)); 
+				}
+			}
+			else if ((transform.position - distanceObject.position).magnitude > distance) {
+				StartCoroutine(Recycle(recycleDelay));
+			}
 		}
 	}
 

@@ -35,8 +35,10 @@ public class GroundManager : MonoBehaviour {
 		}
 
 		lastSegment = PrefabPool.GetPool(defaultSegment).Spawn(lastSegment.connectPoint.position).GetComponent<GroundSegment>();
+		lastSegment.GetComponent<PooledPrefab>().distanceObject = Camera.main.transform;
 		lastSegment.renderer.sortingOrder = sortingOrder++;
 		lastSegment = PrefabPool.GetPool(defaultSegment).Spawn(lastSegment.connectPoint.position).GetComponent<GroundSegment>();
+		lastSegment.GetComponent<PooledPrefab>().distanceObject = Camera.main.transform;
 		lastSegment.renderer.sortingOrder = sortingOrder++;
 
 		LevelManager.NextSectionStart = Mathf.RoundToInt(lastSegment.connectPoint.position.x);
@@ -46,6 +48,7 @@ public class GroundManager : MonoBehaviour {
 
 		for (int i = 0; i < length; i++) {
 			lastSegment = PrefabPool.GetPool(segments[Random.Range(0, segments.Length)]).Spawn(lastSegment.connectPoint.position).GetComponent<GroundSegment>();
+			lastSegment.GetComponent<PooledPrefab>().distanceObject = Camera.main.transform;
 			lastSegment.renderer.sortingOrder = sortingOrder++;
 		}	
 	}
@@ -55,6 +58,7 @@ public class GroundManager : MonoBehaviour {
 
 		for (int i = 0; i < length; i++) {
 			lastSegment = PrefabPool.GetPool(poolKey).Spawn(lastSegment.connectPoint.position).GetComponent<GroundSegment>();
+			lastSegment.GetComponent<PooledPrefab>().distanceObject = Camera.main.transform;
 			lastSegment.renderer.sortingOrder = sortingOrder++;
 		}
 	}
