@@ -272,6 +272,10 @@ public class Character : DestructibleEntity {
 		Die (cause);
 	}
 
+	protected virtual void Fall(GameEntity cause) {
+		StartCoroutine(Dying (cause));
+	}
+
 	/// <summary>
 	/// Disables GameObject. Overriddable in subclasses.
 	/// </summary>

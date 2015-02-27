@@ -330,7 +330,7 @@ public class Ally : Character {
 
 	void IgnoreCollidersOnPath(Vector3 targetPosition) {
 		Vector3 currentPosition = transform.position;
-		Debug.LogError(currentPosition + " " +targetPosition);
+//		Debug.LogError(currentPosition + " " +targetPosition);
 
 		RaycastHit2D[] hitsA = Physics2D.RaycastAll(currentPosition - new Vector3(0, -.25f, 0), targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
 		RaycastHit2D[] hitsB = Physics2D.RaycastAll(currentPosition + new Vector3(0, .5f, 0), targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
@@ -345,7 +345,7 @@ public class Ally : Character {
 
 		int i = 0;
 		foreach (RaycastHit2D hit in hits) {
-			Debug.Log(i++ + " " +hit.collider);
+//			Debug.Log(i++ + " " +hit.collider);
 			Ally ally = hit.collider.GetComponent<Ally>();
 
 			if (ally != null) {
