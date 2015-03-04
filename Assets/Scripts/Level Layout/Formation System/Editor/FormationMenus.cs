@@ -8,15 +8,15 @@ public class FormationMenus
 	{
 		Formation newFormation = ScriptableObjectUtility.CreateAsset<Formation> ();
 		newFormation.Initialize();
-
+		
 		Selection.activeObject = newFormation;
 	}
-	
-	[MenuItem("Assets/Formations/Create sequence")]
-	public static void CreateSequenceAsset ()
+	[MenuItem("Assets/Formations/Create profile")]
+	public static void CreateProfileAsset ()
 	{
-		Sequence newSequence = ScriptableObjectUtility.CreateAsset<Sequence> ();
+		FormationProfile newProfile = ScriptableObjectUtility.CreateAsset<FormationProfile> ();
+		newProfile.Initialize();
 		
-		Selection.activeObject = newSequence;
+		Selection.activeObject = newProfile;
 	}
 }

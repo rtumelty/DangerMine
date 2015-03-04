@@ -46,6 +46,14 @@ public class LevelManager : MonoBehaviour {
 #region Sections
 	public List<Section> sections;
 
+	static Section currentSection;
+
+	public static Section CurrentSection {
+		get {
+			return currentSection;
+		}
+	}
+
 	static int nextSectionStart = 0;
 	static public int NextSectionStart {
 		get {
@@ -68,9 +76,12 @@ public class LevelManager : MonoBehaviour {
 			totalCurveProbability -= sections[i].sectionWeight.Evaluate(Time.time);
 
 			if (totalCurveProbability < 0) {
+				currentSection = sections[i];
 				return sections[i];
 			}
 		}
+
+		currentSection = sections[sections.Count -1];
 
 		return sections[sections.Count-1];
 	}
@@ -80,6 +91,48 @@ public class LevelManager : MonoBehaviour {
 	AnimationCurve easy;
 	AnimationCurve medium;
 	AnimationCurve hard;
+#endregion
+
+#region Formations
+	[SerializeField] Transform spawnReference;
+	static int nextFormation = 0;
+	static public int NextFormation {
+		get {
+			return nextFormation;
+		}
+		set {
+			nextFormation = value;
+		}
+	}
+
+	void PlaceFormation() {
+		float easyWeight = easy.Evaluate(SampleLoopedTime());
+		float medWeight = medium.Evaluate(SampleLoopedTime());
+		float hardWeight = hard.Evaluate(SampleLoopedTime());
+		
+		int difficulty;
+		float probability = Random.Range(0, easyWeight + medWeight + hardWeight);
+		if (probability < easyWeight)
+			difficulty = 1;
+		else if (probability < easyWeight + medWeight)
+			difficulty = 2;
+		else 
+			difficulty = 3;
+
+		LayerMask groundLayerMask = 1 << 19;
+		Ray ray = new Ray(spawnReference.position, new Vector3(spawnReference.position.x, spawnReference.position.y, 10));
+		RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity, groundLayerMask);
+
+		if (hit.collider == null) { Debug.Log("No object intersected by ray!"); return; }
+		GroundSegment targetSegment = hit.collider.gameObject.GetComponent<GroundSegment>();
+		if (targetSegment == null) { Debug.Log("Object " + hit.collider.gameObject + " doesn't have a GroundSegment component"); return; }
+
+		FormationEntry entry = targetSegment.GetActiveProfile(difficulty);
+		for (int i = 0; i < entry.formation.slots.Length; i++) {
+			Vector3 spawnCoordinate = spawnReference.position + new Vector3(entry.formation.interval, 0) + entry.formation.slots[i].ToVector3();
+			PrefabPool.GetPool(entry.profile.prefabs[i]).Spawn(spawnCoordinate);
+		}
+	}
 #endregion
 
 #region Game Start/End
@@ -112,8 +165,6 @@ public class LevelManager : MonoBehaviour {
 	
 	IEnumerator GameOver() {
 		Debug.Log("Last miner died!");
-		GlobalManagement.LAST_DISTANCE_COVERED = FormationManager.CameraDistanceCovered;
-		GlobalManagement.SCORE = FormationManager.CameraDistanceCovered * 10;
 		UIMessageReceiver.Instance.SendTrigger("PlayerDied");
 		
 		float slowDelay = .05f;
@@ -172,6 +223,9 @@ public class LevelManager : MonoBehaviour {
 
 		if (cameraDistanceCovered > nextSectionStart - 10)
 			GroundManager.Instance.PlaceSection(NextSection());
+
+		if (cameraDistanceCovered > nextFormation)
+			PlaceFormation();
 	}
 
 
@@ -182,6 +236,7 @@ public class LevelManager : MonoBehaviour {
 
 	public void ShowGUI(Editor editor) {
 		cameraTransform = EditorGUILayout.ObjectField("Camera:", cameraTransform, typeof(Transform), true) as Transform;
+		spawnReference = EditorGUILayout.ObjectField("Formation origin:", spawnReference, typeof(Transform), true) as Transform;
 
 		EditorGUILayout.Space();
 		loopStartTime = EditorGUILayout.FloatField("Loop start time:", loopStartTime);

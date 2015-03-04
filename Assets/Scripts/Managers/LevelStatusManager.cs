@@ -40,6 +40,5 @@ public class LevelStatusManager : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		distanceCovered = FormationManager.CameraDistanceCovered;
 	}
 }
