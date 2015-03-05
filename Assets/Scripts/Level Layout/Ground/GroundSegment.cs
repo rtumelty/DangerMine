@@ -10,17 +10,20 @@ public struct FormationEntry {
 }
 
 public class GroundSegment : MonoBehaviour {
-
-
 	public Transform connectPoint;
+	[SerializeField] FormationEntry defaultFormation;
 	[SerializeField] List<FormationEntry> goldEntries;
 	[SerializeField] List<FormationEntry> enemyEntries;
 	[SerializeField] List<FormationEntry> avoidEntries;
 	[SerializeField] List<FormationEntry> obstacleEntries;
 	[SerializeField] List<FormationEntry> mixedEntries;
 
+	bool debug = true;
+
 	public FormationEntry GetActiveProfile(int difficulty) {
-		if (difficulty == 0) {}
+		if (difficulty == 0) {
+			PrintDebug("Difficulty 0 - placing empty formation");
+		}
 
 		List<FormationEntry> sectionEntries = null;
 
@@ -42,6 +45,8 @@ public class GroundSegment : MonoBehaviour {
 			break;
 		}
 
+		PrintDebug("Section type: " + LevelManager.CurrentSection.sectionType);
+
 		foreach (FormationEntry entry in sectionEntries) {
 			if (entry.difficulty != difficulty)
 				sectionEntries.Remove(entry);
@@ -50,6 +55,14 @@ public class GroundSegment : MonoBehaviour {
 		if (sectionEntries.Count == 0 && difficulty >= 0)
 			return GetActiveProfile(difficulty - 1);
 
-		return sectionEntries[Random.Range(0, sectionEntries.Count)];
+		FormationEntry formationEntry = sectionEntries[Random.Range(0, sectionEntries.Count)];
+		PrintDebug("Placing formation " + formationEntry.formation + ", profile " + formationEntry.profile);
+		return formationEntry;
+	}
+
+	void PrintDebug(string content) {
+		if (!debug) return;
+
+		Debug.Log(content);
 	}
 }

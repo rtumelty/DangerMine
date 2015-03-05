@@ -88,13 +88,15 @@ public class LevelManager : MonoBehaviour {
 #endregion
 
 #region Difficulty
-	AnimationCurve easy;
-	AnimationCurve medium;
-	AnimationCurve hard;
+	[SerializeField] AnimationCurve easy;
+	[SerializeField] AnimationCurve medium;
+	[SerializeField] AnimationCurve hard;
 #endregion
 
 #region Formations
 	[SerializeField] Transform spawnReference;
+	Vector3 spawnReferenceOffset;
+
 	static int nextFormation = 0;
 	static public int NextFormation {
 		get {
@@ -106,6 +108,8 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	void PlaceFormation() {
+		spawnReference.position = mainCamera.transform.position + spawnReferenceOffset;
+
 		float easyWeight = easy.Evaluate(SampleLoopedTime());
 		float medWeight = medium.Evaluate(SampleLoopedTime());
 		float hardWeight = hard.Evaluate(SampleLoopedTime());
@@ -119,11 +123,11 @@ public class LevelManager : MonoBehaviour {
 		else 
 			difficulty = 3;
 
-		LayerMask groundLayerMask = 1 << 19;
-		Ray ray = new Ray(spawnReference.position, new Vector3(spawnReference.position.x, spawnReference.position.y, 10));
-		RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity, groundLayerMask);
+		LayerMask mask = 1 << 19;
+		Ray ray = new Ray(new Vector3(spawnReference.position.x, spawnReference.position.y, -10), Vector3.forward * 50);
+		RaycastHit2D hit = Physics2D.GetRayIntersection(ray, 50, mask);
 
-		if (hit.collider == null) { Debug.Log("No object intersected by ray!"); return; }
+		if (hit.collider== null) { Debug.Log("No object intersected by ray! " + spawnReference.position); return; }
 		GroundSegment targetSegment = hit.collider.gameObject.GetComponent<GroundSegment>();
 		if (targetSegment == null) { Debug.Log("Object " + hit.collider.gameObject + " doesn't have a GroundSegment component"); return; }
 
@@ -132,6 +136,8 @@ public class LevelManager : MonoBehaviour {
 			Vector3 spawnCoordinate = spawnReference.position + new Vector3(entry.formation.interval, 0) + entry.formation.slots[i].ToVector3();
 			PrefabPool.GetPool(entry.profile.prefabs[i]).Spawn(spawnCoordinate);
 		}
+
+		nextFormation += entry.formation.interval + entry.formation.width;
 	}
 #endregion
 
@@ -201,6 +207,8 @@ public class LevelManager : MonoBehaviour {
 		cameraStartingXPosition = Mathf.RoundToInt(mainCamera.transform.position.x);
 		cameraDistanceCovered = 0;
 
+		spawnReferenceOffset = spawnReference.position - mainCamera.transform.position;
+
 		GlobalManagement.LAST_DISTANCE_COVERED = 0;
 		GlobalManagement.SCORE = 0;
 
@@ -208,6 +216,8 @@ public class LevelManager : MonoBehaviour {
 		gameOver = false;
 
 		Ally.ActiveAllies = 0;
+
+		currentSection = sections[0];
 
 		GroundManager.Instance.PlaceSection(sections[0]);
 		GroundManager.Instance.PlaceSection(sections[0]);
@@ -242,7 +252,11 @@ public class LevelManager : MonoBehaviour {
 		loopStartTime = EditorGUILayout.FloatField("Loop start time:", loopStartTime);
 		loopLength = EditorGUILayout.FloatField("Loop start time:", loopLength);
 		EditorGUILayout.Space();
-		
+
+		if (easy == null) easy = new AnimationCurve();
+		if (medium == null) medium = new AnimationCurve();
+		if (hard == null) hard = new AnimationCurve();
+
 		expandDifficulty = EditorGUILayout.Foldout(expandDifficulty, "Difficulty curves:");
 		if (expandDifficulty) {
 			EditorGUILayout.BeginVertical(EditorStyles.textArea);
