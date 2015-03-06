@@ -84,17 +84,17 @@ public class LevelManager : MonoBehaviour {
 		for (int i = 0; i < sections.Count; i++) {
 			if (sections[i].Active) {
 				weight -= EvaluateCurve(sections[i].sectionWeight);
-				Debug.LogError(sections[i].name + " weight: " + EvaluateCurve(sections[i].sectionWeight) + ", Total prob after section " + sections[i].name +": " + totalCurveProbability);
+//				Debug.LogError(sections[i].name + " weight: " + EvaluateCurve(sections[i].sectionWeight) + ", Total prob after section " + sections[i].name +": " + totalCurveProbability);
 
 				if (weight <= 0) {
 					currentSection = sections[i];
-					Debug.LogWarning("New section, type: " + currentSection.sectionType);
+//					Debug.LogWarning("New section, type: " + currentSection.sectionType);
 					return sections[i];
 				}
 			}
 		}
 
-		Debug.LogError("Defaulting to avoid: weight = " + weight + ", total probability: " + totalCurveProbability);
+//		Debug.LogError("Defaulting to avoid: weight = " + weight + ", total probability: " + totalCurveProbability);
 		currentSection = sections[sections.Count -1];
 		return sections[sections.Count-1];
 	}
@@ -158,7 +158,7 @@ public class LevelManager : MonoBehaviour {
 
 		int interval = Mathf.RoundToInt(Random.Range(LevelManager.EvaluateCurve(minFormationInterval), LevelManager.EvaluateCurve(maxFormationInterval)));
 
-		nextFormation += entry.formation.interval + entry.formation.width + Mathf.RoundToInt(LevelManager.EvaluateCurve(minFormationInterval));
+		nextFormation += entry.formation.interval + entry.formation.width;
 	}
 #endregion
 
