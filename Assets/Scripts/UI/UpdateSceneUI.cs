@@ -10,7 +10,7 @@ public class UpdateSceneUI : MonoBehaviour {
 	
 	void Update ()
 	{
-//		distanceCounter.text = FormationManager.CameraDistanceCovered.ToString();
+		distanceCounter.text = LevelManager.CameraDistanceCovered.ToString();
 		goldCounter.text = GlobalManagement.PLAYERGOLD.ToString();
 		diamondCounter.text = GlobalManagement.PLAYERDIAMONDS.ToString();
 	}

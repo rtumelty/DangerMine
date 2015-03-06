@@ -21,6 +21,14 @@ public class Section : ScriptableObject {
 	public AnimationCurve minimumLength;
 	public AnimationCurve maximumLength;
 
+	[SerializeField] bool active = true;
+
+	public bool Active {
+		get {
+			return active;
+		}
+	}
+
 	public void Init() {
 		sectionWeight = new AnimationCurve();
 		minimumLength = new AnimationCurve();
@@ -36,6 +44,7 @@ public class Section : ScriptableObject {
 		if (expand) {
 			name = EditorGUILayout.TextField("Name", name);
 			sectionType = (SectionType)EditorGUILayout.EnumPopup("Section type:", sectionType);
+			active = EditorGUILayout.Toggle("Active?", active);
 			sectionWeight = EditorGUILayout.CurveField("Probability / Time:", sectionWeight);
 			
 			minimumLength = EditorGUILayout.CurveField("Min Length / Time:", minimumLength);

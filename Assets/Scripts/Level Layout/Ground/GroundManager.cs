@@ -20,13 +20,19 @@ public class GroundManager : MonoBehaviour {
 		instance = this;
 	}
 
+	void OnDisable() {
+		if (instance == this) instance = null;
+	}
+
 	/// <summary>
 	/// Places the next section.
 	/// </summary>
 	/// <param name="section">The section to be placed.</param>
 	public void PlaceSection(Section section) {
-		int sectionLength = Mathf.RoundToInt(Random.Range(section.minimumLength.Evaluate(Time.time), section.maximumLength.Evaluate(LevelManager.SampleLoopedTime())));
+		int sectionLength = Mathf.RoundToInt(Random.Range(section.minimumLength.Evaluate(LevelManager.SampleLoopedTime()), section.maximumLength.Evaluate(LevelManager.SampleLoopedTime())));
 		
+		Debug.Log("GroundManager: Placing " + section.sectionType + " section, length " + sectionLength);
+
 		if (section.sectionType == Section.SectionType.Avoid) {
 			PlaceAvoidSegments(sectionLength);
 		}
@@ -47,7 +53,7 @@ public class GroundManager : MonoBehaviour {
 	void PlaceAvoidSegments(int length) {
 
 		for (int i = 0; i < length; i++) {
-			lastSegment = PrefabPool.GetPool(segments[Random.Range(0, segments.Length)]).Spawn(lastSegment.connectPoint.position).GetComponent<GroundSegment>();
+			lastSegment = PrefabPool.GetPool(segments[Random.Range(1, segments.Length)]).Spawn(lastSegment.connectPoint.position).GetComponent<GroundSegment>();
 			lastSegment.GetComponent<PooledPrefab>().distanceObject = Camera.main.transform;
 			lastSegment.renderer.sortingOrder = sortingOrder++;
 		}	

@@ -18,14 +18,16 @@ public class GroundSegment : MonoBehaviour {
 	[SerializeField] List<FormationEntry> obstacleEntries;
 	[SerializeField] List<FormationEntry> mixedEntries;
 
-	bool debug = true;
+	bool debug = false;
 
 	public FormationEntry GetActiveProfile(int difficulty) {
 		if (difficulty == 0) {
 			PrintDebug("Difficulty 0 - placing empty formation");
+			return defaultFormation;
 		}
-
+		
 		List<FormationEntry> sectionEntries = null;
+		List<FormationEntry> validEntries = new List<FormationEntry>();
 
 		switch (LevelManager.CurrentSection.sectionType) {
 		case Section.SectionType.Gold:
@@ -48,14 +50,14 @@ public class GroundSegment : MonoBehaviour {
 		PrintDebug("Section type: " + LevelManager.CurrentSection.sectionType);
 
 		foreach (FormationEntry entry in sectionEntries) {
-			if (entry.difficulty != difficulty)
-				sectionEntries.Remove(entry);
+			if (entry.difficulty == difficulty)
+				validEntries.Add(entry);
 		}
 
-		if (sectionEntries.Count == 0 && difficulty >= 0)
+		if (validEntries.Count == 0 && difficulty != 0)
 			return GetActiveProfile(difficulty - 1);
 
-		FormationEntry formationEntry = sectionEntries[Random.Range(0, sectionEntries.Count)];
+		FormationEntry formationEntry = validEntries[Random.Range(0, validEntries.Count)];
 		PrintDebug("Placing formation " + formationEntry.formation + ", profile " + formationEntry.profile);
 		return formationEntry;
 	}

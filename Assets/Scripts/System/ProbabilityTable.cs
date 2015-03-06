@@ -16,7 +16,6 @@ public class ProbabilityTable : MonoBehaviour {
 	}
 
 	void OnEnable () {
-		float spawnValue = Random.Range (0, 1f);
 
 		GameObject prefab = null;
 
@@ -24,8 +23,10 @@ public class ProbabilityTable : MonoBehaviour {
 		foreach (WeightedPrefab id in prefabs)
 			combinedWeights += id.weight;
 
+		float spawnValue = Random.Range (0, combinedWeights);
+
 		for (int i = 0; i < prefabs.Count; i++) {
-			spawnValue -= prefabs[i].weight / combinedWeights;
+			spawnValue -= prefabs[i].weight;
 			if (spawnValue < 0 || i+1 == prefabs.Count)  {
 				prefab = prefabs[i].prefab;
 			}

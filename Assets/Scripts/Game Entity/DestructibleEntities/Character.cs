@@ -281,7 +281,7 @@ public class Character : DestructibleEntity {
 	/// </summary>
 	/// <param name="cause">Cause of object death.</param>
 	protected override void Die(GameEntity cause) {
-
+		Debug.LogWarning("Character " + name + " died, cause: " + cause);
 		base.Die(cause);
 	}
 

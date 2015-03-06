@@ -32,7 +32,7 @@ public class LevelManager : MonoBehaviour {
 	static float loopLength = 120f;
 
 	public static float SampleLoopedTime() {
-		float time = Time.time;
+		float time = Time.timeSinceLevelLoad;
 
 		if (time > loopStartTime) {
 			float moduloTime = (time - loopStartTime) % loopLength;
@@ -40,6 +40,13 @@ public class LevelManager : MonoBehaviour {
 		}
 
 		return time;
+	}
+
+	public static float EvaluateCurve(AnimationCurve curve, bool clamp = true) {
+		float value = curve.Evaluate(SampleLoopedTime());
+		
+		if (clamp) value = Mathf.Clamp(value, 0, Mathf.Infinity);
+		return value;
 	}
 #endregion
 
@@ -66,23 +73,29 @@ public class LevelManager : MonoBehaviour {
 
 	Section NextSection() {
 		float totalCurveProbability = 0f;
-		foreach (Section section in sections) {
-			totalCurveProbability += section.sectionWeight.Evaluate(Time.time);
+		for (int i = 0; i < sections.Count; i++) {
+			if (sections[i].Active)
+				totalCurveProbability += EvaluateCurve(sections[i].sectionWeight);
 		}
 
 		float weight = Random.Range(0f, totalCurveProbability);
+		Debug.LogError("Weight: " + weight + ", total probability: " + totalCurveProbability);
 
 		for (int i = 0; i < sections.Count; i++) {
-			totalCurveProbability -= sections[i].sectionWeight.Evaluate(Time.time);
+			if (sections[i].Active) {
+				weight -= EvaluateCurve(sections[i].sectionWeight);
+				Debug.LogError(sections[i].name + " weight: " + EvaluateCurve(sections[i].sectionWeight) + ", Total prob after section " + sections[i].name +": " + totalCurveProbability);
 
-			if (totalCurveProbability < 0) {
-				currentSection = sections[i];
-				return sections[i];
+				if (weight <= 0) {
+					currentSection = sections[i];
+					Debug.LogWarning("New section, type: " + currentSection.sectionType);
+					return sections[i];
+				}
 			}
 		}
 
+		Debug.LogError("Defaulting to avoid: weight = " + weight + ", total probability: " + totalCurveProbability);
 		currentSection = sections[sections.Count -1];
-
 		return sections[sections.Count-1];
 	}
 #endregion
@@ -91,6 +104,9 @@ public class LevelManager : MonoBehaviour {
 	[SerializeField] AnimationCurve easy;
 	[SerializeField] AnimationCurve medium;
 	[SerializeField] AnimationCurve hard;
+	
+	[SerializeField] AnimationCurve minFormationInterval;
+	[SerializeField] AnimationCurve maxFormationInterval;
 #endregion
 
 #region Formations
@@ -110,9 +126,9 @@ public class LevelManager : MonoBehaviour {
 	void PlaceFormation() {
 		spawnReference.position = mainCamera.transform.position + spawnReferenceOffset;
 
-		float easyWeight = easy.Evaluate(SampleLoopedTime());
-		float medWeight = medium.Evaluate(SampleLoopedTime());
-		float hardWeight = hard.Evaluate(SampleLoopedTime());
+		float easyWeight = LevelManager.EvaluateCurve(easy);
+		float medWeight = LevelManager.EvaluateCurve(medium);
+		float hardWeight = LevelManager.EvaluateCurve(hard);
 		
 		int difficulty;
 		float probability = Random.Range(0, easyWeight + medWeight + hardWeight);
@@ -126,18 +142,23 @@ public class LevelManager : MonoBehaviour {
 		LayerMask mask = 1 << 19;
 		Ray ray = new Ray(new Vector3(spawnReference.position.x, spawnReference.position.y, -10), Vector3.forward * 50);
 		RaycastHit2D hit = Physics2D.GetRayIntersection(ray, 50, mask);
+		Debug.DrawRay(ray.origin, ray.direction * 50, Color.red, 2);
 
-		if (hit.collider== null) { Debug.Log("No object intersected by ray! " + spawnReference.position); return; }
+		if (hit.collider== null) { Debug.Log("No object intersected by ray! " + ray.origin + ", " + ray.direction); return; }
 		GroundSegment targetSegment = hit.collider.gameObject.GetComponent<GroundSegment>();
 		if (targetSegment == null) { Debug.Log("Object " + hit.collider.gameObject + " doesn't have a GroundSegment component"); return; }
 
 		FormationEntry entry = targetSegment.GetActiveProfile(difficulty);
 		for (int i = 0; i < entry.formation.slots.Length; i++) {
 			Vector3 spawnCoordinate = spawnReference.position + new Vector3(entry.formation.interval, 0) + entry.formation.slots[i].ToVector3();
-			PrefabPool.GetPool(entry.profile.prefabs[i]).Spawn(spawnCoordinate);
+			GridCoordinate gridCoord = new GridCoordinate(spawnCoordinate);
+			if (!GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, gridCoord))
+				PrefabPool.GetPool(entry.profile.prefabs[i]).Spawn(gridCoord.ToVector3());
 		}
 
-		nextFormation += entry.formation.interval + entry.formation.width;
+		int interval = Mathf.RoundToInt(Random.Range(LevelManager.EvaluateCurve(minFormationInterval), LevelManager.EvaluateCurve(maxFormationInterval)));
+
+		nextFormation += entry.formation.interval + entry.formation.width + Mathf.RoundToInt(LevelManager.EvaluateCurve(minFormationInterval));
 	}
 #endregion
 
@@ -218,6 +239,9 @@ public class LevelManager : MonoBehaviour {
 		Ally.ActiveAllies = 0;
 
 		currentSection = sections[0];
+		nextSectionStart = 0;
+
+		nextFormation = 0;
 
 		GroundManager.Instance.PlaceSection(sections[0]);
 		GroundManager.Instance.PlaceSection(sections[0]);
@@ -225,13 +249,14 @@ public class LevelManager : MonoBehaviour {
 
 	void OnDisable() {
 		StopAllCoroutines();
+		instance = null;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		cameraDistanceCovered = ( int ) Camera.main.transform.position.x - cameraStartingXPosition;
 
-		if (cameraDistanceCovered > nextSectionStart - 10)
+		if (cameraDistanceCovered > nextSectionStart - 15)
 			GroundManager.Instance.PlaceSection(NextSection());
 
 		if (cameraDistanceCovered > nextFormation)
@@ -256,6 +281,8 @@ public class LevelManager : MonoBehaviour {
 		if (easy == null) easy = new AnimationCurve();
 		if (medium == null) medium = new AnimationCurve();
 		if (hard == null) hard = new AnimationCurve();
+		if (minFormationInterval == null) minFormationInterval = new AnimationCurve();
+		if (maxFormationInterval == null) maxFormationInterval = new AnimationCurve();
 
 		expandDifficulty = EditorGUILayout.Foldout(expandDifficulty, "Difficulty curves:");
 		if (expandDifficulty) {
@@ -263,6 +290,10 @@ public class LevelManager : MonoBehaviour {
 				easy = EditorGUILayout.CurveField("Easy:", easy);
 				medium = EditorGUILayout.CurveField("Medium:", medium);
 				hard = EditorGUILayout.CurveField("Hard:", hard);
+
+			EditorGUILayout.Space();
+			minFormationInterval = EditorGUILayout.CurveField("Min Interval:", minFormationInterval);
+			maxFormationInterval = EditorGUILayout.CurveField("Max Interval:", maxFormationInterval);
 			EditorGUILayout.EndVertical();
 		}
 		EditorGUILayout.Space();

@@ -61,7 +61,7 @@ public class GameEntity : MonoBehaviour {
 			renderers = GetComponentsInChildren<Renderer>();
 
 		UpdateSortingLayer();
-		
+
 		GridManager.Instance.RegisterEntity(GridManager.Grid.WorldGrid, this);
 		GridManager.Instance.RegisterEntity(GridManager.Grid.ScreenGrid, this);
 	}
