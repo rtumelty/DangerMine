@@ -12,6 +12,13 @@ public class DestructibleEntity : GameEntity {
 	[SerializeField] protected float baseHealth;
 
 	private float currentHealth;
+
+	public float CurrentHealth {
+		get {
+			return currentHealth;
+		}
+	}
+
 	protected GameEntity destroyedBy;
 
 	/// <summary>

@@ -29,6 +29,7 @@ public class ProbabilityTable : MonoBehaviour {
 			spawnValue -= prefabs[i].weight;
 			if (spawnValue < 0 || i+1 == prefabs.Count)  {
 				prefab = prefabs[i].prefab;
+				break;
 			}
 		}
 

@@ -184,6 +184,11 @@ public class Character : DestructibleEntity {
 			} else {
 				LogMessage("Melee attack on " + mainTarget.name + ", strength " + currentAttackStrength);
 				mainTarget.TakeDamage(currentAttackStrength, this);
+				if (mainTarget.CurrentHealth <= 0) {
+					LogMessage(mainTarget + " destroyed. Entering NotAttacking state");
+					attackState = AttackState.NotAttacking;
+
+				}
 			}
 		}
 	}
@@ -196,10 +201,16 @@ public class Character : DestructibleEntity {
 		if (mainTarget == null) checkForNewTarget = true;
 		else if (mainTarget.State != EntityState.Active) {
 			LogMessage(mainTarget.name + " state: " + mainTarget.State + ", stopping attack.");
+			attackState = AttackState.NotAttacking;
+			StopCoroutine(Attack());
+
 			mainTarget = null;
 			checkForNewTarget = true;
 		} else if (!activeTargets.Contains(mainTarget)) {
 			LogMessage(mainTarget.name + " no longer in range, stopping attack.");
+			attackState = AttackState.NotAttacking;
+			StopCoroutine(Attack());
+
 			mainTarget = null;
 			checkForNewTarget = true;
 		}

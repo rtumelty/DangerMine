@@ -1,11 +1,11 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 using UnityEngine;
 using System.Collections;
 
-public class Rock : DestructibleEntity {
+public class Obstacle : DestructibleEntity {
 	[SerializeField] protected bool dropsPickup;
 	[SerializeField] protected GameObject droppedObject;
 

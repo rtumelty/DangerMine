@@ -31,7 +31,7 @@ public class GroundManager : MonoBehaviour {
 	public void PlaceSection(Section section) {
 		int sectionLength = Mathf.RoundToInt(Random.Range(section.minimumLength.Evaluate(LevelManager.SampleLoopedTime()), section.maximumLength.Evaluate(LevelManager.SampleLoopedTime())));
 		
-		Debug.Log("GroundManager: Placing " + section.sectionType + " section, length " + sectionLength);
+		Debug.LogWarning("GroundManager: Placing " + section.sectionType + " section, length " + sectionLength);
 
 		if (section.sectionType == Section.SectionType.Avoid) {
 			PlaceAvoidSegments(sectionLength);
