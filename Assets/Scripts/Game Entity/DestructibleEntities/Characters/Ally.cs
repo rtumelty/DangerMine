@@ -308,13 +308,14 @@ public class Ally : Character {
 		List<GridCoordinate> path = AStar.GetPath(WorldCoords, GridManager.ScreenCoordsToWorldGrid(moveTarget));
 		Debug.Log("Path start: " + WorldCoords + ", path end: " + path[path.Count-1] + ", nodes: " + path.Count);
 
-		IgnoreCollidersOnPath(GridManager.ScreenCoordsToWorldPosition(moveTarget));
+		StartCoroutine(MoveAlongPath(path));
+	}
 
-		yield return new WaitForSeconds(Time.fixedDeltaTime * 3);
-		
-		screenTargetPosition = moveTarget;
-
+	IEnumerator MoveAlongPath(List<GridCoordinate> path) {
 		MoveState = AllyMoveState.Moving;
+		collider2D.enabled = false;
+		rigidbody2D.velocity = Vector2.zero;
+
 	}
 
 	IEnumerator CollisionTimeout() {
@@ -324,13 +325,6 @@ public class Ally : Character {
 		yield break;
 	}
 
-	IEnumerator DebugRays(Vector3 start, Vector3 dir) {
-		Debug.DrawRay(start - new Vector3(0, -.25f, 0), dir, Color.white, 2);
-		Debug.DrawRay(start + new Vector3(0, .5f, 0), dir, Color.white, 2);
-		Debug.DrawRay(start + new Vector3(0, 1f, 0), dir, Color.white, 2);
-		yield return new WaitForSeconds(Time.deltaTime);
-	}
-
 	void IgnoreCollidersOnPath(Vector3 targetPosition) {
 		Vector3 currentPosition = transform.position;
 //		Debug.LogError(currentPosition + " " +targetPosition);
@@ -338,8 +332,6 @@ public class Ally : Character {
 		RaycastHit2D[] hitsA = Physics2D.RaycastAll(currentPosition - new Vector3(0, -.25f, 0), targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
 		RaycastHit2D[] hitsB = Physics2D.RaycastAll(currentPosition + new Vector3(0, .5f, 0), targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
 		RaycastHit2D[] hitsC = Physics2D.RaycastAll(currentPosition + Vector3.up, targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
-
-		StartCoroutine(DebugRays(currentPosition, targetPosition - currentPosition));
 
 		RaycastHit2D[] hits = new RaycastHit2D[hitsA.Length + hitsB.Length + hitsC.Length];
 		System.Array.Copy(hitsA, hits, hitsA.Length);
