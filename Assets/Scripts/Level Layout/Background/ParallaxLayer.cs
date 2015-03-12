@@ -35,8 +35,8 @@ public class ParallaxLayer : MonoBehaviour {
 		switch (layerType) {
 		case LayerType.Tiled:
 			tiledTexture.SetActive(true);
-
-			tiledTexture.renderer.sortingOrder = sortingLayerOrder;
+			foreach (Renderer spriteRenderer in tiledTexture.GetComponentsInChildren<Renderer>())
+				spriteRenderer.sortingOrder = sortingLayerOrder;
 			ParallaxObject parallaxObject = tiledTexture.GetComponent<ParallaxObject>();
 			parallaxObject.parallaxScale = parallaxFactor;
 			parallaxObject.parallaxReference = parallaxReference;
@@ -120,7 +120,7 @@ public class ParallaxLayer : MonoBehaviour {
 			}
 
 			minInterval = EditorGUILayout.FloatField("Min interval:", minInterval);
-			maxInterval = EditorGUILayout.FloatField("Min interval:", maxInterval);
+			maxInterval = EditorGUILayout.FloatField("Max interval:", maxInterval);
 		}
 
 		EditorUtility.SetDirty(this);
