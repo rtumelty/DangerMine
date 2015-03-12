@@ -213,9 +213,13 @@ public class GridManager : MonoBehaviour {
 
 		return new GridCoordinate(position - instance.screenGridOrigin.position);
 	}
-
+	
 	public static Vector3 ScreenCoordsToWorldPosition(GridCoordinate coords) {
 		Vector3 position = coords.ToVector3();
 		return position + instance.screenGridOrigin.position;
+	}
+	
+	public static GridCoordinate ScreenCoordsToWorldGrid(GridCoordinate coords) {
+		return new GridCoordinate(ScreenCoordsToWorldPosition(coords));
 	}
 }

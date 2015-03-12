@@ -14,13 +14,16 @@ public class Node : IEquatable<Node> {
 		parent = newParent;
 		position = newPosition;
 
-		if (parent == null) g = 0;
-		else g = newParent.g;
+		//Debug.Log(newParent);
+		if (System.Object.ReferenceEquals(newParent, null)) g = 0;
+		else {
+			g = newParent.g;
 
-		if ((newPosition.x - parent.position.x) != 0 && (newPosition.y - parent.position.y) != 0)
-			g += AStar.diagonalCost;
-		else
-			g += AStar.cost;
+			if ((newPosition.x - parent.position.x) != 0 && (newPosition.y - parent.position.y) != 0)
+				g += AStar.diagonalCost;
+			else
+				g += AStar.cost;
+		}
 		
 		h = CalculateHeuristic(newPosition, endPosition);
 		f = g + h;
@@ -32,7 +35,10 @@ public class Node : IEquatable<Node> {
 	}
 	
 	public static bool operator ==(Node a, Node b) {
-		if (a == null || b == null)
+		if (System.Object.ReferenceEquals(a, b))
+			return true;
+
+		if (System.Object.ReferenceEquals(a, null) || System.Object.ReferenceEquals(b, null))
 			return false;
 
 		if (a.position == b.position)

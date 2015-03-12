@@ -305,6 +305,9 @@ public class Ally : Character {
 		
 		LogMessage("Drag ended");
 
+		List<GridCoordinate> path = AStar.GetPath(WorldCoords, GridManager.ScreenCoordsToWorldGrid(moveTarget));
+		Debug.Log("Path start: " + WorldCoords + ", path end: " + path[path.Count-1] + ", nodes: " + path.Count);
+
 		IgnoreCollidersOnPath(GridManager.ScreenCoordsToWorldPosition(moveTarget));
 
 		yield return new WaitForSeconds(Time.fixedDeltaTime * 3);

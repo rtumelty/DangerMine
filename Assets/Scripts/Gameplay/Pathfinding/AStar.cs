@@ -23,42 +23,43 @@ public class AStar {
 
 		// Execute pathfinding algorithm on adjacent nodes
 		while (openList.Count > 0) {
-			Node lowestF = null;
-			foreach (Node node in openList) {
-				if (lowestF == null) {
-					lowestF = node;
-				}
-				else if (node.f < lowestF.f)
-					lowestF = node;
-			}
+			Node lowestF = GetLowestFNode(openList);
 
 			openList.Remove(lowestF);
 			closedList.Add(lowestF);
 
 			if (lowestF.position == endPosition) {
-				List<GridCoordinate> path = new List<GridCoordinate>();
-				Node nextNode = lowestF;
-
-				while (nextNode != null) {
-					path.Insert(0, nextNode.position);
-					nextNode = nextNode.parent;
-				}
-
-				return path;
+				return BuildPath(lowestF);
 			} 
 			else
 				FindAdjacents(lowestF, openList, closedList, endPosition);
 		}
 
-		return null;
+		return BuildPath(GetLowestFNode(closedList));
+	}
+
+	static Node GetLowestFNode(List<Node> list) {
+		//Debug.Log("Finding lowest f node in " + list + ", size " + list.Count);
+		Node lowestF = null;
+
+		foreach (Node node in list) {
+			if (lowestF == null) {
+				lowestF = node;
+			}
+			else if (node.f < lowestF.f)
+				lowestF = node;
+		}
+
+		return lowestF;
 	}
 
 	static void FindAdjacents(Node node, List<Node> openList, List<Node> closedList, GridCoordinate endPosition) {
+		//Debug.Log("Finding adjacents");
 		// Add adjacent nodes to list
 		for (int i = -1; i < 2; i++) {
 			if (node.position.y + i >= GridManager.minY && node.position.y + i <= GridManager.maxY) {
 				for (int j = -1; j < 2; j++) {
-					if (node.position.x + j >= GridManager.minScreenX && node.position.x + i <= GridManager.maxScreenX && !(i == 0 && j == 0)) {
+					if (node.position.x + j >= GridManager.minWorldX && node.position.x + i <= GridManager.maxWorldX && !(i == 0 && j == 0)) {
 						GridCoordinate nextPosition = node.position + new GridCoordinate(j, i);
 						
 						Node newNode = new Node(node, nextPosition, endPosition);
@@ -69,10 +70,12 @@ public class AStar {
 							Node oldNode = openList[index];
 
 							if (oldNode.g > newNode.g) {
+								//Debug.Log("Replacing node at " + oldNode.position);
 								openList[index] = newNode;
 							}
 						}
 						else {
+							//Debug.Log("Adding new node: " + newNode.position);
 							openList.Add(newNode);
 						}
 					}
@@ -89,10 +92,27 @@ public class AStar {
 			List<GameEntity> entities = GridManager.Instance.EntitiesAt(GridManager.Grid.WorldGrid, coord);
 
 			foreach (GameEntity entity in entities) {
-				if (entity is Enemy || entity is Obstacle)
+				if (entity is Enemy || entity is Obstacle || entity is Hole)
 					return true;
 			}
 			return false;
 		}
+	}
+
+	static List<GridCoordinate> BuildPath(Node node) {
+		//Debug.Log("Building path...");
+		List<GridCoordinate> path = new List<GridCoordinate>();
+		Node nextNode = node;
+		
+		while (nextNode != null) {
+			//Debug.Log("Adding node at " + nextNode.position);
+			path.Insert(0, nextNode.position);
+
+			nextNode = nextNode.parent;
+			//if ( nextNode == null)
+			//	Debug.Log("Reached path end, returning.");
+		}
+		
+		return path;
 	}
 }
