@@ -27,6 +27,11 @@ public class Character : DestructibleEntity {
 	protected Vector3 targetPosition = default(Vector3);
 
 	[SerializeField] protected float maxMoveSpeed;
+	public float CameraRelativeMaxSpeed {
+		get{
+			return CameraController.MoveSpeed + maxMoveSpeed;
+		}
+	}
 	float currentSpeed;
 	[SerializeField] protected float maxVelocityChange;
 	[SerializeField] float baseAttackStrength;
@@ -98,14 +103,14 @@ public class Character : DestructibleEntity {
 		set {
 			speedMultiplier = value;
 			
-			currentSpeed = maxMoveSpeed * speedMultiplier;
+			currentSpeed = CameraRelativeMaxSpeed * speedMultiplier;
 		}
 	}
 
 	protected override void OnEnable() {
 		base.OnEnable();
 
-		currentSpeed = maxMoveSpeed;
+		currentSpeed = CameraRelativeMaxSpeed;
 		currentAttackStrength = baseAttackStrength;
 
 		rigidbody2D.gravityScale = 0;

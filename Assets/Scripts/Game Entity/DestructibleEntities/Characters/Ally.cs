@@ -34,14 +34,12 @@ public class Ally : Character {
 			switch (value) {
 			case AllyMoveState.Idle:
 				LogMessage("State change: idle");
-				StartCoroutine(RestoreCollisions());
 
 				MassMultiplier = 1;
 				break;
 			case AllyMoveState.Moving:					 
 				LogMessage("State change: moving");
 
-				StartCoroutine(CollisionTimeout());
 				MassMultiplier = chargeMassMultiplier;
 				break;
 			case AllyMoveState.Blocked:
@@ -100,6 +98,8 @@ public class Ally : Character {
 	protected override void Update() {
 		if (MoveState == AllyMoveState.Blocked) {
 			if (!CheckIfBlocked()) MoveState = AllyMoveState.Idle;
+			else
+				screenTargetPosition = ScreenCoords;
 		}
 
 		if (CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) {
@@ -129,15 +129,9 @@ public class Ally : Character {
 			}
 		}
 
-		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition);
-
-		if (MoveState == AllyMoveState.Moving) {
-			if ((GridManager.ScreenCoordsToWorldPosition(screenTargetPosition) - transform.position).magnitude < .1f)
-				MoveState = AllyMoveState.Idle;
-		}
-		else if (MoveState == AllyMoveState.Idle) {
-			screenTargetPosition = ScreenCoords;
-		}
+		//screenTargetPosition = ScreenCoords;
+	
+		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition); 
 
 		base.Update();
 	}
@@ -243,15 +237,10 @@ public class Ally : Character {
 	protected override void Move() {
 		if (moveState == AllyMoveState.Blocked)
 			rigidbody2D.velocity = Vector2.zero;
-		else {
+		else if (moveState == AllyMoveState.Idle) {
 
-			Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, maxMoveSpeed);
-			Vector2 newVelocity = Vector2.Lerp(rigidbody2D.velocity, targetVelocity, .9f);
-
-			if ((targetPosition - transform.position).sqrMagnitude > (.75f * .75f)) {
-				newVelocity = newVelocity.normalized * maxMoveSpeed;
-			}
-			else newVelocity *= 5;
+			Vector2 targetVelocity = Vector2.ClampMagnitude((targetPosition - transform.position), CameraRelativeMaxSpeed);
+			Vector2 newVelocity = Vector2.Lerp(rigidbody2D.velocity, targetVelocity, .5f);
 
 			rigidbody2D.velocity = newVelocity;
 		}
@@ -317,58 +306,23 @@ public class Ally : Character {
 		rigidbody2D.velocity = Vector2.zero;
 
 		for (int i = 0; i < path.Count; i++) {
-			Vector3 targetPosition = path[i].ToVector3();
+			Vector3 nextPosition = path[i].ToVector3();
 			Vector3 startPosition = transform.position;
 
-			int j = 1;
-			while ((targetPosition - transform.position).sqrMagnitude > .1f * .1f) {
-				transform.position = Vector3.Lerp(startPosition, targetPosition, .1f * j);
+			float currentLerp = 0;
+			while ((nextPosition - transform.position).sqrMagnitude > .1f * .1f) {
+				currentLerp += 10f*Time.deltaTime;
+
+				transform.position = Vector3.Lerp(startPosition, nextPosition, currentLerp);
+				yield return new WaitForSeconds(Time.deltaTime);
 			}
 		}
-	}
 
-	IEnumerator CollisionTimeout() {
-		collide = false;
-		yield return new WaitForSeconds(collisionTimeout);
-		collide = true;
-		yield break;
-	}
-
-	void IgnoreCollidersOnPath(Vector3 targetPosition) {
-		Vector3 currentPosition = transform.position;
-//		Debug.LogError(currentPosition + " " +targetPosition);
-
-		RaycastHit2D[] hitsA = Physics2D.RaycastAll(currentPosition - new Vector3(0, -.25f, 0), targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
-		RaycastHit2D[] hitsB = Physics2D.RaycastAll(currentPosition + new Vector3(0, .5f, 0), targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
-		RaycastHit2D[] hitsC = Physics2D.RaycastAll(currentPosition + Vector3.up, targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
-
-		RaycastHit2D[] hits = new RaycastHit2D[hitsA.Length + hitsB.Length + hitsC.Length];
-		System.Array.Copy(hitsA, hits, hitsA.Length);
-		System.Array.Copy(hitsB, 0, hits, hitsA.Length, hitsB.Length);
-		System.Array.Copy(hitsC, 0, hits, hitsA.Length + hitsB.Length, hitsC.Length);
-
-		int i = 0;
-		foreach (RaycastHit2D hit in hits) {
-//			Debug.Log(i++ + " " +hit.collider);
-			Ally ally = hit.collider.GetComponent<Ally>();
-
-			if (ally != null) {
-				if (ally.ScreenCoords != screenTargetPosition) {
-					ignoredColliders.Add(hit.collider);
-					Physics2D.IgnoreCollision(collider2D, hit.collider);
-				}
-			}
-		}
-	}
-
-	IEnumerator RestoreCollisions() {
-		yield return new WaitForSeconds(Time.fixedDeltaTime * 2);
-
-		foreach (Collider2D otherCollider in ignoredColliders) {
-			Physics2D.IgnoreCollision(collider2D, otherCollider, false);
-		}
-
-		ignoredColliders.Clear();
+		collider2D.enabled = true;
+		rigidbody2D.velocity = new Vector3(CameraController.MoveSpeed, 0, 0);
+		screenTargetPosition = ScreenCoords;
+		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition);
+		MoveState = AllyMoveState.Idle;
 	}
 
 #if UNITY_EDITOR

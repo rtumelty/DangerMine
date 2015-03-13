@@ -93,7 +93,7 @@ public class Enemy : Character {
 		*/
 		LogMessage("Move target: " + targetPosition + ", difference: " + (targetPosition - transform.position));
 
-		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, maxMoveSpeed);
+		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, CameraRelativeMaxSpeed);
 		Vector2 velocityChange = targetVelocity - rigidbody2D.velocity;
 		
 		velocityChange = Vector2.ClampMagnitude(velocityChange, maxVelocityChange);

@@ -35,13 +35,13 @@ public class AStar {
 				FindAdjacents(lowestF, openList, closedList, endPosition);
 		}
 
-		return BuildPath(GetLowestFNode(closedList));
+		return BuildPath(FindNearestNode(closedList));
 	}
-
+	
 	static Node GetLowestFNode(List<Node> list) {
 		//Debug.Log("Finding lowest f node in " + list + ", size " + list.Count);
 		Node lowestF = null;
-
+		
 		foreach (Node node in list) {
 			if (lowestF == null) {
 				lowestF = node;
@@ -49,8 +49,23 @@ public class AStar {
 			else if (node.f < lowestF.f)
 				lowestF = node;
 		}
-
+		
 		return lowestF;
+	}
+	
+	static Node FindNearestNode(List<Node> list) {
+		//Debug.Log("Finding lowest f node in " + list + ", size " + list.Count);
+		Node nearestNode = null;
+		
+		foreach (Node node in list) {
+			if (nearestNode == null) {
+				nearestNode = node;
+			}
+			else if (node.h < nearestNode.h)
+				nearestNode = node;
+		}
+		
+		return nearestNode;
 	}
 
 	static void FindAdjacents(Node node, List<Node> openList, List<Node> closedList, GridCoordinate endPosition) {
