@@ -316,6 +316,15 @@ public class Ally : Character {
 		collider2D.enabled = false;
 		rigidbody2D.velocity = Vector2.zero;
 
+		for (int i = 0; i < path.Count; i++) {
+			Vector3 targetPosition = path[i].ToVector3();
+			Vector3 startPosition = transform.position;
+
+			int j = 1;
+			while ((targetPosition - transform.position).sqrMagnitude > .1f * .1f) {
+				transform.position = Vector3.Lerp(startPosition, targetPosition, .1f * j);
+			}
+		}
 	}
 
 	IEnumerator CollisionTimeout() {
