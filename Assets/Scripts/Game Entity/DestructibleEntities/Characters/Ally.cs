@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 
@@ -160,12 +160,10 @@ public class Ally : Character {
 					if (ally.ScreenCoords.x > ScreenCoords.x) {
 						screenTargetPosition = ally.ScreenCoords - new GridCoordinate(1, 0); 
 						MoveState = AllyMoveState.Moving;
-						PauseCollision();
 					}
 					else {
 						ally.screenTargetPosition = ScreenCoords - new GridCoordinate(1, 0); 
 						ally.MoveState = AllyMoveState.Moving;
-						ally.SendMessage("PauseCollision");
 					}
 				}
 			}
@@ -181,8 +179,6 @@ public class Ally : Character {
 				ally.screenTargetPosition = ally.ScreenCoords - new GridCoordinate(1, 0);
 				ally.MoveState = AllyMoveState.Moving;
 
-				
-				PauseCollision();
 			}
 			else {
 				screenTargetPosition = ScreenCoords;
@@ -230,6 +226,13 @@ public class Ally : Character {
 
 		return false;
 	}
+
+	void FallBack() {
+		List<GridCoordinate> path = new List<GridCoordinate>();
+		path.Add(WorldCoords);
+		path.Add(WorldCoords + new GridCoordinate(-1, 0));
+		MoveAlongPath(path);
+	}
 	
 	/// <summary>
 	/// Updates character velocity to move towards targetPosition. targetPosition's value determines in subclasses.
@@ -238,25 +241,13 @@ public class Ally : Character {
 		if (moveState == AllyMoveState.Blocked)
 			rigidbody2D.velocity = Vector2.zero;
 		else if (moveState == AllyMoveState.Idle) {
+			float targetY = GridManager.ScreenCoordsToWorldPosition(ScreenCoords).y - transform.position.y;
 
-			Vector2 targetVelocity = Vector2.ClampMagnitude((targetPosition - transform.position), CameraRelativeMaxSpeed);
-			Vector2 newVelocity = Vector2.Lerp(rigidbody2D.velocity, targetVelocity, .5f);
+			Vector2 targetVelocity = new Vector2(CameraController.MoveSpeed, targetY); //Vector2.ClampMagnitude((targetPosition - transform.position), CameraRelativeMaxSpeed);
+			Vector2 newVelocity = Vector2.Lerp(rigidbody2D.velocity, targetVelocity, .9f);
 
-			rigidbody2D.velocity = newVelocity;
+			rigidbody2D.velocity = targetVelocity;
 		}
-	}
-
-
-	private void PauseCollision() {
-		StartCoroutine(_PauseCollision());
-	}
-
-	protected virtual IEnumerator _PauseCollision() {
-		LogMessage("Pausing collisions");
-
-		yield return new WaitForSeconds(.2f);
-
-		collider2D.enabled = true;
 	}
 
 	protected virtual IEnumerator Drag() {
@@ -309,6 +300,13 @@ public class Ally : Character {
 			Vector3 nextPosition = path[i].ToVector3();
 			Vector3 startPosition = transform.position;
 
+			if (i == path.Count - 1) {
+				if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, path[i]))
+				{
+					GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, path[i]).SendMessage("FallBack");
+				}
+			}
+
 			float currentLerp = 0;
 			while ((nextPosition - transform.position).sqrMagnitude > .1f * .1f) {
 				currentLerp += 10f*Time.deltaTime;
@@ -322,6 +320,7 @@ public class Ally : Character {
 		rigidbody2D.velocity = new Vector3(CameraController.MoveSpeed, 0, 0);
 		screenTargetPosition = ScreenCoords;
 		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition);
+		UpdateSortingLayer();
 		MoveState = AllyMoveState.Idle;
 	}
 

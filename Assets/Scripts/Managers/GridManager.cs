@@ -132,7 +132,7 @@ public class GridManager : MonoBehaviour {
 	public List<GameEntity> EntitiesAt(Grid grid, Vector2 position) {
 		return EntitiesAt (grid, position as GridCoordinate);
 	}
-
+	
 	public List<GameEntity> EntitiesAt(Grid grid, GridCoordinate position) {
 		Dictionary<GameEntity, GridCoordinate> gridToCheck = null;
 		List<GameEntity> entities = new List<GameEntity>();
@@ -148,11 +148,34 @@ public class GridManager : MonoBehaviour {
 		
 		if (position.y < minY || position.y > maxY)
 			return null;
-
+		
 		foreach (KeyValuePair<GameEntity, GridCoordinate> pair in gridToCheck) {
 			if (pair.Value == position) entities.Add(pair.Key);
 		}
 		return entities;
+	}
+	
+	public GameEntity EntityAt(Grid grid, GridCoordinate position) {
+		Dictionary<GameEntity, GridCoordinate> gridToCheck = null;
+		List<GameEntity> entities = new List<GameEntity>();
+		
+		switch (grid) {
+		case Grid.WorldGrid:
+			gridToCheck = occupiedWorldPositions;
+			break;
+		case Grid.ScreenGrid:
+			gridToCheck = occupiedScreenPositions;
+			break;
+		}
+		
+		if (position.y < minY || position.y > maxY)
+			return null;
+		
+		foreach (KeyValuePair<GameEntity, GridCoordinate> pair in gridToCheck) {
+			if (pair.Value == position) return (pair.Key);
+		}
+
+		return null;
 	}
 
 	public void RegisterEntity(Grid grid, GameEntity entity) {

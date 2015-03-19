@@ -74,7 +74,8 @@ public class AStar {
 		for (int i = -1; i < 2; i++) {
 			if (node.position.y + i >= GridManager.minY && node.position.y + i <= GridManager.maxY) {
 				for (int j = -1; j < 2; j++) {
-					if (node.position.x + j >= GridManager.minWorldX && node.position.x + i <= GridManager.maxWorldX && !(i == 0 && j == 0)) {
+					if (i != 0 && j != 0) {}
+					else if (node.position.x + j >= GridManager.minWorldX -1 && node.position.x + i <= GridManager.maxWorldX && !(i == 0 && j == 0)) {
 						GridCoordinate nextPosition = node.position + new GridCoordinate(j, i);
 						
 						Node newNode = new Node(node, nextPosition, endPosition);
@@ -105,6 +106,8 @@ public class AStar {
 			return false;
 		else {
 			List<GameEntity> entities = GridManager.Instance.EntitiesAt(GridManager.Grid.WorldGrid, coord);
+
+			if (entities == null) return false;
 
 			foreach (GameEntity entity in entities) {
 				if (entity is Enemy || entity is Obstacle || entity is Hole)
