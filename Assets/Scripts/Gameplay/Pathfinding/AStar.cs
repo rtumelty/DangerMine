@@ -75,7 +75,7 @@ public class AStar {
 			if (node.position.y + i >= GridManager.minY && node.position.y + i <= GridManager.maxY) {
 				for (int j = -1; j < 2; j++) {
 					if (i != 0 && j != 0) {}
-					else if (node.position.x + j >= GridManager.minWorldX -1 && node.position.x + i <= GridManager.maxWorldX && !(i == 0 && j == 0)) {
+					else if (node.position.x + j >= GridManager.minWorldX-3 && node.position.x + i <= GridManager.maxWorldX && !(i == 0 && j == 0)) {
 						GridCoordinate nextPosition = node.position + new GridCoordinate(j, i);
 						
 						Node newNode = new Node(node, nextPosition, endPosition);

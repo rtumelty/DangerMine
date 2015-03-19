@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 
@@ -271,7 +271,7 @@ public class Character : DestructibleEntity {
 	/// Updates character velocity to move towards targetPosition. targetPosition's value determines in subclasses.
 	/// </summary>
 	protected virtual void Move() {
-		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, maxMoveSpeed);
+		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, CameraRelativeMaxSpeed);
 		Vector2 velocityChange = targetVelocity - rigidbody2D.velocity;
 
 		velocityChange = Vector2.ClampMagnitude(velocityChange, maxVelocityChange);

@@ -71,7 +71,7 @@ public class Enemy : Character {
 			targetPosition = (WorldCoords + new GridCoordinate(-1, 0)).ToVector3();
 			break;
 		case EnemyMoveState.Chase:
-			Debug.Log("Screen coords: " + ScreenCoords + ", target: " + new GridCoordinate(-followDistance, ScreenCoords.y));
+//			Debug.Log("Screen coords: " + ScreenCoords + ", target: " + new GridCoordinate(-followDistance, ScreenCoords.y));
 			targetPosition = GridManager.ScreenCoordsToWorldPosition(new GridCoordinate(-followDistance, ScreenCoords.y));
 			AttackMultiplier = 2f * (LaneManager.MaxFollowDistance - followDistance);
 			break;
