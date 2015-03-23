@@ -35,13 +35,13 @@ public class AStar {
 				FindAdjacents(lowestF, openList, closedList, endPosition);
 		}
 
-		return BuildPath(GetLowestFNode(closedList));
+		return BuildPath(FindNearestNode(closedList));
 	}
-
+	
 	static Node GetLowestFNode(List<Node> list) {
 		//Debug.Log("Finding lowest f node in " + list + ", size " + list.Count);
 		Node lowestF = null;
-
+		
 		foreach (Node node in list) {
 			if (lowestF == null) {
 				lowestF = node;
@@ -49,8 +49,23 @@ public class AStar {
 			else if (node.f < lowestF.f)
 				lowestF = node;
 		}
-
+		
 		return lowestF;
+	}
+	
+	static Node FindNearestNode(List<Node> list) {
+		//Debug.Log("Finding lowest f node in " + list + ", size " + list.Count);
+		Node nearestNode = null;
+		
+		foreach (Node node in list) {
+			if (nearestNode == null) {
+				nearestNode = node;
+			}
+			else if (node.h < nearestNode.h)
+				nearestNode = node;
+		}
+		
+		return nearestNode;
 	}
 
 	static void FindAdjacents(Node node, List<Node> openList, List<Node> closedList, GridCoordinate endPosition) {
@@ -59,7 +74,8 @@ public class AStar {
 		for (int i = -1; i < 2; i++) {
 			if (node.position.y + i >= GridManager.minY && node.position.y + i <= GridManager.maxY) {
 				for (int j = -1; j < 2; j++) {
-					if (node.position.x + j >= GridManager.minWorldX && node.position.x + i <= GridManager.maxWorldX && !(i == 0 && j == 0)) {
+					if (i != 0 && j != 0) {}
+					else if (node.position.x + j >= GridManager.minWorldX-3 && node.position.x + i <= GridManager.maxWorldX && !(i == 0 && j == 0)) {
 						GridCoordinate nextPosition = node.position + new GridCoordinate(j, i);
 						
 						Node newNode = new Node(node, nextPosition, endPosition);
@@ -90,6 +106,8 @@ public class AStar {
 			return false;
 		else {
 			List<GameEntity> entities = GridManager.Instance.EntitiesAt(GridManager.Grid.WorldGrid, coord);
+
+			if (entities == null) return false;
 
 			foreach (GameEntity entity in entities) {
 				if (entity is Enemy || entity is Obstacle || entity is Hole)

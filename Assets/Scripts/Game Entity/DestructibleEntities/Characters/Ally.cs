@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 
@@ -34,14 +34,12 @@ public class Ally : Character {
 			switch (value) {
 			case AllyMoveState.Idle:
 				LogMessage("State change: idle");
-				StartCoroutine(RestoreCollisions());
 
 				MassMultiplier = 1;
 				break;
 			case AllyMoveState.Moving:					 
 				LogMessage("State change: moving");
 
-				StartCoroutine(CollisionTimeout());
 				MassMultiplier = chargeMassMultiplier;
 				break;
 			case AllyMoveState.Blocked:
@@ -100,6 +98,8 @@ public class Ally : Character {
 	protected override void Update() {
 		if (MoveState == AllyMoveState.Blocked) {
 			if (!CheckIfBlocked()) MoveState = AllyMoveState.Idle;
+			else
+				screenTargetPosition = ScreenCoords;
 		}
 
 		if (CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) {
@@ -129,15 +129,9 @@ public class Ally : Character {
 			}
 		}
 
-		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition);
-
-		if (MoveState == AllyMoveState.Moving) {
-			if ((GridManager.ScreenCoordsToWorldPosition(screenTargetPosition) - transform.position).magnitude < .1f)
-				MoveState = AllyMoveState.Idle;
-		}
-		else if (MoveState == AllyMoveState.Idle) {
-			screenTargetPosition = ScreenCoords;
-		}
+		//screenTargetPosition = ScreenCoords;
+	
+		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition); 
 
 		base.Update();
 	}
@@ -156,6 +150,7 @@ public class Ally : Character {
 		}
 		else return;
 
+		/*
 		switch (moveState) {
 		case AllyMoveState.Blocked:
 		case AllyMoveState.Idle:
@@ -164,14 +159,10 @@ public class Ally : Character {
 
 				if (ally.MoveState == AllyMoveState.Idle || ally.MoveState == AllyMoveState.Blocked) {
 					if (ally.ScreenCoords.x > ScreenCoords.x) {
-						screenTargetPosition = ally.ScreenCoords - new GridCoordinate(1, 0); 
-						MoveState = AllyMoveState.Moving;
-						PauseCollision();
+						FallBack();
 					}
 					else {
-						ally.screenTargetPosition = ScreenCoords - new GridCoordinate(1, 0); 
-						ally.MoveState = AllyMoveState.Moving;
-						ally.SendMessage("PauseCollision");
+						ally.FallBack();
 					}
 				}
 			}
@@ -185,22 +176,19 @@ public class Ally : Character {
 				screenTargetPosition = ally.ScreenCoords;
 
 				ally.screenTargetPosition = ally.ScreenCoords - new GridCoordinate(1, 0);
-				ally.MoveState = AllyMoveState.Moving;
 
-				
-				PauseCollision();
 			}
 			else {
 				screenTargetPosition = ScreenCoords;
 				MoveState = AllyMoveState.Idle;
 			}
 			break;
-		}
+		}*/
 
 		base.OnCollisionEnter2D(collision);
 
 	}
-	
+
 	protected virtual void OnCollisionExit2D(Collision2D collision) {
 		if (collision.collider == collidedObject) collidedObject = null;
 	}
@@ -236,6 +224,25 @@ public class Ally : Character {
 
 		return false;
 	}
+
+	public void FallBack() {
+		/*
+		if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, WorldCoords - new GridCoordinate(1, 0))) {
+			GameEntity entity = GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, WorldCoords - new GridCoordinate(1, 0));
+
+			if (entity is Ally) {
+				Ally ally = entity as Ally;
+
+				if (ally.FallBack() == false)
+					return false;
+			} else
+				return false;
+		}*/
+		Debug.Log(gameObject + " falling back");
+
+		StartCoroutine(MoveAlongPath(AStar.GetPath(WorldCoords, WorldCoords + new GridCoordinate(-1, 0))));
+		//return true;
+	}
 	
 	/// <summary>
 	/// Updates character velocity to move towards targetPosition. targetPosition's value determines in subclasses.
@@ -243,31 +250,14 @@ public class Ally : Character {
 	protected override void Move() {
 		if (moveState == AllyMoveState.Blocked)
 			rigidbody2D.velocity = Vector2.zero;
-		else {
+		else if (moveState == AllyMoveState.Idle) {
+			float targetY = GridManager.ScreenCoordsToWorldPosition(ScreenCoords).y - transform.position.y;
 
-			Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, maxMoveSpeed);
+			Vector2 targetVelocity = new Vector2(CameraController.MoveSpeed, targetY); //Vector2.ClampMagnitude((targetPosition - transform.position), CameraRelativeMaxSpeed);
 			Vector2 newVelocity = Vector2.Lerp(rigidbody2D.velocity, targetVelocity, .9f);
 
-			if ((targetPosition - transform.position).sqrMagnitude > (.75f * .75f)) {
-				newVelocity = newVelocity.normalized * maxMoveSpeed;
-			}
-			else newVelocity *= 5;
-
-			rigidbody2D.velocity = newVelocity;
+			rigidbody2D.velocity = targetVelocity;
 		}
-	}
-
-
-	private void PauseCollision() {
-		StartCoroutine(_PauseCollision());
-	}
-
-	protected virtual IEnumerator _PauseCollision() {
-		LogMessage("Pausing collisions");
-
-		yield return new WaitForSeconds(.2f);
-
-		collider2D.enabled = true;
 	}
 
 	protected virtual IEnumerator Drag() {
@@ -306,68 +296,53 @@ public class Ally : Character {
 		LogMessage("Drag ended");
 
 		List<GridCoordinate> path = AStar.GetPath(WorldCoords, GridManager.ScreenCoordsToWorldGrid(moveTarget));
-		Debug.Log("Path start: " + WorldCoords + ", path end: " + path[path.Count-1] + ", nodes: " + path.Count);
 
-		IgnoreCollidersOnPath(GridManager.ScreenCoordsToWorldPosition(moveTarget));
+		StartCoroutine(MoveAlongPath(path));
+	}
 
-		yield return new WaitForSeconds(Time.fixedDeltaTime * 3);
-		
-		screenTargetPosition = moveTarget;
+	IEnumerator MoveAlongPath(List<GridCoordinate> path) {
+		Debug.Log("Path start: " + path[0] + ", path end: " + path[path.Count-1] + ", nodes: " + path.Count);
 
 		MoveState = AllyMoveState.Moving;
-	}
+		collider2D.enabled = false;
+		rigidbody2D.velocity = Vector2.zero;
 
-	IEnumerator CollisionTimeout() {
-		collide = false;
-		yield return new WaitForSeconds(collisionTimeout);
-		collide = true;
-		yield break;
-	}
+		
+		//Ally ally = GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, path[path.Count -1]) as Ally;
+		//if (ally != null) ally.FallBack();
+		
+		Debug.LogError(gameObject + ": Starting move");
 
-	IEnumerator DebugRays(Vector3 start, Vector3 dir) {
-		Debug.DrawRay(start - new Vector3(0, -.25f, 0), dir, Color.white, 2);
-		Debug.DrawRay(start + new Vector3(0, .5f, 0), dir, Color.white, 2);
-		Debug.DrawRay(start + new Vector3(0, 1f, 0), dir, Color.white, 2);
-		yield return new WaitForSeconds(Time.deltaTime);
-	}
+		for (int i = 0; i < path.Count; i++) {
+			Vector3 nextPosition = path[i].ToVector3();
+			Vector3 startPosition = transform.position;
 
-	void IgnoreCollidersOnPath(Vector3 targetPosition) {
-		Vector3 currentPosition = transform.position;
-//		Debug.LogError(currentPosition + " " +targetPosition);
-
-		RaycastHit2D[] hitsA = Physics2D.RaycastAll(currentPosition - new Vector3(0, -.25f, 0), targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
-		RaycastHit2D[] hitsB = Physics2D.RaycastAll(currentPosition + new Vector3(0, .5f, 0), targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
-		RaycastHit2D[] hitsC = Physics2D.RaycastAll(currentPosition + Vector3.up, targetPosition - currentPosition, (targetPosition - currentPosition).magnitude);
-
-		StartCoroutine(DebugRays(currentPosition, targetPosition - currentPosition));
-
-		RaycastHit2D[] hits = new RaycastHit2D[hitsA.Length + hitsB.Length + hitsC.Length];
-		System.Array.Copy(hitsA, hits, hitsA.Length);
-		System.Array.Copy(hitsB, 0, hits, hitsA.Length, hitsB.Length);
-		System.Array.Copy(hitsC, 0, hits, hitsA.Length + hitsB.Length, hitsC.Length);
-
-		int i = 0;
-		foreach (RaycastHit2D hit in hits) {
-//			Debug.Log(i++ + " " +hit.collider);
-			Ally ally = hit.collider.GetComponent<Ally>();
-
-			if (ally != null) {
-				if (ally.ScreenCoords != screenTargetPosition) {
-					ignoredColliders.Add(hit.collider);
-					Physics2D.IgnoreCollision(collider2D, hit.collider);
+			if (i == path.Count - 1) {
+				if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, path[i]))
+				{
+					GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, path[i]).SendMessage("FallBack");
 				}
 			}
+
+			float currentLerp = 0;
+			while ((nextPosition - transform.position).sqrMagnitude > .1f * .1f && currentLerp < 1) {
+				Debug.Log("Looping...");
+
+				Debug.Log(nextPosition + ", " + transform.position + " " + (nextPosition - transform.position).magnitude);
+				currentLerp += 10f*Time.deltaTime;
+
+				transform.position = Vector3.Lerp(startPosition, nextPosition, currentLerp);
+				yield return new WaitForSeconds(Time.deltaTime);
+			}
 		}
-	}
 
-	IEnumerator RestoreCollisions() {
-		yield return new WaitForSeconds(Time.fixedDeltaTime * 2);
-
-		foreach (Collider2D otherCollider in ignoredColliders) {
-			Physics2D.IgnoreCollision(collider2D, otherCollider, false);
-		}
-
-		ignoredColliders.Clear();
+		Debug.LogError(gameObject + ": Ending move");
+		MoveState = AllyMoveState.Idle;
+		collider2D.enabled = true;
+		rigidbody2D.velocity = new Vector3(CameraController.MoveSpeed, 0, 0);
+		screenTargetPosition = ScreenCoords;
+		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition);
+		UpdateSortingLayer();
 	}
 
 #if UNITY_EDITOR

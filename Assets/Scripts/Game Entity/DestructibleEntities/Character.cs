@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 
@@ -27,6 +27,11 @@ public class Character : DestructibleEntity {
 	protected Vector3 targetPosition = default(Vector3);
 
 	[SerializeField] protected float maxMoveSpeed;
+	public float CameraRelativeMaxSpeed {
+		get{
+			return CameraController.MoveSpeed + maxMoveSpeed;
+		}
+	}
 	float currentSpeed;
 	[SerializeField] protected float maxVelocityChange;
 	[SerializeField] float baseAttackStrength;
@@ -98,14 +103,14 @@ public class Character : DestructibleEntity {
 		set {
 			speedMultiplier = value;
 			
-			currentSpeed = maxMoveSpeed * speedMultiplier;
+			currentSpeed = CameraRelativeMaxSpeed * speedMultiplier;
 		}
 	}
 
 	protected override void OnEnable() {
 		base.OnEnable();
 
-		currentSpeed = maxMoveSpeed;
+		currentSpeed = CameraRelativeMaxSpeed;
 		currentAttackStrength = baseAttackStrength;
 
 		rigidbody2D.gravityScale = 0;
@@ -266,7 +271,7 @@ public class Character : DestructibleEntity {
 	/// Updates character velocity to move towards targetPosition. targetPosition's value determines in subclasses.
 	/// </summary>
 	protected virtual void Move() {
-		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, maxMoveSpeed);
+		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, CameraRelativeMaxSpeed);
 		Vector2 velocityChange = targetVelocity - rigidbody2D.velocity;
 
 		velocityChange = Vector2.ClampMagnitude(velocityChange, maxVelocityChange);
