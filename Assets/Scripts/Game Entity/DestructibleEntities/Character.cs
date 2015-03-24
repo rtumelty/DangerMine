@@ -24,7 +24,7 @@ public class Character : DestructibleEntity {
 		Down = 8
 	}
 
-	protected Vector3 targetPosition = default(Vector3);
+	protected Vector3 moveDirection = default(Vector3);
 
 	[SerializeField] protected float maxMoveSpeed;
 	public float CameraRelativeMaxSpeed {
@@ -271,7 +271,7 @@ public class Character : DestructibleEntity {
 	/// Updates character velocity to move towards targetPosition. targetPosition's value determines in subclasses.
 	/// </summary>
 	protected virtual void Move() {
-		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, CameraRelativeMaxSpeed);
+		Vector2 targetVelocity = moveDirection * CameraRelativeMaxSpeed;
 		Vector2 velocityChange = targetVelocity - rigidbody2D.velocity;
 
 		velocityChange = Vector2.ClampMagnitude(velocityChange, maxVelocityChange);

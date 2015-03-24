@@ -20,7 +20,6 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
-	static Plane[] planes;
 	public static GridCoordinate GridCoords {
 		get {
 			return instance.transform.position as GridCoordinate;
@@ -49,23 +48,13 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 		if (currentAspect != camera.aspect) Resize();
-
-		//planes = GeometryUtility.CalculateFrustumPlanes(camera);
 	}
 
 	void LateUpdate () {
 		if (LevelManager.Instance.GameStarted) {
 			Vector3 position = transform.position;
-			position += new Vector3 (moveSpeed * Time.deltaTime, 0, 0);
-			transform.position = position;
+			Vector3 targetPosition = position + (new Vector3(1, 0, 0) * MoveSpeed);
+			transform.position = Vector3.Lerp(position, targetPosition, Time.deltaTime);
 		}
-	}
-	
-	public static bool IsVisibleToCamera(Collider c) {
-		return GeometryUtility.TestPlanesAABB(planes, c.bounds);
-	}
-	
-	public static bool IsVisibleToCamera(Collider2D c) {
-		return GeometryUtility.TestPlanesAABB(planes, c.bounds);
 	}
 }

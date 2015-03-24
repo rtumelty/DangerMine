@@ -18,10 +18,12 @@ public class Enemy : Character {
 			return moveState;
 		}
 		set {
-			if (value == EnemyMoveState.Default) transform.rotation = Quaternion.Euler(0, 0, 0);
+			if (value == EnemyMoveState.Default) {
+				moveDirection = new Vector3(-1, 0, 0);
+			}
 			else if (value == EnemyMoveState.Chase) {
 				LogMessage("Entering Chase state");
-				transform.rotation = Quaternion.Euler(0, -180, 0);
+				moveDirection = new Vector3(1, 0, 0);
 				attackHitbox.Resize();
 
 				if (!chasing) {
@@ -29,6 +31,10 @@ public class Enemy : Character {
 					LaneManager.Instance.JoinRow(this, ScreenCoords.y);
 					chasing = true;
 				}
+				Debug.Log(transform.eulerAngles);
+				transform.Rotate(new Vector3(0, 180));
+				
+				Debug.Log(transform.eulerAngles);
 			}
 
 			moveState = value;
@@ -46,7 +52,8 @@ public class Enemy : Character {
 	protected override void OnEnable() {
 		base.OnEnable();
 
-		moveState = EnemyMoveState.Default;
+		MoveState = EnemyMoveState.Default;
+		transform.rotation = default(Quaternion);
 		chasing = false;
 	}
 
@@ -66,17 +73,11 @@ public class Enemy : Character {
 	protected override void Update() {
 		switch (moveState) {
 		case EnemyMoveState.Default:
-			LogMessage("Transform coords: " + transform.position + ", World coords: " + WorldCoords, DebugLevel.Warning);
-			LogMessage("New target: " +(WorldCoords + new GridCoordinate(-1, 0)).ToVector3(), DebugLevel.Error);
-			targetPosition = (WorldCoords + new GridCoordinate(-1, 0)).ToVector3();
 			break;
 		case EnemyMoveState.Chase:
-//			Debug.Log("Screen coords: " + ScreenCoords + ", target: " + new GridCoordinate(-followDistance, ScreenCoords.y));
-			targetPosition = GridManager.ScreenCoordsToWorldPosition(new GridCoordinate(-followDistance, ScreenCoords.y));
 			AttackMultiplier = 2f * (LaneManager.MaxFollowDistance - followDistance);
 			break;
 		case EnemyMoveState.Blocked:
-			targetPosition = WorldCoords.ToVector3();
 			break;
 		}
 
@@ -86,14 +87,13 @@ public class Enemy : Character {
 	}
 
 	protected override void Move() {
-		/*
-		Vector2 velocity = rigidbody2D.velocity;
-		velocity.y = 0;
-		rigidbody2D.velocity = velocity;
-		*/
-		LogMessage("Move target: " + targetPosition + ", difference: " + (targetPosition - transform.position));
 
-		Vector2 targetVelocity = Vector2.ClampMagnitude(targetPosition - transform.position, CameraRelativeMaxSpeed);
+		Vector2 targetVelocity;
+
+		if (moveState == EnemyMoveState.Chase)
+			targetVelocity = moveDirection *  CameraController.MoveSpeed;
+		else 
+			targetVelocity = moveDirection * maxMoveSpeed;
 		Vector2 velocityChange = targetVelocity - rigidbody2D.velocity;
 		
 		velocityChange = Vector2.ClampMagnitude(velocityChange, maxVelocityChange);

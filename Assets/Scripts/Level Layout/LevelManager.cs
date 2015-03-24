@@ -79,7 +79,6 @@ public class LevelManager : MonoBehaviour {
 		}
 
 		float weight = Random.Range(0f, totalCurveProbability);
-		Debug.LogError("Weight: " + weight + ", total probability: " + totalCurveProbability);
 
 		for (int i = 0; i < sections.Count; i++) {
 			if (sections[i].Active) {

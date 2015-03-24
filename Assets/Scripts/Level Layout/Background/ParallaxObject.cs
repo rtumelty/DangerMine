@@ -21,7 +21,7 @@ public class ParallaxObject : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update () {/*
 		float deltaX = parallaxReference.transform.position.x - lastX;
 
 		Vector3 position = transform.position;
@@ -33,6 +33,15 @@ public class ParallaxObject : MonoBehaviour {
 		}
 
 		transform.position = position;
-		lastX = parallaxReference.transform.position.x;
+		lastX = parallaxReference.transform.position.x;*/
+		
+		if (LevelManager.Instance.GameStarted)
+			transform.position = Vector3.Lerp(transform.position, (transform.position + new Vector3(-CameraController.MoveSpeed, 0, 0)), Time.deltaTime);
+
+		
+		if (tiled) {
+			if (startPosition.x - transform.position.x >= width) transform.position += new Vector3(width, 0, 0);
+			else if (startPosition.x - transform.position.x <= -width) transform.position -= new Vector3(width, 0, 0);
+		}
 	}
 }

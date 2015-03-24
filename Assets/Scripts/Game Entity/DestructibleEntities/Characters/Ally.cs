@@ -129,9 +129,7 @@ public class Ally : Character {
 			}
 		}
 
-		//screenTargetPosition = ScreenCoords;
-	
-		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition); 
+		moveDirection = Vector3.forward * CameraController.MoveSpeed;
 
 		base.Update();
 	}
@@ -238,7 +236,6 @@ public class Ally : Character {
 			} else
 				return false;
 		}*/
-		Debug.Log(gameObject + " falling back");
 
 		StartCoroutine(MoveAlongPath(AStar.GetPath(WorldCoords, WorldCoords + new GridCoordinate(-1, 0))));
 		//return true;
@@ -301,17 +298,9 @@ public class Ally : Character {
 	}
 
 	IEnumerator MoveAlongPath(List<GridCoordinate> path) {
-		Debug.Log("Path start: " + path[0] + ", path end: " + path[path.Count-1] + ", nodes: " + path.Count);
-
 		MoveState = AllyMoveState.Moving;
 		collider2D.enabled = false;
 		rigidbody2D.velocity = Vector2.zero;
-
-		
-		//Ally ally = GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, path[path.Count -1]) as Ally;
-		//if (ally != null) ally.FallBack();
-		
-		Debug.LogError(gameObject + ": Starting move");
 
 		for (int i = 0; i < path.Count; i++) {
 			Vector3 nextPosition = path[i].ToVector3();
@@ -326,9 +315,6 @@ public class Ally : Character {
 
 			float currentLerp = 0;
 			while ((nextPosition - transform.position).sqrMagnitude > .1f * .1f && currentLerp < 1) {
-				Debug.Log("Looping...");
-
-				Debug.Log(nextPosition + ", " + transform.position + " " + (nextPosition - transform.position).magnitude);
 				currentLerp += 10f*Time.deltaTime;
 
 				transform.position = Vector3.Lerp(startPosition, nextPosition, currentLerp);
@@ -336,12 +322,10 @@ public class Ally : Character {
 			}
 		}
 
-		Debug.LogError(gameObject + ": Ending move");
 		MoveState = AllyMoveState.Idle;
 		collider2D.enabled = true;
 		rigidbody2D.velocity = new Vector3(CameraController.MoveSpeed, 0, 0);
 		screenTargetPosition = ScreenCoords;
-		targetPosition = GridManager.ScreenCoordsToWorldPosition(screenTargetPosition);
 		UpdateSortingLayer();
 	}
 
