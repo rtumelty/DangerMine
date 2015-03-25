@@ -94,6 +94,13 @@ public class Enemy : Character {
 			targetVelocity = moveDirection *  CameraController.MoveSpeed;
 		else 
 			targetVelocity = moveDirection * maxMoveSpeed;
+
+		if (ScreenCoords.y > GridManager.maxY)
+			targetVelocity += Vector2.up;
+		else if (ScreenCoords.y < GridManager.minY)
+			targetVelocity -= Vector2.up;
+
+
 		Vector2 velocityChange = targetVelocity - rigidbody2D.velocity;
 		
 		velocityChange = Vector2.ClampMagnitude(velocityChange, maxVelocityChange);

@@ -150,6 +150,7 @@ public class LevelManager : MonoBehaviour {
 		FormationEntry entry = targetSegment.GetActiveProfile(difficulty);
 		for (int i = 0; i < entry.formation.slots.Length; i++) {
 			Vector3 spawnCoordinate = spawnReference.position + new Vector3(entry.formation.interval, 0) + entry.formation.slots[i].ToVector3();
+
 			GridCoordinate gridCoord = new GridCoordinate(spawnCoordinate);
 			if (!GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, gridCoord))
 				PrefabPool.GetPool(entry.profile.prefabs[i]).Spawn(gridCoord.ToVector3());

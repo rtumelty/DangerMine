@@ -278,7 +278,8 @@ public class Ally : Character {
 					moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
 			}
 			//else
-			//	moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
+
+			moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
 			moveTarget.y = Mathf.Clamp(moveTarget.y, GridManager.minY, GridManager.maxY);
 			
 			LaneHighlight.Instance.UpdatePosition(GridManager.ScreenCoordsToWorldPosition(moveTarget));
@@ -291,6 +292,8 @@ public class Ally : Character {
 		if (State != EntityState.Active) yield break;
 		
 		LogMessage("Drag ended");
+
+		if (moveTarget == ScreenCoords) yield break;
 
 		List<GridCoordinate> path = AStar.GetPath(WorldCoords, GridManager.ScreenCoordsToWorldGrid(moveTarget));
 
