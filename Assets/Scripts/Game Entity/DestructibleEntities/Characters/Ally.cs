@@ -110,12 +110,13 @@ public class Ally : Character {
 			touchPosition = Input.touches[0].position;
 #endif
 
-
 			Ray ray = Camera.main.ScreenPointToRay(touchPosition);
-			RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
+			RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
 
-			if (hit.collider == collider2D && !reactingToInput) {
-				StartCoroutine(Drag());
+			foreach (RaycastHit2D hit in hits) {
+				if (hit.collider == collider2D && !reactingToInput) {
+					StartCoroutine(Drag());
+				}
 			}
 		}
 
@@ -224,21 +225,8 @@ public class Ally : Character {
 	}
 
 	public void FallBack() {
-		/*
-		if (GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, WorldCoords - new GridCoordinate(1, 0))) {
-			GameEntity entity = GridManager.Instance.EntityAt(GridManager.Grid.WorldGrid, WorldCoords - new GridCoordinate(1, 0));
-
-			if (entity is Ally) {
-				Ally ally = entity as Ally;
-
-				if (ally.FallBack() == false)
-					return false;
-			} else
-				return false;
-		}*/
 
 		StartCoroutine(MoveAlongPath(AStar.GetPath(WorldCoords, WorldCoords + new GridCoordinate(-1, 0))));
-		//return true;
 	}
 	
 	/// <summary>

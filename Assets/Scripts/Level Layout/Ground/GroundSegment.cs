@@ -18,7 +18,18 @@ public class GroundSegment : MonoBehaviour {
 	[SerializeField] List<FormationEntry> obstacleEntries;
 	[SerializeField] List<FormationEntry> mixedEntries;
 
+	Hole[] holes = null;
+
 	bool debug = false;
+
+	void Awake() {
+		holes = GetComponentsInChildren<Hole>();
+	}
+
+	void OnEnable() {
+		foreach (Hole hole in holes) 
+			hole.gameObject.SetActive(true);
+	}
 
 	public FormationEntry GetActiveProfile(int difficulty) {
 		if (difficulty == 0) {

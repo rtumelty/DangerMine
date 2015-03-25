@@ -7,8 +7,7 @@ public class RestartLevel : MonoBehaviour {
 	public void OnClick() {
 		
 		GlobalManagement.PLAYERGOLD = 300;
-		
-		GlobalManagement.SCORE = 0;
+
 		GlobalManagement.LAST_DISTANCE_COVERED = 0;
 		GlobalManagement.GOLD_COLLECTED = 0;
 

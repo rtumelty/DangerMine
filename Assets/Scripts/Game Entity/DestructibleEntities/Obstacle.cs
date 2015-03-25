@@ -19,6 +19,8 @@ public class Obstacle : DestructibleEntity {
 
 	protected override void OnEnable() {
 		base.OnEnable();
+		
+		State = EntityState.Active;
 	}
 
 	protected override void OnDisable() {

@@ -56,7 +56,6 @@ public class LevelResults : MonoBehaviour {
 	
 	public void WipeLevelScores()
 	{
-		GlobalManagement.SCORE = 0;
 		GlobalManagement.LAST_DISTANCE_COVERED = 0;
 		GlobalManagement.GOLD_COLLECTED = 0;
 	} 

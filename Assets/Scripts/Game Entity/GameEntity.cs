@@ -29,6 +29,7 @@ public class GameEntity : MonoBehaviour {
 
 	[SerializeField] protected DebugLevel debugLevel = DebugLevel.None;
 
+	[SerializeField] protected GameObject spriteObject;
 	protected Renderer[] renderers;
 
 	/// <summary>
@@ -102,6 +103,8 @@ public class GameEntity : MonoBehaviour {
 			editor.DrawDefaultInspector();
 			return;
 		}
+
+		spriteObject = EditorGUILayout.ObjectField("Sprite transform:", spriteObject, typeof(GameObject), true) as GameObject;
 
 		EditorGUILayout.LabelField("Debugging / Logging", EditorStyles.boldLabel);
 		debugLevel = (DebugLevel) EditorGUILayout.EnumPopup("Debug level:", debugLevel);

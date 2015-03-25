@@ -31,10 +31,9 @@ public class Enemy : Character {
 					LaneManager.Instance.JoinRow(this, ScreenCoords.y);
 					chasing = true;
 				}
-				Debug.Log(transform.eulerAngles);
-				transform.Rotate(new Vector3(0, 180));
 				
-				Debug.Log(transform.eulerAngles);
+				if (spriteObject != null) 
+					spriteObject.transform.rotation = Quaternion.Euler((new Vector3(0, 180)));
 			}
 
 			moveState = value;
@@ -53,7 +52,7 @@ public class Enemy : Character {
 		base.OnEnable();
 
 		MoveState = EnemyMoveState.Default;
-		transform.rotation = default(Quaternion);
+		spriteObject.transform.rotation = default(Quaternion);
 		chasing = false;
 	}
 

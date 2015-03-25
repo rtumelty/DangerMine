@@ -192,6 +192,7 @@ public class LevelManager : MonoBehaviour {
 	
 	IEnumerator GameOver() {
 		Debug.Log("Last miner died!");
+		GlobalManagement.LAST_DISTANCE_COVERED = CameraDistanceCovered;
 		UIMessageReceiver.Instance.SendTrigger("PlayerDied");
 		
 		float slowDelay = .05f;
@@ -231,7 +232,6 @@ public class LevelManager : MonoBehaviour {
 		spawnReferenceOffset = spawnReference.position - mainCamera.transform.position;
 
 		GlobalManagement.LAST_DISTANCE_COVERED = 0;
-		GlobalManagement.SCORE = 0;
 
 		gameStarted = false;
 		gameOver = false;
