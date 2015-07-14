@@ -60,7 +60,7 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 				CheckForRelease();
 			}
 			else {
-				if (CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE || CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) dragging = true;
+				if (InputManager.TOUCH_TYPE == InputType.DRAG || InputManager.TOUCH_TYPE == InputType.TOUCH_BEGAN) dragging = true;
 
 			}
 
@@ -92,10 +92,10 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	void CheckForRelease()
 	{
 
-		if (CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE || CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) dragging = true;
+		if (InputManager.TOUCH_TYPE == InputType.DRAG || InputManager.TOUCH_TYPE == InputType.TOUCH_BEGAN) dragging = true;
 
 		//Checks for release of character. Snaps to lane or returns to pool if no valid lane.
-		if(dragging && (CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE || CheckInputType.TOUCH_TYPE == InputType.NO_TYPE)) {
+		if(dragging && (InputManager.TOUCH_TYPE == InputType.TOUCH_RELEASED || InputManager.TOUCH_TYPE == InputType.NONE)) {
 			if ((mySnapPoint != defaultPosition) && 
 			   //!GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, transform.position as GridCoordinate) && 
 			   !GridManager.Instance.IsOccupied(GridManager.Grid.ScreenGrid, GridManager.WorldToScreenGridCoords(transform.position)))

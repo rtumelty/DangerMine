@@ -15,7 +15,7 @@ public class Pickup : MonoBehaviour {
 
 	protected virtual void OnMouseOver() {
 		
-		if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE || CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE)
+		if(InputManager.TOUCH_TYPE == InputType.TOUCH_RELEASED || InputManager.TOUCH_TYPE == InputType.DRAG)
 		{
 			Collect();
 		}

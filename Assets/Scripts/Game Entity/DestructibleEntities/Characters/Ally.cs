@@ -20,7 +20,7 @@ public class Ally : Character {
 	}
 
     static Ally selectedCharacter = null;
-    static Ally SelectedCharacter {
+    public static Ally SelectedCharacter {
         get {
             return selectedCharacter;
         }
@@ -126,51 +126,6 @@ public class Ally : Character {
 				screenTargetPosition = ScreenCoords;
 		}
 
-		if (CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) {
-			Vector2 touchPosition;
-#if UNITY_EDITOR || UNITY_STANDALONE
-			touchPosition = Input.mousePosition;
-#elif UNITY_ANDROID || UNITY_IPHONE
-			touchPosition = Input.touches[0].position;
-#endif
-
-			Ray ray = Camera.main.ScreenPointToRay(touchPosition);
-			RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
-
-            bool wasTouched = false;
-			foreach (RaycastHit2D hit in hits) {
-				if (hit.collider == collider2D && !reactingToInput) {
-                    wasTouched = true;
-                    if (this == SelectedCharacter) {
-                        SelectedCharacter = null;
-                    }
-                    else
-                    {
-                        SelectedCharacter = this;
-                        StartCoroutine(Drag());
-                    }
-				}
-			}
-
-            if (!wasTouched && SelectedCharacter == this)
-            {
-                GridCoordinate moveTarget = GridManager.WorldToScreenGridCoords(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-
-                if (moveTarget.y >= GridManager.minY && moveTarget.y <= GridManager.maxY)
-                {
-                    moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
-
-                    List<GridCoordinate> path = AStar.GetPath(WorldCoords, GridManager.ScreenCoordsToWorldGrid(moveTarget));
-
-                    if (path[0] != path[path.Count -1])
-                        StartCoroutine(MoveAlongPath(path));
-                }
-                else
-                    SelectedCharacter = null;
-            }
-		}
-
-
 		if (collidedObject != null) {
 			DestructibleEntity entity = collidedObject.GetComponent<DestructibleEntity>();
 
@@ -198,41 +153,6 @@ public class Ally : Character {
 			collidedObject = collision.collider;
 		}
 		else return;
-
-		/*
-		switch (moveState) {
-		case AllyMoveState.Blocked:
-		case AllyMoveState.Idle:
-			if (entity is Ally) {
-				Ally ally = entity as Ally;
-
-				if (ally.MoveState == AllyMoveState.Idle || ally.MoveState == AllyMoveState.Blocked) {
-					if (ally.ScreenCoords.x > ScreenCoords.x) {
-						FallBack();
-					}
-					else {
-						ally.FallBack();
-					}
-				}
-			}
-			break;
-		case AllyMoveState.Moving:
-			if (entity is Ally) {
-				Ally ally = entity as Ally;
-
-				collider2D.enabled = false;
-
-				screenTargetPosition = ally.ScreenCoords;
-
-				ally.screenTargetPosition = ally.ScreenCoords - new GridCoordinate(1, 0);
-
-			}
-			else {
-				screenTargetPosition = ScreenCoords;
-				MoveState = AllyMoveState.Idle;
-			}
-			break;
-		}*/
 
 		base.OnCollisionEnter2D(collision);
 
@@ -288,6 +208,39 @@ public class Ally : Character {
     {
         characterHighlight.SetActive(false);
     }
+    
+    void HandleInput() {
+        StartCoroutine(_HandleInput());
+    }
+
+    IEnumerator _HandleInput() {
+        StartCoroutine(Drag());
+
+        yield return new WaitForSeconds(Time.deltaTime);
+        while (SelectedCharacter == this) {
+            if (InputManager.TOUCH_TYPE == InputType.TOUCH_BEGAN) {
+                GridCoordinate moveTarget = GridManager.WorldToScreenGridCoords(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+                if (moveTarget == ScreenCoords) {
+                    SelectedCharacter = null;
+                    break;
+                }
+
+                if (moveTarget.y >= GridManager.minY && moveTarget.y <= GridManager.maxY)
+                {
+                    moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
+
+                    List<GridCoordinate> path = AStar.GetPath(WorldCoords, GridManager.ScreenCoordsToWorldGrid(moveTarget));
+
+                    if (path[0] != path[path.Count - 1])
+                        StartCoroutine(MoveAlongPath(path));
+                }
+                else
+                    SelectedCharacter = null;
+            }
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+    }
 	
 	/// <summary>
 	/// Updates character velocity to move towards targetPosition. targetPosition's value determines in subclasses.
@@ -306,13 +259,13 @@ public class Ally : Character {
 	}
 
 	protected virtual IEnumerator Drag() {
-		LogMessage("Starting Drag");
-		yield return new WaitForSeconds (Time.deltaTime);
+		yield return new WaitForSeconds (Time.deltaTime * 3);
+        if (InputManager.TOUCH_TYPE != InputType.DRAG) yield break;
 		
 		GridCoordinate moveTarget = ScreenCoords;
 		GridCoordinate lastMoveTarget = ScreenCoords;
 		
-		while (CheckInputType.TOUCH_TYPE == InputType.DRAG_TYPE || CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) {
+		while (InputManager.TOUCH_TYPE == InputType.DRAG || InputManager.TOUCH_TYPE == InputType.TOUCH_BEGAN) {
 			lastMoveTarget = moveTarget;
 			
 			moveTarget = GridManager.WorldToScreenGridCoords(Camera.main.ScreenToWorldPoint(Input.mousePosition));
