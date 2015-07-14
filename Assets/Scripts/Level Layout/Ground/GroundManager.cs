@@ -65,7 +65,8 @@ public class GroundManager : MonoBehaviour {
 		for (int i = 0; i < length; i++) {
 			lastSegment = PrefabPool.GetPool(poolKey).Spawn(lastSegment.connectPoint.position).GetComponent<GroundSegment>();
 			lastSegment.GetComponent<PooledPrefab>().distanceObject = Camera.main.transform;
-			lastSegment.renderer.sortingOrder = sortingOrder++;
+			lastSegment.UpdateSortingOrder(sortingOrder);
+			sortingOrder += 2;
 		}
 	}
 }

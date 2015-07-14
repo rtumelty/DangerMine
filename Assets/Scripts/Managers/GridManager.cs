@@ -105,7 +105,7 @@ public class GridManager : MonoBehaviour {
 	}
 	
 	public bool IsOccupied(Grid grid, Vector2 position) {
-		return IsOccupied (grid, position as GridCoordinate);
+		return IsOccupied (grid, new GridCoordinate(position ));
 	}
 
 	public bool IsOccupied(Grid grid, GridCoordinate position) {
@@ -130,7 +130,7 @@ public class GridManager : MonoBehaviour {
 	}
 	
 	public List<GameEntity> EntitiesAt(Grid grid, Vector2 position) {
-		return EntitiesAt (grid, position as GridCoordinate);
+        return EntitiesAt(grid, new GridCoordinate(position));
 	}
 	
 	public List<GameEntity> EntitiesAt(Grid grid, GridCoordinate position) {

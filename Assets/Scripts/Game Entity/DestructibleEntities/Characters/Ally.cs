@@ -19,6 +19,27 @@ public class Ally : Character {
 		}
 	}
 
+    static Ally selectedCharacter = null;
+    static Ally SelectedCharacter {
+        get {
+            return selectedCharacter;
+        }
+        set {
+            if (selectedCharacter != null)
+            {
+               Debug.Log(selectedCharacter + " deselected");
+               selectedCharacter.DeactivateHighlight();
+            }
+
+            if (value != null) {
+                Debug.Log(value + " selected");
+                value.ActivateHighlight();
+            }
+
+            selectedCharacter = value;
+        }
+    }
+
 	public enum AllyMoveState {
 		Idle,
 		Moving,
@@ -58,6 +79,7 @@ public class Ally : Character {
 	float collisionTimeout = .5f;
 	bool collide = true;
 	Collider2D collidedObject = null;
+    GameObject characterHighlight;
 	List<Collider2D> ignoredColliders;
 	bool reactingToInput = false;
 	
@@ -78,6 +100,8 @@ public class Ally : Character {
 
 	protected override void Awake() {
 		baseMass = rigidbody2D.mass;
+
+        characterHighlight = transform.FindChild("Character-Highlight").gameObject;
 	}
 
 	protected override void OnEnable() {
@@ -113,11 +137,37 @@ public class Ally : Character {
 			Ray ray = Camera.main.ScreenPointToRay(touchPosition);
 			RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
 
+            bool wasTouched = false;
 			foreach (RaycastHit2D hit in hits) {
 				if (hit.collider == collider2D && !reactingToInput) {
-					StartCoroutine(Drag());
+                    wasTouched = true;
+                    if (this == SelectedCharacter) {
+                        SelectedCharacter = null;
+                    }
+                    else
+                    {
+                        SelectedCharacter = this;
+                        StartCoroutine(Drag());
+                    }
 				}
 			}
+
+            if (!wasTouched && SelectedCharacter == this)
+            {
+                GridCoordinate moveTarget = GridManager.WorldToScreenGridCoords(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+                if (moveTarget.y >= GridManager.minY && moveTarget.y <= GridManager.maxY)
+                {
+                    moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
+
+                    List<GridCoordinate> path = AStar.GetPath(WorldCoords, GridManager.ScreenCoordsToWorldGrid(moveTarget));
+
+                    if (path[0] != path[path.Count -1])
+                        StartCoroutine(MoveAlongPath(path));
+                }
+                else
+                    SelectedCharacter = null;
+            }
 		}
 
 
@@ -228,6 +278,16 @@ public class Ally : Character {
 
 		StartCoroutine(MoveAlongPath(AStar.GetPath(WorldCoords, WorldCoords + new GridCoordinate(-1, 0))));
 	}
+
+    void ActivateHighlight()
+    {
+        characterHighlight.SetActive(true);
+    }
+
+    void DeactivateHighlight()
+    {
+        characterHighlight.SetActive(false);
+    }
 	
 	/// <summary>
 	/// Updates character velocity to move towards targetPosition. targetPosition's value determines in subclasses.
@@ -281,14 +341,19 @@ public class Ally : Character {
 		
 		LogMessage("Drag ended");
 
-		if (moveTarget == ScreenCoords) yield break;
+        if (moveTarget == ScreenCoords) 
+            yield break; 
 
 		List<GridCoordinate> path = AStar.GetPath(WorldCoords, GridManager.ScreenCoordsToWorldGrid(moveTarget));
+
+		if (path[0] == path[path.Count-1]) yield break;
 
 		StartCoroutine(MoveAlongPath(path));
 	}
 
 	IEnumerator MoveAlongPath(List<GridCoordinate> path) {
+        SelectedCharacter = null;
+
 		MoveState = AllyMoveState.Moving;
 		collider2D.enabled = false;
 		rigidbody2D.velocity = Vector2.zero;

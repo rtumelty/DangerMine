@@ -19,10 +19,17 @@ public class LevelManager : MonoBehaviour {
 	Camera mainCamera;
 	[SerializeField] Transform cameraTransform;
 	int cameraStartingXPosition;
-	static int cameraDistanceCovered = 0;
-	public static int CameraDistanceCovered {
+	static float cameraDistanceCovered = 0;
+
+	public static float CameraDistanceCovered {
 		get {
 			return cameraDistanceCovered;
+		}
+	}
+
+	public static int CameraDistanceCoveredInt {
+		get {
+			return (int)cameraDistanceCovered;
 		}
 	}
 #endregion
@@ -32,7 +39,7 @@ public class LevelManager : MonoBehaviour {
 	static float loopLength = 120f;
 
 	public static float SampleLoopedTime() {
-		float time = Time.timeSinceLevelLoad;
+		float time = Time.time - gameStartTime;
 
 		if (time > loopStartTime) {
 			float moduloTime = (time - loopStartTime) % loopLength;
@@ -100,6 +107,8 @@ public class LevelManager : MonoBehaviour {
 #endregion
 
 #region Difficulty
+	[SerializeField] int startingGold;
+
 	[SerializeField] AnimationCurve easy;
 	[SerializeField] AnimationCurve medium;
 	[SerializeField] AnimationCurve hard;
@@ -163,8 +172,10 @@ public class LevelManager : MonoBehaviour {
 #endregion
 
 #region Game Start/End
-	bool gameStarted = false;
-	bool gameOver = false;
+	static bool gameStarted = false;
+	static bool gameOver = false;
+
+	static float gameStartTime = 0;
 
 	public bool GameStarted {
 		get {
@@ -172,13 +183,14 @@ public class LevelManager : MonoBehaviour {
 		}
 		set {
 			gameStarted = value;
+			gameStartTime = Time.time;
 		}
 	}
 
 	public void CheckEndCondition() {
 		if (!gameStarted) { 
 			if (Ally.ActiveAllies > 0) 
-				gameStarted = true;
+				GameStarted = true;
 			
 			return;
 		}	
@@ -192,7 +204,7 @@ public class LevelManager : MonoBehaviour {
 	
 	IEnumerator GameOver() {
 		Debug.Log("Last miner died!");
-		GlobalManagement.LAST_DISTANCE_COVERED = CameraDistanceCovered;
+		GlobalManagement.LAST_DISTANCE_COVERED = CameraDistanceCoveredInt;
 		UIMessageReceiver.Instance.SendTrigger("PlayerDied");
 		
 		float slowDelay = .05f;
@@ -230,8 +242,10 @@ public class LevelManager : MonoBehaviour {
 		cameraDistanceCovered = 0;
 
 		spawnReferenceOffset = spawnReference.position - mainCamera.transform.position;
-
+		
 		GlobalManagement.LAST_DISTANCE_COVERED = 0;
+		GlobalManagement.PLAYERGOLD = 100;
+		GlobalManagement.GOLD_COLLECTED = 0;
 
 		gameStarted = false;
 		gameOver = false;
@@ -254,7 +268,7 @@ public class LevelManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		cameraDistanceCovered = ( int ) Camera.main.transform.position.x - cameraStartingXPosition;
+		cameraDistanceCovered = Camera.main.transform.position.x - cameraStartingXPosition;
 
 		if (cameraDistanceCovered > nextSectionStart - 15)
 			GroundManager.Instance.PlaceSection(NextSection());

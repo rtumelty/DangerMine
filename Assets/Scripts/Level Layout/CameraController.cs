@@ -22,7 +22,7 @@ public class CameraController : MonoBehaviour {
 
 	public static GridCoordinate GridCoords {
 		get {
-			return instance.transform.position as GridCoordinate;
+			return new GridCoordinate(instance.transform.position);
 		}
 	}
 

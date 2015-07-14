@@ -36,7 +36,7 @@ public class ParallaxObject : MonoBehaviour {
 		lastX = parallaxReference.transform.position.x;*/
 		
 		if (LevelManager.Instance.GameStarted)
-			transform.position = Vector3.Lerp(transform.position, (transform.position + new Vector3(-CameraController.MoveSpeed, 0, 0)), Time.deltaTime);
+			transform.position = Vector3.Lerp(transform.position, (transform.position + new Vector3(-CameraController.MoveSpeed * parallaxScale, 0, 0)), Time.deltaTime);
 
 		
 		if (tiled) {

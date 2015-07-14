@@ -27,6 +27,10 @@ public class PooledPrefab : MonoBehaviour {
 	void OnEnable() {
 		StartCoroutine (InitialDelay ());
 
+		if (recycleWhenFar && distanceObject == null) {
+			distanceObject = Camera.main.transform;
+		}
+
 		if (recycleAfterTime)
 			StartCoroutine(Recycle(recycleTime));
 	}

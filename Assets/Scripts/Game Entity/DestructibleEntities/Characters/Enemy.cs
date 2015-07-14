@@ -28,7 +28,7 @@ public class Enemy : Character {
 
 				if (!chasing) {
 					LogMessage("Registering with LaneManager");
-					LaneManager.Instance.JoinRow(this, ScreenCoords.y);
+					//LaneManager.Instance.JoinRow(this, ScreenCoords.y);
 					chasing = true;
 				}
 				
@@ -38,14 +38,6 @@ public class Enemy : Character {
 
 			moveState = value;
 		}
-	}
-
-	protected override IEnumerator Dying(GameEntity cause) {
-		if (chasing)
-			LaneManager.Instance.RemoveFromRow(this, ScreenCoords.y);
-
-		yield return StartCoroutine(base.Dying(cause));
-
 	}
 
 	protected override void OnEnable() {

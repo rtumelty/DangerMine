@@ -31,8 +31,9 @@ public class AStar {
 			if (lowestF.position == endPosition) {
 				return BuildPath(lowestF);
 			} 
-			else
+			else {
 				FindAdjacents(lowestF, openList, closedList, endPosition);
+			}
 		}
 
 		return BuildPath(FindNearestNode(closedList));

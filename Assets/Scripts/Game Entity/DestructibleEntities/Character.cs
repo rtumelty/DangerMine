@@ -282,10 +282,9 @@ public class Character : DestructibleEntity {
 	protected override IEnumerator Dying(GameEntity cause) {
 		entityState = EntityState.Dying;
 
+		StartCoroutine(base.Dying(cause));
 
-		yield return new WaitForSeconds(.5f);
-
-		Die (cause);
+		yield break;
 	}
 
 	protected virtual void Fall(GameEntity cause) {

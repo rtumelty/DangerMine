@@ -18,6 +18,14 @@ public class GroundSegment : MonoBehaviour {
 	[SerializeField] List<FormationEntry> obstacleEntries;
 	[SerializeField] List<FormationEntry> mixedEntries;
 
+	[SerializeField] Transform decalTransform;
+	[SerializeField] List<GameObject> decals;
+	GameObject activeDecal;
+	static int nextDecalDistance = 0;
+	static int minDecalInterval = 0;
+	static int maxDecalInterval = 0;
+	static float decalOdds = 50f;
+
 	Hole[] holes = null;
 
 	bool debug = false;
@@ -29,6 +37,32 @@ public class GroundSegment : MonoBehaviour {
 	void OnEnable() {
 		foreach (Hole hole in holes) 
 			hole.gameObject.SetActive(true);
+
+		if (decalTransform != null && (LevelManager.CameraDistanceCoveredInt > nextDecalDistance)) {
+			if (Random.value < decalOdds) {
+				if (decals.Count == 0) {
+					Debug.Log("No decals in list");
+				}
+				else {
+					activeDecal = PrefabPool.GetPool(decals[Random.Range(0, decals.Count)]).Spawn(decalTransform.position);
+					nextDecalDistance = LevelManager.CameraDistanceCoveredInt + Random.Range(maxDecalInterval, maxDecalInterval);
+				}
+			}
+		}
+	}
+
+	void OnDisable() {
+		if (activeDecal != null) {
+			activeDecal.SetActive(false);
+			activeDecal = null;
+		}
+	}
+
+	public void UpdateSortingOrder(int order) {
+		renderer.sortingOrder = order;
+
+		if (activeDecal != null)
+			activeDecal.renderer.sortingOrder = order + 1;
 	}
 
 	public FormationEntry GetActiveProfile(int difficulty) {

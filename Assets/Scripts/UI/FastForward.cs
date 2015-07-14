@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class FastForward : MonoBehaviour {
+	[SerializeField] float speedScale = 4;
 	bool fastForward = false;
 
 
@@ -15,7 +16,7 @@ public class FastForward : MonoBehaviour {
 	}
 
 	void SpeedUp() {
-		Time.timeScale = 2;
+		Time.timeScale = speedScale;
 	}
 	
 	void SlowDown() {
