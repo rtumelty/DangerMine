@@ -40,7 +40,6 @@ public class InputManager : MonoBehaviour
         DontDestroyOnLoad(this);
 
         inputMask = 1 << LayerMask.NameToLayer("UI");
-        Debug.Log(LayerMask.NameToLayer("UI"));
 	}
 
 
@@ -97,10 +96,10 @@ public class InputManager : MonoBehaviour
 			TOUCH_TYPE = InputType.NONE;
 		}
 
-
         // Input processing
         switch (TOUCH_TYPE) { 
             case InputType.TOUCH_BEGAN:
+
                 Vector2 touchPosition;
 
 #if UNITY_EDITOR || UNITY_STANDALONE
@@ -110,16 +109,19 @@ public class InputManager : MonoBehaviour
 #endif
 
 		        Ray ray = Camera.main.ScreenPointToRay(touchPosition);
-		        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity, inputMask);
-
-                foreach (RaycastHit2D hit in hits) {
-                    Ally ally = hit.collider.GetComponentInParent<Ally>();
-                    if (ally != null && Ally.SelectedCharacter == null)
+		        RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity, inputMask);
+                
+                Ally ally = hit.collider.GetComponentInParent<Ally>();
+                if (ally != null)
+                {
+                    if (Ally.SelectedCharacter == null)
                     {
                         Ally.SelectedCharacter = ally;
                         ally.SendMessage("HandleInput");
                     }
-				}
+
+                    ally.SendMessage("Drag");
+                }
                 break;
         }
 	}

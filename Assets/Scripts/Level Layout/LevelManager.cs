@@ -284,6 +284,8 @@ public class LevelManager : MonoBehaviour {
 	bool expandSections = false;
 
 	public void ShowGUI(Editor editor) {
+        EditorGUILayout.LabelField("Distance travelled: ", cameraDistanceCovered.ToString());
+
 		cameraTransform = EditorGUILayout.ObjectField("Camera:", cameraTransform, typeof(Transform), true) as Transform;
 		spawnReference = EditorGUILayout.ObjectField("Formation origin:", spawnReference, typeof(Transform), true) as Transform;
 

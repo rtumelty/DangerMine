@@ -214,7 +214,6 @@ public class Ally : Character {
     }
 
     IEnumerator _HandleInput() {
-        StartCoroutine(Drag());
 
         yield return new WaitForSeconds(Time.deltaTime);
         while (SelectedCharacter == this) {
@@ -238,7 +237,7 @@ public class Ally : Character {
                 else
                     SelectedCharacter = null;
             }
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(Time.deltaTime / 2);
         }
     }
 	
@@ -258,9 +257,28 @@ public class Ally : Character {
 		}
 	}
 
-	protected virtual IEnumerator Drag() {
-		yield return new WaitForSeconds (Time.deltaTime * 3);
-        if (InputManager.TOUCH_TYPE != InputType.DRAG) yield break;
+    public void Drag() {
+        StartCoroutine(_Drag());
+    }
+
+	protected virtual IEnumerator _Drag() {
+        float dragDelay = .15f;
+        float startTime = Time.time;
+
+        while (Time.time < startTime + dragDelay) {
+            if (InputManager.TOUCH_TYPE == InputType.TOUCH_RELEASED)
+            {
+                LaneHighlight.Instance.Hide();
+                yield break;
+            }
+            yield return new WaitForSeconds(Time.deltaTime / 2);
+        }
+
+        if (InputManager.TOUCH_TYPE != InputType.DRAG)
+        {
+            LaneHighlight.Instance.Hide();
+            yield break;
+        }
 		
 		GridCoordinate moveTarget = ScreenCoords;
 		GridCoordinate lastMoveTarget = ScreenCoords;
