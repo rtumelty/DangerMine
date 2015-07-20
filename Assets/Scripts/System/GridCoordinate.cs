@@ -1,7 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
 public class GridCoordinate {
+	static float xScale = 1;
+	static float yScale = 1f;//.15f;
+	static float xOffset = .25f;
+
+	public static float XScale {
+		get {
+			return xScale;
+		}
+	}
+
+	public static float YScale {
+		get {
+			return yScale;
+		}
+	}
+
 	public int x;
 	public int y;
 
@@ -16,13 +33,13 @@ public class GridCoordinate {
 	}
 	
 	public GridCoordinate(Vector2 coords) {
-		x = Mathf.RoundToInt (coords.x);
-		y = Mathf.RoundToInt (coords.y);
+		y = Mathf.RoundToInt (coords.y / yScale);
+		x = Mathf.RoundToInt ((coords.x - (xOffset * y))/ xScale);
 	}
 	
 	public GridCoordinate(Vector3 coords) {
-		x = Mathf.RoundToInt (coords.x);
-		y = Mathf.RoundToInt (coords.y);
+		y = Mathf.RoundToInt (coords.y / yScale);
+		x = Mathf.RoundToInt ((coords.x - (xOffset * y))/ xScale);
 	}
 	
 	public static GridCoordinate operator +(GridCoordinate a, GridCoordinate b) {
@@ -75,13 +92,13 @@ public class GridCoordinate {
 	{return new GridCoordinate(vector);}
 	
 	public static implicit operator Vector2(GridCoordinate coord)  
-	{return new Vector2(coord.x, coord.y);}
+	{return new Vector2(coord.x * xScale, coord.y * yScale);}
 	
 	public static implicit operator GridCoordinate(Vector3 vector)  
 	{return new GridCoordinate(vector);}
 
 	public Vector3 ToVector3(float z = 0) {
-		return new Vector3(x, y, z);
+		return new Vector3(x * xScale + xOffset * y, y * yScale, z);
 	}
 
 	public override string ToString ()

@@ -1,69 +1,139 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+using UnityEngine;
 using System.Collections;
 
-public enum Allegiance {
-	Ally,
-	Enemy,
-	Neutral
-}
-
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(CircleCollider2D))]
+/// <summary>
+/// Game entity. Base class of all objects in game. Registers positions on world and screen grids.
+/// </summary>
 public class GameEntity : MonoBehaviour {
+	public enum EntityState {
+		Inactive,
+		Active,
+		Dying
+	}
 	
-	[SerializeField] protected Allegiance _allegiance;
-	[SerializeField] protected int health = 10;
-	[SerializeField] protected float currentHealth;
-	protected GridCoordinate gridCoords;
-	private Renderer[] renderers;
+	protected EntityState entityState = EntityState.Inactive;
 	
-	public Allegiance allegiance {
+	public EntityState State {
 		get {
-			return _allegiance;
+			return entityState;
+		}
+		set {
+			LogMessage("Changing state: " + value.ToString());
+			entityState = value;
+		}
+	}
+
+	[SerializeField] protected DebugLevel debugLevel = DebugLevel.None;
+
+	[SerializeField] protected GameObject spriteObject;
+	protected Renderer[] renderers;
+
+	/// <summary>
+	/// Gets the world coords.
+	/// </summary>
+	/// <value>The world coords.</value>
+	public GridCoordinate WorldCoords {
+		get {
+			return new GridCoordinate(transform.position);
+		}
+	}
+
+	/// <summary>
+	/// Gets the screen coords.
+	/// </summary>
+	/// <value>The screen coords.</value>
+	public GridCoordinate ScreenCoords {
+		get {
+			return GridManager.WorldToScreenGridCoords(transform.position);
 		}
 	}
 
 	protected virtual void Awake() {
-		renderers = GetComponentsInChildren<Renderer>();
-
-		rigidbody2D.gravityScale = 0;
-		rigidbody2D.isKinematic = true;
 	}
 
 	protected virtual void OnEnable() {
-		gridCoords = transform.position as GridCoordinate;
+		LogMessage("Enabled");
+
+		if (renderers == null)
+			renderers = GetComponentsInChildren<Renderer>();
+
 		UpdateSortingLayer();
-		GridManager.Instance.RegisterEntity(this);
-		
-		currentHealth = health;
+
+		GridManager.Instance.RegisterEntity(GridManager.Grid.WorldGrid, this);
+		GridManager.Instance.RegisterEntity(GridManager.Grid.ScreenGrid, this);
 	}
-	
 	protected virtual void OnDisable() {
-		if (GridManager.Instance != null)
-			GridManager.Instance.UnregisterEntity(this);
+		LogMessage("Disabled");
+		entityState = EntityState.Inactive;
+
+		if (GridManager.Instance != null) {
+			GridManager.Instance.UnregisterEntity(GridManager.Grid.WorldGrid, this);
+			GridManager.Instance.UnregisterEntity(GridManager.Grid.ScreenGrid, this);
+		}
 	}
 
-	protected virtual void Hit(Character character) {
-		/*
-		Debug.Log ("Attacked, taking " + character.AttackStrength + " damage per second");
-		currentHealth = Mathf.Clamp (currentHealth - (character.AttackStrength * Time.deltaTime), 0, 9999);
-		*/
+	/// <summary>
+	/// Updates the sorting layer of all renderers on GameObject and its children. 
+	/// </summary>
+	protected void UpdateSortingLayer () {
+		string newLayer = "Lane_" + WorldCoords.y;
 
-		currentHealth = Mathf.Clamp(currentHealth - character.AttackStrength, 0, 9999);
+		LogMessage("Updating sorting layer - " + newLayer);
 
-		if (currentHealth == 0)
-			Die ();
-	}
-	
-	protected virtual void Die() {
-		gameObject.SetActive (false);
-	}
-
-	public void UpdateSortingLayer() {
-		
 		foreach ( Renderer rend in renderers) {
-			rend.sortingLayerName = "Lane_" + gridCoords.y;
+			rend.sortingLayerName = newLayer;
+		}
+	}
+
+#if UNITY_EDITOR
+	protected bool showDefaultInspector = false;
+
+	/// <summary>
+	/// Draws the inspector GUI. Overridden in subclasses.
+	/// </summary>
+	/// <param name="editor">Editor.</param>
+	public virtual void DrawInspectorGUI(Editor editor) {
+		showDefaultInspector = EditorGUILayout.Toggle("Use default inspector?", showDefaultInspector);
+
+		if (showDefaultInspector) {
+			editor.DrawDefaultInspector();
+			return;
 		}
 
+		spriteObject = EditorGUILayout.ObjectField("Sprite transform:", spriteObject, typeof(GameObject), true) as GameObject;
+
+		EditorGUILayout.LabelField("Debugging / Logging", EditorStyles.boldLabel);
+		debugLevel = (DebugLevel) EditorGUILayout.EnumPopup("Debug level:", debugLevel);
+		entityState = (EntityState) EditorGUILayout.EnumPopup("Entity state:", entityState);
+
+		EditorGUILayout.Vector2Field("Screen coords:", new Vector2(ScreenCoords.x, ScreenCoords.y));
+		EditorGUILayout.Vector2Field("World coords:", new Vector2(WorldCoords.x, WorldCoords.y));
+	
+		EditorGUILayout.Space();
+
+		EditorUtility.SetDirty(this);
+	}
+#endif
+
+	protected void LogMessage(string message, DebugLevel level = DebugLevel.Info) {
+		if ((level & debugLevel) > 0) {
+			switch (level) {
+			case DebugLevel.Info:
+				Debug.Log (/*"Time: " + Time.time + ",*/ "GameEntity: " + name + ": \n" + message);
+				break;
+			case DebugLevel.Warning:
+				Debug.LogWarning (/*"Time: " + Time.time + ",*/ "GameEntity: " + name + ": \n" + message);
+				break;
+			case DebugLevel.Error:
+				Debug.LogError (/*"Time: " + Time.time + ",*/ "GameEntity: " + name + ": \n" + message);
+				break;
+			default:
+				break;
+			}
+   		}
 	}
 }

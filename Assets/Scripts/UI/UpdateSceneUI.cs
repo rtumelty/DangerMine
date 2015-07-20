@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -10,7 +10,7 @@ public class UpdateSceneUI : MonoBehaviour {
 	
 	void Update ()
 	{
-		distanceCounter.text = SpawnObject.cameraDistanceCovered.ToString();
+		distanceCounter.text = ((int)(LevelManager.CameraDistanceCovered * 4)).ToString();
 		goldCounter.text = GlobalManagement.PLAYERGOLD.ToString();
 		diamondCounter.text = GlobalManagement.PLAYERDIAMONDS.ToString();
 	}

@@ -45,7 +45,7 @@ public class LevelResults : MonoBehaviour {
 	}
 
 	void Update() {
-		if (displayingResults && CheckInputType.TOUCH_TYPE == InputType.TOUCHBEGAN_TYPE) {
+		if (displayingResults && InputManager.TOUCH_TYPE == InputType.TOUCH_BEGAN) {
 			StopCoroutine("_DisplayResults");
 
 			score.text = GlobalManagement.SCORE.ToString();
@@ -56,7 +56,6 @@ public class LevelResults : MonoBehaviour {
 	
 	public void WipeLevelScores()
 	{
-		GlobalManagement.SCORE = 0;
 		GlobalManagement.LAST_DISTANCE_COVERED = 0;
 		GlobalManagement.GOLD_COLLECTED = 0;
 	} 

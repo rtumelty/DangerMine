@@ -11,6 +11,8 @@ public class CameraController : MonoBehaviour {
 	}
 
 	[SerializeField] float moveSpeed = 1f;
+	[SerializeField] Transform screenBottom;
+	float currentAspect;
 
 	public static float MoveSpeed {
 		get {
@@ -20,18 +22,39 @@ public class CameraController : MonoBehaviour {
 
 	public static GridCoordinate GridCoords {
 		get {
-			return instance.transform.position as GridCoordinate;
+			return new GridCoordinate(instance.transform.position);
 		}
 	}
 
 	void Awake() {
 		instance = this;
+
+		Resize();
+	}
+
+	void Resize() {
+		currentAspect = camera.aspect;
+
+		Vector3 gridOrigin = GridManager.Instance.ScreenOrigin;
+
+		camera.orthographicSize = (float)GridManager.PlayableAreaWidth / camera.aspect / 2;
+		
+		camera.transform.position = new Vector3(transform.position.x, screenBottom.position.y + 
+		                                        camera.orthographicSize, transform.position.z);
+
+		GridManager.Instance.ScreenOrigin = gridOrigin;
 	}
 	
 	// Update is called once per frame
+	void Update() {
+		if (currentAspect != camera.aspect) Resize();
+	}
+
 	void LateUpdate () {
-		Vector3 position = transform.position;
-		position += new Vector3 (moveSpeed * Time.deltaTime, 0, 0);
-		transform.position = position;
+		if (LevelManager.Instance.GameStarted) {
+			Vector3 position = transform.position;
+			Vector3 targetPosition = position + (new Vector3(1, 0, 0) * MoveSpeed);
+			transform.position = Vector3.Lerp(position, targetPosition, Time.deltaTime);
+		}
 	}
 }

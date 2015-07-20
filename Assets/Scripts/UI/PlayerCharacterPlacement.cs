@@ -2,10 +2,12 @@
 using System.Collections;
 
 public class PlayerCharacterPlacement : MonoBehaviour {
-	
+	private Vector3 defaultPosition = new Vector3(-1000, 0, 0);
+
 	private Vector3 mySnapPoint;
 	private Vector3 myWorldPos;
-	private Vector3 defaultHighlightPosition;
+
+	private bool dragging = false;
 
 	private BuildPlayerUnitButton purchaseButton;
 
@@ -21,77 +23,98 @@ public class PlayerCharacterPlacement : MonoBehaviour {
 	[SerializeField] private bool released = false;
 
 	private float initialClick = 0;
+#if UNITY_EDITOR || UNITY_STANDALONE
 	private float clickThreshold = 0.2f;
+	#elif UNITY_ANDROID || UNITY_IPHONE
+	private float clickThreshold = 0.35f;
+#endif
 
-	private GameObject theHighLight;
 	private GameEntity entity;
 
-	void Start()
+	void Awake()
 	{
 		entity = GetComponent<GameEntity>();
-		theHighLight = GameObject.FindGameObjectWithTag ("HL");
-		defaultHighlightPosition = theHighLight.transform.position;
 	}
 
 	void OnEnable() {
 		released = false;
+		dragging = false;
 		initialClick = Time.time;
-	}
 
-
-	void Update()
-	{
-		if(released)
-		{
-			return;
+		Renderer[] renderers = GetComponentsInChildren<Renderer>();
+		foreach ( Renderer rend in renderers) {
+			rend.sortingLayerName = "Overlay" ;
 		}
 
+		StartCoroutine(UpdatePosition());
+	}
+
+	IEnumerator UpdatePosition() {
 		StickToCursor();
-		CheckForRelease();
+		while (Time.time - initialClick < clickThreshold) yield return new WaitForSeconds(Time.deltaTime);
+
+		while (!released) {
+			
+			if (dragging) {
+				StickToCursor();
+				CheckForRelease();
+			}
+			else {
+				if (InputManager.TOUCH_TYPE == InputType.DRAG || InputManager.TOUCH_TYPE == InputType.TOUCH_BEGAN) dragging = true;
+
+			}
+
+			yield return new WaitForSeconds(Time.deltaTime);
+		}
 	}
 
 
 	void StickToCursor()
 	{
 		//Snaps character to cursor
-		
-		Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 8f);
-		transform.position = new Vector3(Mathf.RoundToInt(newPosition.x), Mathf.RoundToInt(newPosition.y), Mathf.RoundToInt(newPosition.z));
-		
-		//Clamps highlight over last valid lane position
-		
-		if(transform.position.y < 3 && transform.position.y > -3 && transform.position.x > CreepingDarkness.Instance.LeadingEdge)
-		{
-			entity.UpdateSortingLayer();
-			theHighLight.transform.position = new Vector3(transform.position.x, transform.position.y, theHighLight.transform.position.z);
-			mySnapPoint = transform.position;
-		}
+		Vector3 inputPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+		GridCoordinate moveTarget = GridManager.WorldToScreenGridCoords(inputPosition);
+
+		moveTarget.x = Mathf.Clamp(moveTarget.x, GridManager.minScreenX, GridManager.maxScreenX);
+
+		if (moveTarget.y < GridManager.minY || moveTarget.y > GridManager.maxY) 
+			transform.position = defaultPosition;
 		else
-		{
-			mySnapPoint = Vector3.zero;
-		}
+			transform.position = GridManager.ScreenCoordsToWorldPosition(moveTarget);
+
+		LaneHighlight.Instance.UpdatePosition(transform.position);
+
+		mySnapPoint = transform.position;
 	}
 
 
 	void CheckForRelease()
 	{
-		if (Time.time - initialClick < clickThreshold) return;
+
+		if (InputManager.TOUCH_TYPE == InputType.DRAG || InputManager.TOUCH_TYPE == InputType.TOUCH_BEGAN) dragging = true;
 
 		//Checks for release of character. Snaps to lane or returns to pool if no valid lane.
-		
-		if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE && 
-		   mySnapPoint != Vector3.zero && !GridManager.Instance.IsOccupied(Camera.main.ScreenToWorldPoint(Input.mousePosition) as GridCoordinate))
-		{
-			GetComponent<Character>().enabled = true;
-			theHighLight.transform.position = defaultHighlightPosition;
-			purchaseButton.SendMessage("StartCooldown");
-			released = true;
-		}
-		else if(CheckInputType.TOUCH_TYPE == InputType.TOUCHRELEASE_TYPE)
-		{
-			gameObject.SetActive(false);
-			purchaseButton.Cancelled();
-			theHighLight.transform.position = defaultHighlightPosition;
+		if(dragging && (InputManager.TOUCH_TYPE == InputType.TOUCH_RELEASED || InputManager.TOUCH_TYPE == InputType.NONE)) {
+			if ((mySnapPoint != defaultPosition) && 
+			   //!GridManager.Instance.IsOccupied(GridManager.Grid.WorldGrid, transform.position as GridCoordinate) && 
+			   !GridManager.Instance.IsOccupied(GridManager.Grid.ScreenGrid, GridManager.WorldToScreenGridCoords(transform.position)))
+			{
+				entity.enabled = true;
+				entity.State = GameEntity.EntityState.Active;
+
+				LaneHighlight.Instance.Hide();
+				purchaseButton.SendMessage("StartCooldown");
+				released = true;
+
+				if (!LevelManager.Instance.GameStarted) LevelManager.Instance.GameStarted = true;
+			}
+			else 
+			{
+				purchaseButton.Cancel();
+				gameObject.SetActive(false);
+				LaneHighlight.Instance.Hide();
+			}
 		}
 	}
 }
