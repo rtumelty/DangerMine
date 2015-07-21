@@ -15,10 +15,22 @@ public static class GlobalManagement
 	public static int LAST_DISTANCE_COVERED;
 	public static int GOLD_COLLECTED;
 
+    static float goldMultiplier = 1f;
+    public static float GoldMultiplier {
+        get
+        {
+            return goldMultiplier;
+        }
+        set
+        {
+            goldMultiplier = value;
+        }
+    }
+
 	public static void AddGold(int gold)
 	{
-		PLAYERGOLD += gold;
-		GOLD_COLLECTED += gold;
+		PLAYERGOLD += (int)(gold * goldMultiplier);
+		GOLD_COLLECTED += (int)(gold * goldMultiplier);
 	}
 
 	public static void AddDiamonds(int diamonds) {
